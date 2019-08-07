@@ -11,7 +11,7 @@
         "severity": "warning"
       },
       "no-import-side-effect": [true, {
-        "ignore-module": "(\\.html|\\.css)$"
+        "ignore-module": "(\\.html|\\.css|\\.s(c|a)ss)$"
       }],
       "no-inferrable-types": {
         "severity": "warning"
