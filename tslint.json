@@ -210,7 +210,8 @@
           "check-type-operator",
           "check-preblock"
         ]
-      }
+      },
+      "jsx-boolean-value": false
     },
     "linterOptions": {
       "exclude": [
