@@ -212,7 +212,10 @@
         ]
       },
       "jsx-boolean-value": false,
-      "jsx-no-multiline-js": false
+      "jsx-no-multiline-js": false,
+      "jsx-no-lambda": {
+        "severity": "warning"
+      }
     },
     "linterOptions": {
       "exclude": [
