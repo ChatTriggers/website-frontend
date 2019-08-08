@@ -17,10 +17,10 @@
         "severity": "warning"
       },
       "no-internal-module": true,
-      "no-magic-numbers": {
-        "severity": "warning",
-        "options": [-1, 0, 1, 100, 200, 201, 202, 204, 301, 302, 303, 304, 307, 308, 400, 401, 403, 404, 405, 406, 408, 410, 500, 501, 502, 503, 504]
-      },
+      // "no-magic-numbers": {
+      //   "severity": "warning",
+      //   "options": [-1, 0, 1, 100, 200, 201, 202, 204, 301, 302, 303, 304, 307, 308, 400, 401, 403, 404, 405, 406, 408, 410, 500, 501, 502, 503, 504]
+      // },
       "no-namespace": [true, "allow-declarations"],
       "no-non-null-assertion": {
         "severity": "warning"
@@ -211,7 +211,8 @@
           "check-preblock"
         ]
       },
-      "jsx-boolean-value": false
+      "jsx-boolean-value": false,
+      "jsx-no-multiline-js": false
     },
     "linterOptions": {
       "exclude": [
