@@ -7,3 +7,9 @@
   width: 100vw;
   height: 100vh;
 }
+
+.blur {
+  filter: blur(2px);
+  -webkit-filter: blur(2px);
+  -moz-filter: blur(2px);
+}
