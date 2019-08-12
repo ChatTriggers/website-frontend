@@ -6,6 +6,7 @@ import js from './js.png';
 import slate from './slate.png';
 import javadocs from './javadocs.png';
 import logoLong from './logo-long.png';
+import githubIcon from './github-icon.png';
 
 export {
   shader1,
@@ -15,5 +16,6 @@ export {
   js,
   slate,
   javadocs,
-  logoLong
+  logoLong,
+  githubIcon
 };

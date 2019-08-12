@@ -39,7 +39,9 @@ export default (props: IInfoCardProps) => {
       height="100%"
       margin="20px"
       pad="20px"
+      responsive
       round="small"
+      elevation="small"
       border={{
         color: 'brand',
         size: 'medium'
