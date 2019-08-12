@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 
-interface IModule {
+export interface IModule {
   name: string;
   author: string;
   tags?: string[];
@@ -62,4 +62,4 @@ modulesStore.modules = [
   }
 ];
 
-export default modulesStore;
+export {  modulesStore };

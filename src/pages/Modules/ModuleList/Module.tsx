@@ -1,15 +1,15 @@
 import React from 'react';
-import { Paper, Container, Typography, Chip, Theme } from '@material-ui/core';
+import {
+  Paper,
+  Container,
+  Typography,
+  Theme
+} from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
+import { IModule as IModuleProps } from '../../../store';
+import TagList from './TagList';
 
-interface IModuleProps {
-  name: string;
-  author: string;
-  downloads: number;
-  tags?: string[];
-  description?: string;
-  url?: string;
-}
+const maxTags = 3;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -40,9 +40,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     width: '300px',
     height: '100%',
     objectFit: 'cover'
-  },
-  chip: {
-    margin: '0 4px'
   }
 }));
 
@@ -64,15 +61,7 @@ export default (props: IModuleProps) => {
           <Typography>
             {description}
           </Typography>
-          <Container style={{ margin: 0, padding: 0 }}>
-            {tags && tags.map(tag => (
-              <Chip
-                key={tag}
-                label={tag}
-                className={classes.chip}
-              />
-            ))}
-          </Container>
+          <TagList tags={tags} maxTags={maxTags} />
         </Container>
       </Container>
     </Paper>
