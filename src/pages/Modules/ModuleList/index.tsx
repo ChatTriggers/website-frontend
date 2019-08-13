@@ -21,7 +21,7 @@ export default class extends React.Component {
     return (
       <>
         {modules.map(module => (
-          <Module key={module.name} {...module} />
+          <Module key={module.id} {...module} />
         ))}
       </>
     );

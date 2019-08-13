@@ -21,7 +21,9 @@ import {
   Home as HomeIcon
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
+import { inject } from 'mobx-react';
 import { githubIcon } from '../../assets';
+import { AuthStore } from '../../store';
 
 const drawerWidth = 240;
 
@@ -64,15 +66,22 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 24,
       maxHeight: 24
     }
-  }));
+  })
+);
 
-export default () => {
-  const classes = useStyles();
+interface IInjectedProps {
+  authStore: AuthStore;
+}
+
+const ModuleDrawer = (props: {}) => {
   const [open, setOpen] = React.useState(true);
 
   const onDrawerChange = () => {
-    setOpen(!open);
+    setOpen(isOpen => !isOpen);
   };
+
+  const classes = useStyles();
+  const { authStore } = props as IInjectedProps;
 
   return (
     <div className={classes.root}>
@@ -92,7 +101,7 @@ export default () => {
       >
         <div className={classes.toolbar}>
           {open && (<Typography style={{ marginLeft: 8 }}>
-          ChatTriggers
+            ChatTriggers
           </Typography>)}
           <IconButton onClick={onDrawerChange}>
             {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -105,7 +114,7 @@ export default () => {
             </ListItemIcon>
             <ListItemText>
               All Modules
-          </ListItemText>
+            </ListItemText>
           </ListItem>
           <ListItem button>
             <ListItemIcon>
@@ -113,16 +122,28 @@ export default () => {
             </ListItemIcon>
             <ListItemText>
               Trusted Modules
-          </ListItemText>
+            </ListItemText>
           </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <WarningIcon color="error" />
-            </ListItemIcon>
-            <ListItemText>
-              Flagged Modules
-          </ListItemText>
-          </ListItem>
+          {authStore.authedUser && authStore.authedUser.rank === 'admin' && (
+            <ListItem button>
+              <ListItemIcon>
+                <WarningIcon color="error" />
+              </ListItemIcon>
+              <ListItemText>
+                Flagged Modules
+              </ListItemText>
+            </ListItem>
+          )}
+          {authStore.authedUser && (
+            <ListItem button>
+              {/* <ListItemIcon>
+
+              </ListItemIcon> */}
+              <ListItemText>
+                My Modules
+              </ListItemText>
+            </ListItem>
+          )}
         </List>
         <Divider />
         <List>
@@ -158,10 +179,12 @@ export default () => {
             </ListItemIcon>
             <ListItemText>
               Home
-          </ListItemText>
+            </ListItemText>
           </ListItem>
         </List>
       </Drawer>
     </div>
   );
 };
+
+export default inject('authStore')(ModuleDrawer);

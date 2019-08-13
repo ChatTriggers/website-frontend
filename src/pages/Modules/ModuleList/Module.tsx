@@ -6,7 +6,7 @@ import {
   Theme
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { IModule as IModuleProps } from '../../../store';
+import { IModule as IModuleProps } from '../../../api';
 import TagList from './TagList';
 
 const maxTags = 3;
@@ -45,23 +45,23 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 export default (props: IModuleProps) => {
   const classes = useStyles({});
-  const { name, author, tags, description, url } = props;
+  const { name, owner, /*tags,*/ description, image } = props;
 
   return (
     <Paper className={classes.root}>
       <Container className={classes.title}>
         <Typography variant="h5"><strong>{name}</strong></Typography>
-        <Typography variant="h6">By <strong>{author}</strong></Typography>
+        <Typography variant="h6">By <strong>{owner.name}</strong></Typography>
       </Container>
       <Container className={classes.body}>
         <div className={classes.imageOuter}>
-          <img className={classes.image} src={url || 'https://www.chattriggers.com/default.png'} alt="Module" />
+          <img className={classes.image} src={image || 'https://www.chattriggers.com/default.png'} alt="Module" />
         </div>
         <Container className={classes.bodyMiddle}>
           <Typography>
             {description}
           </Typography>
-          <TagList tags={tags} maxTags={maxTags} />
+          {/* <TagList tags={tags} maxTags={maxTags} /> */}
         </Container>
       </Container>
     </Paper>

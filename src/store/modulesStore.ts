@@ -1,13 +1,5 @@
 import { observable } from 'mobx';
-
-export interface IModule {
-  name: string;
-  author: string;
-  tags?: string[];
-  description?: string;
-  url?: string;
-  downloads: number;
-}
+import { IModule, IModuleMetadata } from '../api';
 
 interface IViewConfig {
   compact: boolean;
@@ -20,6 +12,9 @@ const viewConfigDefaults: IViewConfig = {
 };
 
 export class ModulesStore {
+  @observable
+  public meta: IModuleMetadata | undefined = undefined;
+
   @observable 
   public modules: IModule[] = [];
 
@@ -28,38 +23,5 @@ export class ModulesStore {
 }
 
 const modulesStore = new ModulesStore();
-
-modulesStore.modules = [
-  {
-    name: 'RingSelector',
-    author: 'Ecolsson',
-    tags: ['Utility', 'Menu', 'Graphics', 'Selector'],
-    description: 'A configurable ring selector menu',
-    url: 'https://i.imgur.com/zCMxtHz.png',
-    downloads: 141
-  },
-  {
-    name: 'ES6Polyfills',
-    author: 'Ecolsson',
-    tags: ['Utility', 'ES6', 'Polyfill'],
-    description: "Contains all ES6 official polyfills, such as Array.forEach and Promises.\n\nEach polyfill is in it's own file, in the format ..js. All Polyfills (except for a few) are pulled directly from the Mozilla Development Network.\n\nNOTE: The polyfills were not individually tested. If a polyfill does not work, please let me know on Discord.",
-    url: 'https://i.imgur.com/1HBEpVF.jpg',
-    downloads: 138
-  },
-  {
-    name: 'pprint',
-    author: 'Ecolsson',
-    tags: ['Utility'],
-    description: 'A simple pretty-print function',
-    downloads: 37
-  },
-  {
-    name: 'SeargeHelper',
-    author: 'Ecolsson',
-    tags: ['Utility', 'Library', 'Obfuscation'],
-    description: 'Easily get obfuscated names of minecraft fields and methods. Works across version and in dev environments with no extra work to the module maker.',
-    downloads: 20
-  }
-];
 
 export {  modulesStore };
