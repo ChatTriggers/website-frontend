@@ -10,18 +10,18 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
+    backgroundColor: theme.palette.background.default
   }
 }));
 
 export default () => {
   const classes = useStyles();
-  const theme = useTheme<Theme>();
 
   return (
     <div className={classes.root}>
       <Drawer />
-      <Box className={classes.content} style={{ backgroundColor: theme.palette.background.default }}>
+      <Box className={classes.content}>
         <ModulePage />
       </Box>
     </div>

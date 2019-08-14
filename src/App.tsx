@@ -9,17 +9,17 @@ import ModulesPage from './pages/Modules';
 
 const App: React.FunctionComponent = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <Provider 
-        modulesStore={modulesStore}
-        authStore={authStore}
-      >
+    <Provider
+      modulesStore={modulesStore}
+      authStore={authStore}
+    >
+      <ThemeProvider theme={theme}>
         <Router>
           <Route path="/" exact component={ModulesPage} />
           {/* <Route path="/modules" component={ModulesPage} /> */}
         </Router>
-      </Provider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </Provider>
   );
 };
 

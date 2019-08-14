@@ -15,7 +15,7 @@ export class ModulesStore {
   @observable
   public meta: IModuleMetadata | undefined = undefined;
 
-  @observable 
+  @observable
   public modules: IModule[] = [];
 
   @observable
@@ -24,4 +24,4 @@ export class ModulesStore {
 
 const modulesStore = new ModulesStore();
 
-export {  modulesStore };
+export { modulesStore };

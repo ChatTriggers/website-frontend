@@ -41,9 +41,12 @@ export const getModules = async (
     }
   });
 
+  console.log('getModules:');
+  console.log(response);
+
   switch (response.status) {
     case 200:
-      return JSON.parse(response.data) as IModuleResponse;
+      return response.data as IModuleResponse;
     default:
       return throwErr('getModules', response);
   }
@@ -62,9 +65,12 @@ export const createModule = async (
     image
   });
 
+  console.log('createModule:');
+  console.log(response);
+
   switch (response.status) {
     case 200:
-      return JSON.parse(response.data) as IModule;
+      return response.data as IModule;
     default: 
       return throwErr('createModule', response);
   }
@@ -78,9 +84,12 @@ export const getModule = async (
     params: { id }
   });
 
+  console.log('getModule:');
+  console.log(response);
+
   switch (response.status) {
     case 200: 
-      return Result.Ok(JSON.parse(response.data) as IModule);
+      return Result.Ok(response.data as IModule);
     case 400:
       return Result.Err(ApiErrors.MALFORMED_MODULE_ID);
     case 404: 

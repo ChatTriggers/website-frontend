@@ -15,9 +15,12 @@ const ACCOUNT_CURRENT_URL = `${BASE_URL}/accounts/current`;
 export const getCurrentUser = async (): Promise<IResult<IUser, ApiErrors.CurrentUser>> => {
   const response = await axios.get(ACCOUNT_CURRENT_URL);
 
+  console.log('getCurrentUser:');
+  console.log(response);
+
   switch (response.status) {
     case 200:
-      return Result.Ok(JSON.parse(response.data) as IUser);
+      return Result.Ok(response.data as IUser);
     case 404:
       return Result.Err(ApiErrors.NO_CURRENT_USER);
     default:
@@ -37,9 +40,12 @@ export const login = async (username: string, password: string): Promise<IResult
     password
   });
 
+  console.log('login:');
+  console.log(response);
+
   switch (response.status) {
     case 200:
-      return Result.Ok(JSON.parse(response.data) as IUser);
+      return Result.Ok(response.data as IUser);
     case 401:
       return Result.Err(ApiErrors.AUTHENTICATION_FAILED);
     default:
@@ -53,6 +59,9 @@ export const createUser = async (email: string, username: string, password: stri
     username,
     password
   });
+
+  console.log('createUser:');
+  console.log(response);
 
   switch (response.status) {
     case 201:
@@ -74,6 +83,9 @@ export const createUser = async (email: string, username: string, password: stri
 
 export const logout = async () => {
   const response = await axios.get(ACCOUNT_LOGOUT_URL);
+
+  console.log('logout:');
+  console.log(response);
 
   switch (response.status) {
     case 200: break;

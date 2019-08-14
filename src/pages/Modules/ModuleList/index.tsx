@@ -14,15 +14,19 @@ export default class extends React.Component {
     return this.props as IInjectedProps;
   }
 
-  public render = () => {
+  public render() {
     const modules = this.injected.modulesStore.modules;
-    console.log(modules[0]);
+    console.log(modules);
 
     return (
       <>
-        {modules.map(module => (
-          <Module key={module.id} {...module} />
-        ))}
+        {modules.map(module => {
+          console.log('Rendering module with name ' + module.name);
+
+          return (
+            <Module key={module.id} {...module} />
+          );
+        })}
       </>
     );
   }
