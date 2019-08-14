@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { BASE_URL, IUser, Result, IResult, ApiErrors, throwErr } from '.';
+import qs from 'querystring';
+import { axios, BASE_URL, IUser, Result, IResult, ApiErrors, throwErr } from '.';
 
 export interface IModule {
   id: number;
@@ -59,11 +59,11 @@ export const createModule = async (
 /*tags: string[],
   file: ??? */
 ): Promise<IModule> => {
-  const response = await axios.post(MODULES_URL, {
+  const response = await axios.post(MODULES_URL, qs.stringify({
     name,
     description,
     image
-  });
+  }));
 
   console.log('createModule:');
   console.log(response);

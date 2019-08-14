@@ -1,14 +1,16 @@
 import React from 'react';
 import ModuleList from './ModuleList';
-import { ModulesStore } from '../../store';
-import { getModules } from '../../api';
+import { ModulesStore, AuthStore } from '../../store';
+import { getModules, getCurrentUser } from '../../api';
 import { inject, observer } from 'mobx-react';
 
 interface IInjectedProps {
   modulesStore: ModulesStore;
+  authStore: AuthStore;
 }
 
 @inject('modulesStore')
+@inject('authStore')
 @observer
 export default class extends React.Component {
   get injected() {
@@ -19,6 +21,12 @@ export default class extends React.Component {
     const moduleResponse = await getModules();
     this.injected.modulesStore.modules = moduleResponse.modules;
     this.injected.modulesStore.meta = moduleResponse.meta;
+
+    const currentUserResponse = await getCurrentUser();
+
+    if (currentUserResponse.ok) {
+      this.injected.authStore.authedUser = currentUserResponse.value;
+    }
   }
 
   public render() {

@@ -7,9 +7,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { IModule as IModuleProps } from '../../../api';
-import TagList from './TagList';
+// import TagList from './TagList';
 
-const maxTags = 3;
+// const maxTags = 3;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {

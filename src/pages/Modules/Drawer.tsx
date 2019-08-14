@@ -18,12 +18,17 @@ import {
   Description as DescriptionIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
-  Home as HomeIcon
+  AccountCircle as AccountCircleIcon,
+  Home as HomeIcon,
+  Create as CreateIcon,
+  ExitToApp as LoginIcon
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { inject } from 'mobx-react';
-import { githubIcon } from '../../assets';
+import { githubIcon, slate } from '../../assets';
 import { AuthStore } from '../../store';
+import LoginDialog from './Dialogs/LoginDialog';
+import CreateAccountDialog from './Dialogs/CreateAccountDialog';
 
 const drawerWidth = 240;
 
@@ -75,13 +80,33 @@ interface IInjectedProps {
 
 const ModuleDrawer = (props: {}) => {
   const [open, setOpen] = React.useState(true);
+  const [loggingIn, setLoggingIn] = React.useState(false);
+  const [creatingAccount, setCreatingAccount] = React.useState(false);
+
+  const classes = useStyles();
+  const { authStore } = props as IInjectedProps;
 
   const onDrawerChange = () => {
     setOpen(isOpen => !isOpen);
   };
 
-  const classes = useStyles();
-  const { authStore } = props as IInjectedProps;
+  const onLoginClick = () => {
+    setLoggingIn(true);
+    setCreatingAccount(false);
+  };
+
+  const onLoginClose = () => {
+    setLoggingIn(false);
+  };
+
+  const onCreateAccountClick = () => {
+    setLoggingIn(false);
+    setCreatingAccount(true);
+  };
+
+  const onCreateAccountClose = () => {
+    setCreatingAccount(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -124,7 +149,7 @@ const ModuleDrawer = (props: {}) => {
               Trusted Modules
             </ListItemText>
           </ListItem>
-          {authStore.authedUser && authStore.authedUser.rank === 'admin' && (
+          {authStore.userIsAdmin && (
             <ListItem button>
               <ListItemIcon>
                 <WarningIcon color="error" />
@@ -134,7 +159,7 @@ const ModuleDrawer = (props: {}) => {
               </ListItemText>
             </ListItem>
           )}
-          {authStore.authedUser && (
+          {authStore.userIsAuthed && (
             <ListItem button>
               {/* <ListItemIcon>
 
@@ -148,7 +173,13 @@ const ModuleDrawer = (props: {}) => {
         <Divider />
         <List>
           <ListItem button>
-            {/* icon */}
+            <ListItemIcon>
+              <img
+                className={classes.img}
+                src={slate}
+                alt="slate icon"
+              />
+            </ListItemIcon>
             <ListItemText>
               Slate
             </ListItemText>
@@ -181,6 +212,41 @@ const ModuleDrawer = (props: {}) => {
               Home
             </ListItemText>
           </ListItem>
+        </List>
+        <Divider />
+        <List>
+          {authStore.userIsAuthed ? (
+            <ListItem>
+              <ListItemIcon>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              <ListItemText>
+                {/* tslint:disable-next-line:no-non-null-assertion */}
+                {authStore.authedUser!.name}
+              </ListItemText>
+            </ListItem>
+          ) : (
+            <>
+              <ListItem button onClick={onLoginClick}>
+                <ListItemIcon>
+                  <LoginIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Login
+                </ListItemText>
+              </ListItem>
+              <ListItem button onClick={onCreateAccountClick}>
+                <ListItemIcon>
+                  <CreateIcon />
+                </ListItemIcon>
+                <ListItemText>
+                  Create Account
+                </ListItemText>
+              </ListItem>
+              <LoginDialog open={loggingIn} close={onLoginClose}/>
+              <CreateAccountDialog open={creatingAccount} close={onCreateAccountClose} />
+            </>
+          )}
         </List>
       </Drawer>
     </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Theme, Box } from '@material-ui/core';
-import { makeStyles, createStyles, useTheme } from '@material-ui/styles';
+import { makeStyles, createStyles } from '@material-ui/styles';
 import Drawer from './Drawer';
 import ModulePage from './ModulePage';
 

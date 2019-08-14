@@ -19,6 +19,11 @@ export class AuthStore {
   get userIsAdmin() {
     return !this.authedUser || this.authedUser.rank === 'admin';
   }
+
+  @computed
+  get userIsAuthed() {
+    return !!this.authedUser;
+  }
 }
 
 export const authStore = new AuthStore();

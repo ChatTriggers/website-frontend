@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { BASE_URL, Result, IResult, ApiErrors, throwErr } from '.';
+import qs from 'querystring';
+import { axios, BASE_URL, Result, IResult, ApiErrors, throwErr } from '.';
 
 export interface IUser {
   id: number;
@@ -7,10 +7,10 @@ export interface IUser {
   rank: 'default' | 'trusted' | 'admin';
 }
 
-const ACCOUNT_LOGIN_URL = `${BASE_URL}/accounts/login`;
-const ACCOUNT_LOGOUT_URL = `${BASE_URL}/accounts/logout`;
-const ACCOUNT_NEW_URL = `${BASE_URL}/accounts/new`;
-const ACCOUNT_CURRENT_URL = `${BASE_URL}/accounts/current`;
+const ACCOUNT_LOGIN_URL = `${BASE_URL}/account/login`;
+const ACCOUNT_LOGOUT_URL = `${BASE_URL}/account/logout`;
+const ACCOUNT_NEW_URL = `${BASE_URL}/account/new`;
+const ACCOUNT_CURRENT_URL = `${BASE_URL}/account/current`;
 
 export const getCurrentUser = async (): Promise<IResult<IUser, ApiErrors.CurrentUser>> => {
   const response = await axios.get(ACCOUNT_CURRENT_URL);
@@ -35,10 +35,10 @@ export const login = async (username: string, password: string): Promise<IResult
     return Result.Ok(userResponse.value);
   }
 
-  const response = await axios.post(ACCOUNT_LOGIN_URL, {
+  const response = await axios.post(ACCOUNT_LOGIN_URL, qs.stringify({
     username,
     password
-  });
+  }));
 
   console.log('login:');
   console.log(response);
@@ -53,12 +53,12 @@ export const login = async (username: string, password: string): Promise<IResult
   }
 };
 
-export const createUser = async (email: string, username: string, password: string): Promise<IResult<0, ApiErrors.CreateUser>> => {
-  const response = await axios.post(ACCOUNT_NEW_URL, {
+export const createUser = async (username: string, email: string, password: string): Promise<IResult<0, ApiErrors.CreateUser>> => {
+  const response = await axios.post(ACCOUNT_NEW_URL, qs.stringify({
+    name: username,
     email,
-    username,
     password
-  });
+  }));
 
   console.log('createUser:');
   console.log(response);
