@@ -25,7 +25,7 @@ import {
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { inject } from 'mobx-react';
-import { githubIcon, slate } from '../../assets';
+import { githubIcon, slate, logoLong } from '../../assets';
 import { AuthStore } from '../../store';
 import LoginDialog from './Dialogs/LoginDialog';
 import CreateAccountDialog from './Dialogs/CreateAccountDialog';
@@ -70,6 +70,11 @@ const useStyles = makeStyles((theme: Theme) =>
     img: {
       maxWidth: 24,
       maxHeight: 24
+    },
+    logo: {
+      maxWidth: '100%',
+      maxHeight: '100%',
+      objectFit: 'contain'
     }
   })
 );
@@ -125,9 +130,13 @@ const ModuleDrawer = (props: {}) => {
         }}
       >
         <div className={classes.toolbar}>
-          {open && (<Typography style={{ marginLeft: 8 }}>
-            ChatTriggers
-          </Typography>)}
+          {open && (
+            <img
+              className={classes.logo}
+              src={logoLong}
+              alt="slate icon"
+            />
+          )}
           <IconButton onClick={onDrawerChange}>
             {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
@@ -172,7 +181,7 @@ const ModuleDrawer = (props: {}) => {
         </List>
         <Divider />
         <List>
-          <ListItem button>
+          <ListItem button href="https://www.chattriggers.com/slate/">
             <ListItemIcon>
               <img
                 className={classes.img}
@@ -184,7 +193,7 @@ const ModuleDrawer = (props: {}) => {
               Slate
             </ListItemText>
           </ListItem>
-          <ListItem button>
+          <ListItem button href="https://www.chattriggers.com/javadocs/">
             <ListItemIcon>
               <DescriptionIcon />
             </ListItemIcon>
@@ -226,27 +235,27 @@ const ModuleDrawer = (props: {}) => {
               </ListItemText>
             </ListItem>
           ) : (
-            <>
-              <ListItem button onClick={onLoginClick}>
-                <ListItemIcon>
-                  <LoginIcon />
-                </ListItemIcon>
-                <ListItemText>
-                  Login
+              <>
+                <ListItem button onClick={onLoginClick}>
+                  <ListItemIcon>
+                    <LoginIcon />
+                  </ListItemIcon>
+                  <ListItemText>
+                    Login
                 </ListItemText>
-              </ListItem>
-              <ListItem button onClick={onCreateAccountClick}>
-                <ListItemIcon>
-                  <CreateIcon />
-                </ListItemIcon>
-                <ListItemText>
-                  Create Account
+                </ListItem>
+                <ListItem button onClick={onCreateAccountClick}>
+                  <ListItemIcon>
+                    <CreateIcon />
+                  </ListItemIcon>
+                  <ListItemText>
+                    Create Account
                 </ListItemText>
-              </ListItem>
-              <LoginDialog open={loggingIn} close={onLoginClose}/>
-              <CreateAccountDialog open={creatingAccount} close={onCreateAccountClose} />
-            </>
-          )}
+                </ListItem>
+                <LoginDialog open={loggingIn} close={onLoginClose} />
+                <CreateAccountDialog open={creatingAccount} close={onCreateAccountClose} />
+              </>
+            )}
         </List>
       </Drawer>
     </div>
