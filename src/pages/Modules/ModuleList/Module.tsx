@@ -48,7 +48,11 @@ export default (props: IModuleProps) => {
   const { name, owner, /*tags,*/ description, image } = props;
 
   return (
-    <Paper className={classes.root}>
+    <Paper 
+      className={classes.root} 
+      square 
+      elevation={4}
+    >
       <Container className={classes.title}>
         <Typography variant="h5"><strong>{name}</strong></Typography>
         <Typography variant="h6">By <strong>{owner.name}</strong></Typography>
