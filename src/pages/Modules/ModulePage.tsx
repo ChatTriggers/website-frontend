@@ -31,13 +31,7 @@ export default class extends React.Component {
 
   public render() {
     return (
-      <>
-        {this.injected.modulesStore.modules.length > 0 ? <ModuleList /> : (
-          <div style={{ height: '100vh', backgroundColor: '#303030' }}>
-            {/* gotta love a nice hard-coded css fix every once in a while */}
-          </div>
-        )}
-      </>
+      <ModuleList />
     );
   }
 }
