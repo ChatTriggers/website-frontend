@@ -11,7 +11,7 @@ import {
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { inject, observer } from 'mobx-react';
 import TablePagination from './TablePagination';
-import { AuthStore } from '../../../store';
+import { AuthStore, ModulesStore } from '../../../store';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -30,32 +30,28 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 interface IInjectedProps {
   authStore: AuthStore;
+  modulesStore: ModulesStore;
 }
 
-export default inject('authStore')(observer((props: {}) => {
-  const { authStore } = props as IInjectedProps;
-
-  const [search, setSearch] = React.useState('');
-  const [flagged, setFlagged] = React.useState(false);
-  const [trusted, setTrusted] = React.useState(true);
-  const [userModules, setUserModules] = React.useState(true);
+export default inject('authStore', 'modulesStore')(observer((props: {}) => {
+  const { authStore, modulesStore } = props as IInjectedProps;
 
   const classes = useStyles({});
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    modulesStore.viewConfig.search = e.target.value;
   };
 
-  const onCheckFlagged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFlagged(isFlagged => !isFlagged);
+  const onCheckFlagged = () => {
+    modulesStore.viewConfig.flagged = !modulesStore.viewConfig.flagged;
   };
 
-  const onCheckTrusted = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTrusted(isTrusted => !isTrusted);
+  const onCheckTrusted = () => {
+    modulesStore.viewConfig.trusted = !modulesStore.viewConfig.trusted;
   };
 
   const onCheckUserModules = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserModules(isUserModules => !isUserModules);
+    modulesStore.viewConfig.userModules = !modulesStore.viewConfig.userModules;
   };
 
   /*
@@ -79,34 +75,28 @@ export default inject('authStore')(observer((props: {}) => {
           id="search-query"
           placeholder="Search Modules"
           InputLabelProps={{ shrink: true }}
-          value={search}
+          value={modulesStore.viewConfig.search}
           onChange={onSearchChange}
           fullWidth
         />
         <Container className={classes.content}>
           <FormGroup row>
             <FormControlLabel
-              control={<Checkbox checked={userModules} onChange={onCheckUserModules} />}
+              control={<Checkbox checked={modulesStore.viewConfig.userModules} onChange={onCheckUserModules} />}
               label="My Modules"
             />
             <FormControlLabel
-              control={<Checkbox checked={trusted} onChange={onCheckTrusted} />}
+              control={<Checkbox checked={modulesStore.viewConfig.trusted} onChange={onCheckTrusted} />}
               label="Trusted Modules"
             />
             {authStore.userIsTrusted && (
               <FormControlLabel
-                control={<Checkbox checked={flagged} onChange={onCheckFlagged} />}
+                control={<Checkbox checked={modulesStore.viewConfig.flagged} onChange={onCheckFlagged} />}
                 label="Flagged Modules"
               />
             )}
           </FormGroup>
-          <TablePagination
-            modulesPerPageOptions={[10, 25, 50]}
-            offset={0}
-            totalModules={10}
-            onChangePage={() => {/** */ }}
-            onChangeModulesPerPageOption={() => {/** */ }}
-          />
+          <TablePagination />
         </Container>
       </Container>
     </Paper>
