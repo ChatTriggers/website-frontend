@@ -7,17 +7,17 @@ export class AuthStore {
 
   @computed
   get userIsDefault() {
-    return !this.authedUser || this.authedUser.rank === 'default';
+    return !!this.authedUser && this.authedUser.rank === 'default';
   }
 
   @computed
   get userIsTrusted() {
-    return !this.authedUser || this.authedUser.rank === 'trusted';
+    return !!this.authedUser && this.authedUser.rank === 'trusted';
   }
 
   @computed
   get userIsAdmin() {
-    return !this.authedUser || this.authedUser.rank === 'admin';
+    return !!this.authedUser && this.authedUser.rank === 'admin';
   }
 
   @computed

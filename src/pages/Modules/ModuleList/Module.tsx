@@ -6,7 +6,6 @@ import {
   Theme
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { Spring } from 'react-spring/renderprops';
 import { IModule as IModuleProps } from '../../../api';
 // import TagList from './TagList';
 
@@ -40,8 +39,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   image: {
     width: '300px',
     height: '100%',
-    objectFit: 'cover',
-    animation: '1s $fadeIn'
+    objectFit: 'cover'
   }
 }));
 

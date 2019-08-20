@@ -8,7 +8,6 @@ import {
   ListItemText,
   Divider,
   IconButton,
-  Typography,
   Theme
 } from '@material-ui/core';
 import {
@@ -150,34 +149,6 @@ const ModuleDrawer = (props: {}) => {
               All Modules
             </ListItemText>
           </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <HttpsIcon color="secondary" />
-            </ListItemIcon>
-            <ListItemText>
-              Trusted Modules
-            </ListItemText>
-          </ListItem>
-          {authStore.userIsAdmin && (
-            <ListItem button>
-              <ListItemIcon>
-                <WarningIcon color="error" />
-              </ListItemIcon>
-              <ListItemText>
-                Flagged Modules
-              </ListItemText>
-            </ListItem>
-          )}
-          {authStore.userIsAuthed && (
-            <ListItem button>
-              {/* <ListItemIcon>
-
-              </ListItemIcon> */}
-              <ListItemText>
-                My Modules
-              </ListItemText>
-            </ListItem>
-          )}
         </List>
         <Divider />
         <List>
