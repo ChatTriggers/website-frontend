@@ -17,7 +17,7 @@ export {};
 //     super(props);
 //   }
 
-//   public render = () => (
+//   public render() (
 //     <ResponsiveContext.Consumer>
 //       {(size: string) => (
 //         <Parallax pages={2}>

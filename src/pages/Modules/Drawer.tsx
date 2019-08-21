@@ -12,8 +12,6 @@ import {
 } from '@material-ui/core';
 import {
   List as IconList,
-  Https as HttpsIcon,
-  Warning as WarningIcon,
   Description as DescriptionIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,

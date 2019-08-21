@@ -74,7 +74,6 @@ export const createModule = async (
     default: 
       return throwErr('createModule', response);
   }
-
 };
 
 export const getModule = async (

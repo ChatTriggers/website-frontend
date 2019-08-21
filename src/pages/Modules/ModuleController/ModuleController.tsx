@@ -50,7 +50,7 @@ export default inject('authStore', 'modulesStore')(observer((props: {}) => {
     modulesStore.viewConfig.trusted = !modulesStore.viewConfig.trusted;
   };
 
-  const onCheckUserModules = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onCheckUserModules = () => {
     modulesStore.viewConfig.userModules = !modulesStore.viewConfig.userModules;
   };
 

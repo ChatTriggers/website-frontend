@@ -1,22 +1,23 @@
 import React from 'react';
+import { action } from 'mobx';
+import { inject, observer } from 'mobx-react';
 import ModuleList from './ModuleList';
 import { ModulesStore, AuthStore } from '../../store';
 import { getModules, getCurrentUser } from '../../api';
-import { inject, observer } from 'mobx-react';
 
 interface IInjectedProps {
   modulesStore: ModulesStore;
   authStore: AuthStore;
 }
 
-@inject('modulesStore')
-@inject('authStore')
+@inject('modulesStore', 'authStore')
 @observer
 export default class extends React.Component {
   get injected() {
     return this.props as IInjectedProps;
   }
 
+  @action
   public componentDidMount = async () => {
     const moduleResponse = await getModules();
     this.injected.modulesStore.modules = moduleResponse.modules;
