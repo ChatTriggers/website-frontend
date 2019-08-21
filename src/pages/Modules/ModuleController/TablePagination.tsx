@@ -8,9 +8,9 @@ import {
   KeyboardArrowRight as KeyboardArrowRightIcon
 } from '@material-ui/icons';
 import { makeStyles, createStyles, withStyles, WithStyles } from '@material-ui/styles';
-import { action, computed } from 'mobx';
-import { inject, observer } from 'mobx-react';
-import { ModulesStore } from '../../../store';
+import { view } from 'react-easy-state';
+import { getModules } from '../../../api';
+import { Modules, MODULES_PER_PAGE_OPTIONS } from '../../../store';
 
 const useStylesActions = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -28,36 +28,35 @@ const useStylesActions = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-interface IInjectedProps {
-  modulesStore: ModulesStore;
-}
-
-const TablePaginationActions = inject('modulesStore')(observer((props: {}) => {
+const TablePaginationActions = view(() => {
   const classes = useStylesActions({});
-  const { modulesStore: { viewConfig, modules } } = props as IInjectedProps;
-
+  
   const getPageClickHandler = (pageGetter: (page: number) => number) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    return action(() => {
-      viewConfig.page = pageGetter(viewConfig.page);
-    });
+    const newPage = pageGetter(Modules.store.viewConfig.page);
+    if (newPage === Modules.store.viewConfig.page) return;
+
+    Modules.store.modules = [];
+    Modules.store.viewConfig.page = newPage;
+
+    getModules();
   };
 
   const handleFirstPageClick = getPageClickHandler(() => 0);
   const handlePreviousPageClick = getPageClickHandler(thePage => thePage - 1);
   const handleNextPageClick = getPageClickHandler(thePage => thePage + 1);
-  const handleLastPageClick = getPageClickHandler(() => Math.max(0, Math.ceil(modules.length / viewConfig.modulesPerPage) - 1));
+  const handleLastPageClick = getPageClickHandler(() => Modules.totalPages - 1);
 
   return (
     <div className={classes.root}>
       <IconButton
         onClick={handleFirstPageClick}
-        disabled={viewConfig.page === 0}
+        disabled={Modules.store.viewConfig.page === 0}
       >
         <FirstPageIcon />
       </IconButton>
       <IconButton
         onClick={handlePreviousPageClick}
-        disabled={viewConfig.page === 0}
+        disabled={Modules.store.viewConfig.page === 0}
       >
         <KeyboardArrowLeftIcon />
       </IconButton>
@@ -67,19 +66,19 @@ const TablePaginationActions = inject('modulesStore')(observer((props: {}) => {
       </Typography> */}
       <IconButton
         onClick={handleNextPageClick}
-        disabled={viewConfig.page >= Math.ceil(modules.length / viewConfig.modulesPerPage) - 1}
+        disabled={Modules.store.viewConfig.page >= Modules.totalPages - 1}
       >
         <KeyboardArrowRightIcon />
       </IconButton>
       <IconButton
         onClick={handleLastPageClick}
-        disabled={viewConfig.page >= Math.ceil(modules.length / viewConfig.modulesPerPage) - 1}
+        disabled={Modules.store.viewConfig.page >= Modules.totalPages - 1}
       >
         <LastPageIcon />
       </IconButton>
     </div>
   );
-}));
+});
 
 const stylesPagination = (theme: Theme) => ({
   root: {
@@ -97,45 +96,37 @@ const stylesPagination = (theme: Theme) => ({
   }
 });
 
-@observer
-@inject('modulesStore')
+@view
 class TablePagination extends React.Component {
-  get injected() {
-    return this.props as unknown as IInjectedProps;
-  }
+  get numPages() {
+    if (Modules.store.modules.length === 0) return 0;
 
-  @computed
-  get viewConfig() {
-    return this.injected.modulesStore.viewConfig;
-  }
-
-  @computed
-  get numModules() {
-    return this.injected.modulesStore.modules.length === 0 ? 0
-      : Math.ceil(this.injected.modulesStore.modules.length / this.viewConfig.modulesPerPage) - 1;
+    return Math.ceil(Modules.store.modules.length / Modules.store.viewConfig.modulesPerPage);
   }
 
   get classes() {
     return (this.props as WithStyles<ReturnType<typeof stylesPagination>>).classes;
   }
 
-  @action
-  private handleChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    this.viewConfig.modulesPerPage = parseInt(e.target.value as string);
+  private readonly handleChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const newModulesPerPage = parseInt(e.target.value as string);
+    if (newModulesPerPage === Modules.store.viewConfig.modulesPerPage) return;
+
+    Modules.store.modules = [];
+    Modules.store.viewConfig.modulesPerPage = newModulesPerPage;
+    getModules();
   }
 
-  @action
-  private handleChangePage = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    this.viewConfig.page = parseInt(e.target.value as string);
+  private readonly handleChangePage = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    const newPage = parseInt(e.target.value as string);
+    if (newPage === Modules.store.viewConfig.page) return;
+
+    Modules.store.modules = [];
+    Modules.store.viewConfig.page = newPage;
+    getModules();
   }
 
   public render() {
-    console.log(this.injected.modulesStore.modules.length);
-
-    setTimeout(() => {
-      console.log(this.injected.modulesStore.modules.length);
-    }, 5000);
-    
     return (
       <div className={this.classes.root}>
         <FormGroup row>
@@ -144,7 +135,7 @@ class TablePagination extends React.Component {
             className={this.classes.textField}
             select
             label="Modules per page"
-            value={this.viewConfig.modulesPerPage}
+            value={Modules.store.viewConfig.modulesPerPage}
             onChange={this.handleChangeModulesPerPage}
             SelectProps={{
               MenuProps: {
@@ -153,7 +144,7 @@ class TablePagination extends React.Component {
               native: true
             }}
           >
-            {ModulesStore.MODULES_PER_PAGE_OPTIONS.map(rows => (
+            {MODULES_PER_PAGE_OPTIONS.map(rows => (
               <option key={rows} value={rows}>{rows}</option>
             ))}
           </TextField>
@@ -161,7 +152,7 @@ class TablePagination extends React.Component {
             id="page-select"
             select
             label="Page"
-            value={this.viewConfig.page + 1}
+            value={Modules.store.viewConfig.page}
             onChange={this.handleChangePage}
             SelectProps={{
               MenuProps: {
@@ -170,13 +161,9 @@ class TablePagination extends React.Component {
               native: true
             }}
           >
-            {Array(this.numModules).fill(-1).map((_, i) => {
-              console.log(`i: ${i}`);
-
-              return (
-                <option key={i} value={i}>{i}</option>
-              );
-            })}
+            {Array(Modules.totalPages).fill(-1).map((_, i) => (
+              <option key={i} value={i}>{i + 1}</option>
+            ))}
           </TextField>
           <TablePaginationActions />
         </FormGroup>

@@ -9,9 +9,9 @@ import {
   Checkbox
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { inject, observer } from 'mobx-react';
+import { view } from 'react-easy-state';
+import { Auth, Modules } from '../../../store';
 import TablePagination from './TablePagination';
-import { AuthStore, ModulesStore } from '../../../store';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -28,30 +28,23 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-interface IInjectedProps {
-  authStore: AuthStore;
-  modulesStore: ModulesStore;
-}
-
-export default inject('authStore', 'modulesStore')(observer((props: {}) => {
-  const { authStore, modulesStore } = props as IInjectedProps;
-
+export default view(() => {
   const classes = useStyles({});
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    modulesStore.viewConfig.search = e.target.value;
+    Modules.store.viewConfig.search = e.target.value;
   };
 
   const onCheckFlagged = () => {
-    modulesStore.viewConfig.flagged = !modulesStore.viewConfig.flagged;
+    Modules.store.viewConfig.flagged = !Modules.store.viewConfig.flagged;
   };
 
   const onCheckTrusted = () => {
-    modulesStore.viewConfig.trusted = !modulesStore.viewConfig.trusted;
+    Modules.store.viewConfig.trusted = !Modules.store.viewConfig.trusted;
   };
 
   const onCheckUserModules = () => {
-    modulesStore.viewConfig.userModules = !modulesStore.viewConfig.userModules;
+    Modules.store.viewConfig.userModules = !Modules.store.viewConfig.userModules;
   };
 
   /*
@@ -75,23 +68,23 @@ export default inject('authStore', 'modulesStore')(observer((props: {}) => {
           id="search-query"
           placeholder="Search Modules"
           InputLabelProps={{ shrink: true }}
-          value={modulesStore.viewConfig.search}
+          value={Modules.store.viewConfig.search}
           onChange={onSearchChange}
           fullWidth
         />
         <Container className={classes.content}>
           <FormGroup row>
             <FormControlLabel
-              control={<Checkbox checked={modulesStore.viewConfig.userModules} onChange={onCheckUserModules} />}
+              control={<Checkbox checked={Modules.store.viewConfig.userModules} onChange={onCheckUserModules} />}
               label="My Modules"
             />
             <FormControlLabel
-              control={<Checkbox checked={modulesStore.viewConfig.trusted} onChange={onCheckTrusted} />}
+              control={<Checkbox checked={Modules.store.viewConfig.trusted} onChange={onCheckTrusted} />}
               label="Trusted Modules"
             />
-            {authStore.userIsTrusted && (
+            {Auth.isTrusted && (
               <FormControlLabel
-                control={<Checkbox checked={modulesStore.viewConfig.flagged} onChange={onCheckFlagged} />}
+                control={<Checkbox checked={Modules.store.viewConfig.flagged} onChange={onCheckFlagged} />}
                 label="Flagged Modules"
               />
             )}
@@ -101,4 +94,4 @@ export default inject('authStore', 'modulesStore')(observer((props: {}) => {
       </Container>
     </Paper>
   );
-}));
+});

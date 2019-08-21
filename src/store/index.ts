@@ -1,2 +1,2 @@
-export * from './modulesStore';
-export * from './authStore';
+export * from './Modules';
+export * from './Auth';

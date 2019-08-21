@@ -6,6 +6,7 @@ import {
   Theme
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
+import { view } from 'react-easy-state';
 import { IModule as IModuleProps } from '../../../api';
 // import TagList from './TagList';
 
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-export default (props: IModuleProps) => {
+export default view((props: IModuleProps) => {
   const classes = useStyles({});
   const { name, owner, /*tags,*/ description, image } = props;
 
@@ -70,4 +71,4 @@ export default (props: IModuleProps) => {
       </Container>
     </Paper>
   );
-};
+});

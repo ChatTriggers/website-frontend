@@ -8,9 +8,8 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
-import { observable, action } from 'mobx';
-import { observer, inject } from 'mobx-react';
-import { AuthStore } from '../../../store';
+import { store, view } from 'react-easy-state';
+import { Auth } from '../../../store';
 import { login } from '../../../api';
 
 interface ICreateAccountDialogProps {
@@ -18,45 +17,30 @@ interface ICreateAccountDialogProps {
   close(): void;
 }
 
-interface IInjectedProps extends ICreateAccountDialogProps {
-  authStore: AuthStore;
-}
-
-@inject('authStore')
-@observer
+@view
 export default class LoginDialog extends React.Component<ICreateAccountDialogProps> {
-  @observable
-  private username = '';
+  private readonly data = store({
+    username: '',
+    password: '',
+    loading: false
+  });
 
-  @observable
-  private password = '';
-
-  @observable
-  private loading = false;
-
-  get injected() {
-    return this.props as IInjectedProps;
-  }
-
-  @action
   public onChangeUsername = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    this.username = e.currentTarget.value;
+    this.data.username = e.currentTarget.value;
   }
 
-  @action
   public onChangePassword = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    this.password = e.currentTarget.value;
+    this.data.password = e.currentTarget.value;
   }
 
-  @action
   public onSubmit = async () => {
-    this.loading = true;
-    const result = await login(this.username, this.password);
-    this.loading = false;
+    this.data.loading = true;
+    const result = await login(this.data.username, this.data.password);
+    this.data.loading = false;
 
     if (result.ok) {
       console.log('authed');
-      this.injected.authStore.authedUser = result.value;
+      Auth.store.authedUser = result.value;
       this.props.close();
     } else {
       console.log('not authed :(');
@@ -96,8 +80,8 @@ export default class LoginDialog extends React.Component<ICreateAccountDialogPro
           <Button onClick={this.props.close} color="primary">
             Cancel
           </Button>
-          <Button onClick={this.onSubmit} color="primary" disabled={this.loading}>
-            {this.loading ? <CircularProgress size={30} /> : 'Login'}
+          <Button onClick={this.onSubmit} color="primary" disabled={this.data.loading}>
+            {this.data.loading ? <CircularProgress size={30} /> : 'Login'}
           </Button>
         </DialogActions>
       </Dialog>

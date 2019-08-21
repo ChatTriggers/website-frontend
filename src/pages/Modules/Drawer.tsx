@@ -21,9 +21,9 @@ import {
   ExitToApp as LoginIcon
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { inject } from 'mobx-react';
+import { store, view } from 'react-easy-state';
 import { githubIcon, slate, logoLong } from '../../assets';
-import { AuthStore } from '../../store';
+import { Auth } from '../../store';
 import LoginDialog from './Dialogs/LoginDialog';
 import CreateAccountDialog from './Dialogs/CreateAccountDialog';
 
@@ -76,17 +76,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface IInjectedProps {
-  authStore: AuthStore;
-}
-
-const ModuleDrawer = (props: {}) => {
+export default view(() => {
   const [open, setOpen] = React.useState(true);
   const [loggingIn, setLoggingIn] = React.useState(false);
   const [creatingAccount, setCreatingAccount] = React.useState(false);
 
   const classes = useStyles();
-  const { authStore } = props as IInjectedProps;
 
   const onDrawerChange = () => {
     setOpen(isOpen => !isOpen);
@@ -193,14 +188,14 @@ const ModuleDrawer = (props: {}) => {
         </List>
         <Divider />
         <List>
-          {authStore.userIsAuthed ? (
+          {Auth.isAuthed ? (
             <ListItem>
               <ListItemIcon>
                 <AccountCircleIcon />
               </ListItemIcon>
               <ListItemText>
                 {/* tslint:disable-next-line:no-non-null-assertion */}
-                {authStore.authedUser!.name}
+                {Auth.store.authedUser!.name}
               </ListItemText>
             </ListItem>
           ) : (
@@ -229,6 +224,4 @@ const ModuleDrawer = (props: {}) => {
       </Drawer>
     </div>
   );
-};
-
-export default inject('authStore')(ModuleDrawer);
+});

@@ -1,5 +1,6 @@
 import qs from 'querystring';
 import { axios, BASE_URL, IUser, Result, IResult, ApiErrors, throwErr } from '.';
+import { Modules } from '../store';
 
 export interface IModule {
   id: number;
@@ -25,11 +26,11 @@ const MODULES_URL = `${BASE_URL}/modules`;
 const MODULE_ID_URL = (id: number) => `${BASE_URL}/modules/${id}`;
 
 export const getModules = async (
-  limit = 10, 
-  offset = 0, 
+  limit = Modules.store.viewConfig.modulesPerPage, 
+  offset = Modules.offset, 
   owner: string | undefined = undefined, 
-  trusted = false, 
-  flagged = false
+  trusted = Modules.store.viewConfig.trusted, 
+  flagged = Modules.store.viewConfig.flagged
 ): Promise<IModuleResponse> => {
   const response = await axios.get(MODULES_URL, {
     params: {
@@ -46,7 +47,12 @@ export const getModules = async (
 
   switch (response.status) {
     case 200:
-      return response.data as IModuleResponse;
+      const moduleResponse = response.data as IModuleResponse;
+
+      Modules.store.modules = moduleResponse.modules;
+      Modules.store.meta = moduleResponse.meta;
+
+      return moduleResponse;
     default:
       return throwErr('getModules', response);
   }

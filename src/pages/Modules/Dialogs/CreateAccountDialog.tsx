@@ -8,9 +8,8 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
-import { observable, action } from 'mobx';
-import { observer, inject } from 'mobx-react';
-import { AuthStore } from '../../../store';
+import { store, view } from 'react-easy-state';
+import { Auth } from '../../../store';
 import { login, createUser } from '../../../api';
 
 interface ICreateAccountDialogProps {
@@ -18,57 +17,39 @@ interface ICreateAccountDialogProps {
   close(): void;
 }
 
-interface IInjectedProps extends ICreateAccountDialogProps {
-  authStore: AuthStore;
-}
+@view
+export default class CreateAccountDialog extends React.Component<ICreateAccountDialogProps> {
+  private readonly data = store({
+    username: '',
+    email: '',
+    password: '',
+    loading: false
+  });
 
-@inject('authStore')
-@observer
-export default class LoginDialog extends React.Component<ICreateAccountDialogProps> {
-  @observable
-  private username = '';
-
-  @observable
-  private email = '';
-
-  @observable
-  private password = '';
-
-  @observable
-  private loading = false;
-
-  get injected() {
-    return this.props as IInjectedProps;
-  }
-
-  @action
   public onChangeUsername = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    this.username = e.currentTarget.value;
+    this.data.username = e.currentTarget.value;
   }
 
-  @action
   public onChangeEmail = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    this.email = e.currentTarget.value;
+    this.data.email = e.currentTarget.value;
   }
 
-  @action
   public onChangePassword = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    this.password = e.currentTarget.value;
+    this.data.password = e.currentTarget.value;
   }
 
-  @action
   public onSubmit = async () => {
-    this.loading = true;
-    const result = await createUser(this.username, this.email, this.password);
+    this.data.loading = true;
+    const result = await createUser(this.data.username, this.data.email, this.data.password);
     
     if (result.ok) {
       console.log('created account');
       
-      const result2 = await login(this.username, this.password);
-      this.loading = false;
+      const result2 = await login(this.data.username, this.data.password);
+      this.data.loading = false;
       
       if (result2.ok) {
-        this.injected.authStore.authedUser = result2.value;
+        Auth.store.authedUser = result2.value;
         this.props.close();
       } else {
         console.log('this should never happen');
@@ -119,8 +100,8 @@ export default class LoginDialog extends React.Component<ICreateAccountDialogPro
           <Button onClick={this.props.close} color="primary">
             Cancel
           </Button>
-          <Button onClick={this.onSubmit} color="primary" disabled={this.loading}>
-            {this.loading ? <CircularProgress size={30} /> : 'Submit'}
+          <Button onClick={this.onSubmit} color="primary" disabled={this.data.loading}>
+            {this.data.loading ? <CircularProgress size={30} /> : 'Submit'}
           </Button>
         </DialogActions>
       </Dialog>

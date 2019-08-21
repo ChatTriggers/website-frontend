@@ -10,6 +10,7 @@ import {
   Theme
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
+import { view } from 'react-easy-state';
 
 interface ITagListProps {
   tags?: string[];
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-export default (props: ITagListProps) => {
+export default view((props: ITagListProps) => {
   const classes = useStyles();
   const { tags, maxTags } = props;
   const [tagExpand, setTagExpand] = React.useState(false);
@@ -90,4 +91,4 @@ export default (props: ITagListProps) => {
       )}
     </>
   );
-};
+});
