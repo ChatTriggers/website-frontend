@@ -30,7 +30,8 @@ export const getModules = async (
   offset = Modules.offset, 
   owner: string | undefined = undefined, 
   trusted = Modules.store.viewConfig.trusted, 
-  flagged = Modules.store.viewConfig.flagged
+  flagged = Modules.store.viewConfig.flagged,
+  query = Modules.store.viewConfig.search
 ): Promise<IModuleResponse> => {
   const response = await axios.get(MODULES_URL, {
     params: {
@@ -38,7 +39,8 @@ export const getModules = async (
       offset,
       owner,
       trusted,
-      flagged
+      flagged,
+      q: query === '' ? undefined : query
     }
   });
 

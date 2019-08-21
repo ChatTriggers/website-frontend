@@ -9,7 +9,8 @@ import {
   Checkbox
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { view } from 'react-easy-state';
+import { view, store } from 'react-easy-state';
+import { getModules } from '../../../api';
 import { Auth, Modules } from '../../../store';
 import TablePagination from './TablePagination';
 
@@ -29,10 +30,24 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 export default view(() => {
+  const data = store<{ timeout: NodeJS.Timeout | undefined}>({
+    timeout: undefined
+  });
+
   const classes = useStyles({});
 
-  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    Modules.store.viewConfig.search = e.target.value;
+  const onSearchChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    if (data.timeout) {
+      clearTimeout(data.timeout);
+    }
+
+    const target = e.target;
+    Modules.store.viewConfig.search = target.value as string;
+    
+    data.timeout = setTimeout(() => {
+      Modules.store.modules = [];
+      getModules();
+    }, 1500);
   };
 
   const onCheckFlagged = () => {
@@ -68,7 +83,7 @@ export default view(() => {
           id="search-query"
           placeholder="Search Modules"
           InputLabelProps={{ shrink: true }}
-          value={Modules.store.viewConfig.search}
+          value={Modules.store.viewConfig.search || ''}
           onChange={onSearchChange}
           fullWidth
         />
