@@ -14,7 +14,7 @@ export default class extends React.Component {
     const currentUserResponse = await getCurrentUser();
 
     if (currentUserResponse.ok) {
-      Auth.store.authedUser = currentUserResponse.value;
+      Auth.store.user = currentUserResponse.value;
     }
   }
 

@@ -21,7 +21,7 @@ import {
   ExitToApp as LoginIcon
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { store, view } from 'react-easy-state';
+import { view } from 'react-easy-state';
 import { githubIcon, slate, logoLong } from '../../assets';
 import { Auth } from '../../store';
 import LoginDialog from './Dialogs/LoginDialog';
@@ -195,7 +195,7 @@ export default view(() => {
               </ListItemIcon>
               <ListItemText>
                 {/* tslint:disable-next-line:no-non-null-assertion */}
-                {Auth.store.authedUser!.name}
+                {Auth.store.user!.name}
               </ListItemText>
             </ListItem>
           ) : (

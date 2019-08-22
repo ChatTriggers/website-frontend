@@ -1,6 +1,6 @@
 import qs from 'querystring';
 import { axios, BASE_URL, IUser, Result, IResult, ApiErrors, throwErr } from '.';
-import { Modules } from '../store';
+import { Modules, Auth } from '../store';
 
 export interface IModule {
   id: number;
@@ -26,21 +26,29 @@ const MODULES_URL = `${BASE_URL}/modules`;
 const MODULE_ID_URL = (id: number) => `${BASE_URL}/modules/${id}`;
 
 export const getModules = async (
-  limit = Modules.store.viewConfig.modulesPerPage, 
-  offset = Modules.offset, 
-  owner: string | undefined = undefined, 
-  trusted = Modules.store.viewConfig.trusted, 
-  flagged = Modules.store.viewConfig.flagged,
-  query = Modules.store.viewConfig.search
+  // limit = Modules.store.viewConfig.modulesPerPage, 
+  // offset = Modules.offset, 
+  // owner: string | undefined = undefined, 
+  // trusted = Modules.store.viewConfig.onlyTrusted, 
+  // flagged = Modules.store.viewConfig.onlyFlagged,
+  // query = Modules.store.viewConfig.search,
 ): Promise<IModuleResponse> => {
+  Modules.store.modules = [];
+  let owner: number | undefined;
+
+  if (Modules.store.viewConfig.onlyUserModules && Auth.isAuthed) {
+    // tslint:disable-next-line:no-non-null-assertion
+    owner = Auth.store.user!.id;
+  }
+  
   const response = await axios.get(MODULES_URL, {
     params: {
-      limit,
-      offset,
+      limit: Modules.store.viewConfig.modulesPerPage,
+      offset: Modules.offset,
       owner,
-      trusted,
-      flagged,
-      q: query === '' ? undefined : query
+      trusted: Modules.store.viewConfig.onlyTrusted || undefined,
+      flagged: Modules.store.viewConfig.onlyFlagged || undefined,
+      q: Modules.store.viewConfig.search === '' ? undefined : Modules.store.viewConfig.search
     }
   });
 

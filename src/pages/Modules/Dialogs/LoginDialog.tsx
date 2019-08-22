@@ -40,7 +40,7 @@ export default class LoginDialog extends React.Component<ICreateAccountDialogPro
 
     if (result.ok) {
       console.log('authed');
-      Auth.store.authedUser = result.value;
+      Auth.store.user = result.value;
       this.props.close();
     } else {
       console.log('not authed :(');

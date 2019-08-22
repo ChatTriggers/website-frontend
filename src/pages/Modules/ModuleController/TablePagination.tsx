@@ -35,7 +35,6 @@ const TablePaginationActions = view(() => {
     const newPage = pageGetter(Modules.store.viewConfig.page);
     if (newPage === Modules.store.viewConfig.page) return;
 
-    Modules.store.modules = [];
     Modules.store.viewConfig.page = newPage;
 
     getModules();
@@ -96,8 +95,12 @@ const stylesPagination = (theme: Theme) => ({
   }
 });
 
+interface ITablePaginationProps {
+  className?: string;
+}
+
 @view
-class TablePagination extends React.Component {
+class TablePagination extends React.Component<ITablePaginationProps> {
   get numPages() {
     if (Modules.store.modules.length === 0) return 0;
 
@@ -112,7 +115,6 @@ class TablePagination extends React.Component {
     const newModulesPerPage = parseInt(e.target.value as string);
     if (newModulesPerPage === Modules.store.viewConfig.modulesPerPage) return;
 
-    Modules.store.modules = [];
     Modules.store.viewConfig.modulesPerPage = newModulesPerPage;
     getModules();
   }
@@ -121,14 +123,13 @@ class TablePagination extends React.Component {
     const newPage = parseInt(e.target.value as string);
     if (newPage === Modules.store.viewConfig.page) return;
 
-    Modules.store.modules = [];
     Modules.store.viewConfig.page = newPage;
     getModules();
   }
 
   public render() {
     return (
-      <div className={this.classes.root}>
+      <div className={`${this.classes.root} ${this.props.className || ''}`}>
         <FormGroup row>
           <TextField
             id="modules-per-page-select"

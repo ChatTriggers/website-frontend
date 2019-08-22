@@ -4,15 +4,15 @@ import { IModule, IModuleMetadata } from '../api';
 export const MODULES_PER_PAGE_OPTIONS = [10, 25, 50];
 
 interface IModuleStore {
-  meta: IModuleMetadata | undefined;
+  meta?: IModuleMetadata;
   viewConfig: {
     compact: boolean;
     modulesPerPage: number;
     page: number;
-    search: string | undefined;
-    flagged: boolean;
-    trusted: boolean;
-    userModules: boolean;
+    search?: string;
+    onlyFlagged: boolean;
+    onlyTrusted: boolean;
+    onlyUserModules: boolean;
   };
   modules: IModule[];
 }
@@ -22,13 +22,13 @@ export class Modules {
   public static store = store<IModuleStore>({
     meta: undefined,
     viewConfig: {
-      compact: true,
+      compact: false,
       modulesPerPage: MODULES_PER_PAGE_OPTIONS[0],
       page: 0,
       search: undefined,
-      flagged: false,
-      trusted: true,
-      userModules: true
+      onlyFlagged: false,
+      onlyTrusted: false,
+      onlyUserModules: false
     },
     modules: []
   });

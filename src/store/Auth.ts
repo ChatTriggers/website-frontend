@@ -2,28 +2,28 @@ import { store } from 'react-easy-state';
 import { IUser } from '../api';
 
 interface IAuthStore {
-  authedUser: IUser | undefined;
+  user: IUser | undefined;
 }
 
 // tslint:disable-next-line:no-unnecessary-class
 export class Auth {
   public static store = store<IAuthStore>({
-    authedUser: undefined
+    user: undefined
   });
 
   static get isAuthed() {
-    return !!this.store.authedUser;
+    return !!this.store.user;
   }
 
   static get isDefault() {
-    return this.store.authedUser && this.store.authedUser.rank === 'default';
+    return this.store.user && this.store.user.rank === 'default';
   }
 
   static get isTrusted() {
-    return this.store.authedUser && this.store.authedUser.rank === 'trusted';
+    return this.store.user && this.store.user.rank === 'trusted';
   }
 
   static get isAdmin() {
-    return this.store.authedUser && this.store.authedUser.rank === 'admin';
+    return this.store.user && this.store.user.rank === 'admin';
   }
 }

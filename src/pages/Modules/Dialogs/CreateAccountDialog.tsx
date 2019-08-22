@@ -49,7 +49,7 @@ export default class CreateAccountDialog extends React.Component<ICreateAccountD
       this.data.loading = false;
       
       if (result2.ok) {
-        Auth.store.authedUser = result2.value;
+        Auth.store.user = result2.value;
         this.props.close();
       } else {
         console.log('this should never happen');
