@@ -11,5 +11,12 @@ export default createMuiTheme({
       main: '#26c6da'
     },
     type: 'dark'
+  },
+  overrides: {
+    MuiTooltip: {
+        tooltip: {
+          fontSize: '1em'
+        }
+    }
   }
 });
