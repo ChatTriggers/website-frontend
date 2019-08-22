@@ -7,7 +7,7 @@ import Module from './Module';
 import ModuleSkeleton from './ModuleSkeleton';
 import ModuleController from '../ModuleController';
 import CreateModuleDialog from '../Dialogs/CreateModuleDialog';
-import { Modules } from '../../../store';
+import { Modules, Auth } from '../../../store';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   fab: {
@@ -35,15 +35,17 @@ export default view(() => {
         open={open}
         close={onDialogClose}
       />
-      <Tooltip title="Create Module" placement="left">
-        <Fab 
-          className={classes.fab} 
-          color="primary"
-          onClick={onFabClick}
-        >
-          <AddIcon />
-        </Fab>
-      </Tooltip>
+      {Auth.isAuthed &&  (
+        <Tooltip title="Create Module" placement="left">
+          <Fab 
+            className={classes.fab} 
+            color="primary"
+            onClick={onFabClick}
+          >
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+      )}
       <ModuleController />
       {Modules.store.modules.length > 0
         ? Modules.store.modules.map(module => <Module key={module.id} {...module} />)
