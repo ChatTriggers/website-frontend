@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dialog } from '@material-ui/core';
+import RichTextEditor from '../../../components/RichTextEditor';
 
 interface ICreateModuleDialogProps {
   open: boolean;
@@ -12,7 +13,7 @@ export default (props: ICreateModuleDialogProps) => {
       open={props.open}
       onClose={props.close}
     >
-      <p>test</p>
+      <RichTextEditor />
     </Dialog>
   );
 };
