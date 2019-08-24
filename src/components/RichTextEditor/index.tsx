@@ -10,10 +10,15 @@ import {
   Link as LinkIcon,
   Code as CodeIcon
 } from '@material-ui/icons';
-import { withStyles, WithStyles } from '@material-ui/styles';
+import { makeStyles, createStyles } from '@material-ui/styles';
 import Editor from './Editor';
 
-const styles = (theme: Theme) => ({
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  buttonContainerWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%'
+  },
   buttonContainer: {
     display: 'flex',
     width: '500px',
@@ -29,57 +34,55 @@ const styles = (theme: Theme) => ({
     padding: theme.spacing(2),
     backgroundColor: '#616161'
   }
-});
+}));
 
-class RichTextEditor extends React.Component {
-  private get classes() {
-    return (this.props as WithStyles<ReturnType<typeof styles>>).classes;
-  }
-
-  public render() {
-    return (
-      <>
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <FormGroup
-            className={this.classes.buttonContainer}
-            row
-          >
-            <ButtonGroup variant="contained" color="secondary" size="large">
-              <Button className={this.classes.button}>
-                <FormatBoldIcon />
-              </Button>
-              <Button className={this.classes.button}>
-                <FormatItalicIcon />
-              </Button>
-              <Button className={this.classes.button}>
-                <FormatUnderlinedIcon />
-              </Button>
-              <Button className={this.classes.button}>
-                <FormatStrikethroughIcon />
-              </Button>
-            </ButtonGroup>
-            <ButtonGroup variant="contained" color="secondary" size="large">
-              <Button className={this.classes.button}>
-                <LinkIcon />
-              </Button>
-              <Button className={this.classes.button}>
-                <CodeIcon />
-              </Button>
-              <Button className={this.classes.button}>
-                <FormatListBulletedIcon />
-              </Button>
-              <Button className={this.classes.button}>
-                <FormatListNumberedIcon />
-              </Button>
-            </ButtonGroup>
-          </FormGroup>
-        </div>
-        <div className={this.classes.editor}>
-          <Editor />
-        </div>
-      </>
-    );
-  }
+interface IRichTextEditorProps {
+  className?: string;
 }
 
-export default withStyles(styles, { withTheme: true })(RichTextEditor);
+export default (props: IRichTextEditorProps) => {
+  const classes = useStyles();
+
+  return (
+    <div className={props.className}>
+      <div className={classes.buttonContainerWrapper}>
+        <FormGroup
+          className={classes.buttonContainer}
+          row
+        >
+          <ButtonGroup variant="contained" color="secondary" size="large">
+            <Button className={classes.button}>
+              <FormatBoldIcon />
+            </Button>
+            <Button className={classes.button}>
+              <FormatItalicIcon />
+            </Button>
+            <Button className={classes.button}>
+              <FormatUnderlinedIcon />
+            </Button>
+            <Button className={classes.button}>
+              <FormatStrikethroughIcon />
+            </Button>
+          </ButtonGroup>
+          <ButtonGroup variant="contained" color="secondary" size="large">
+            <Button className={classes.button}>
+              <LinkIcon />
+            </Button>
+            <Button className={classes.button}>
+              <CodeIcon />
+            </Button>
+            <Button className={classes.button}>
+              <FormatListBulletedIcon />
+            </Button>
+            <Button className={classes.button}>
+              <FormatListNumberedIcon />
+            </Button>
+          </ButtonGroup>
+        </FormGroup>
+      </div>
+      <div className={classes.editor}>
+        <Editor />
+      </div>
+    </div>
+  );
+};
