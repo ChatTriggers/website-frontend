@@ -6,12 +6,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
   IconButton,
+  Divider,
   Theme
 } from '@material-ui/core';
+import { ListItemProps } from '@material-ui/core/ListItem';
 import {
-  List as IconList,
   Description as DescriptionIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
@@ -76,6 +76,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const ListItemLink = (props: ListItemProps<'a', { button?: true }>) => (
+  <ListItem button component="a" {...props} />
+);
+
 export default view(() => {
   const [open, setOpen] = React.useState(true);
   const [loggingIn, setLoggingIn] = React.useState(false);
@@ -134,18 +138,7 @@ export default view(() => {
           </IconButton>
         </div>
         <List>
-          <ListItem button>
-            <ListItemIcon>
-              <IconList color="primary" />
-            </ListItemIcon>
-            <ListItemText>
-              All Modules
-            </ListItemText>
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          <ListItem button href="https://www.chattriggers.com/slate/">
+          <ListItemLink href="https://www.chattriggers.com/slate/">
             <ListItemIcon>
               <img
                 className={classes.img}
@@ -156,16 +149,16 @@ export default view(() => {
             <ListItemText>
               Slate
             </ListItemText>
-          </ListItem>
-          <ListItem button href="https://www.chattriggers.com/javadocs/">
+          </ListItemLink>
+          <ListItemLink href="https://www.chattriggers.com/javadocs/">
             <ListItemIcon>
               <DescriptionIcon />
             </ListItemIcon>
             <ListItemText>
               Javadocs
             </ListItemText>
-          </ListItem>
-          <ListItem button>
+          </ListItemLink>
+          <ListItemLink href="https://github.com/ChatTriggers/ct.js">
             <ListItemIcon>
               <img
                 className={classes.img}
@@ -176,15 +169,15 @@ export default view(() => {
             <ListItemText>
               GitHub
             </ListItemText>
-          </ListItem>
-          <ListItem button>
+          </ListItemLink>
+          <ListItemLink href="#">
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText>
               Home
             </ListItemText>
-          </ListItem>
+          </ListItemLink>
         </List>
         <Divider />
         <List>

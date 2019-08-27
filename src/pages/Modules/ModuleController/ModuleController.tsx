@@ -14,7 +14,6 @@ import { view, store } from 'react-easy-state';
 import { getModules } from '../../../api';
 import { Auth, Modules } from '../../../store';
 import TablePagination from './TablePagination';
-import ModuleError from '../ModuleList/ModuleError';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {

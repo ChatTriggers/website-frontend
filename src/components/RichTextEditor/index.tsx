@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, FormGroup, Button, ButtonGroup, Theme } from '@material-ui/core';
+import { FormGroup, Button, ButtonGroup, Theme } from '@material-ui/core';
 import {
   FormatBold as FormatBoldIcon,
   FormatItalic as FormatItalicIcon,

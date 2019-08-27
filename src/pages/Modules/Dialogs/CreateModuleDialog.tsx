@@ -1,19 +1,24 @@
 import React from 'react';
-import { 
-  Container, 
+import {
+  Container,
   Typography,
-  FormGroup, 
-  Dialog, 
-  Theme, 
-  TextField, 
-  Select, 
-  Chip, 
-  FormControl, 
-  FormHelperText, 
-  InputLabel, 
-  MenuItem, 
-  Input 
+  FormGroup,
+  Dialog,
+  Theme,
+  TextField,
+  Select,
+  Chip,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Button,
+  ButtonGroup,
+  IconButton,
+  Popover,
+  Input
 } from '@material-ui/core';
+import { HelpOutline as HelpIcon } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { store, view } from 'react-easy-state';
 import RichTextEditor from '../../../components/RichTextEditor';
@@ -38,6 +43,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   editor: {
     // margin: theme.spacing(2)
     marginTop: theme.spacing(2)
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    margin: theme.spacing(2)
+  },
+  popover: {
+    pointerEvents: 'none'
   }
 }));
 
@@ -45,7 +58,9 @@ export default view((props: ICreateModuleDialogProps) => {
   const state = store({
     moduleName: '',
     moduleImage: '',
-    tags: [] as string[]
+    file: undefined as File | undefined,
+    tags: [] as string[],
+    anchorEl: undefined as SVGSVGElement | undefined
   });
   const classes = useStyles();
 
@@ -61,6 +76,20 @@ export default view((props: ICreateModuleDialogProps) => {
     state.tags = e.target.value as string[];
   };
 
+  const onUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      state.file = e.target.files[0];
+    }
+  };
+
+  const onDialogClose = () => {
+    props.close();
+
+    setTimeout(() => {
+      state.file = undefined;
+    }, 500);
+  };
+
   const selectRenderValue = (selected: unknown) => (
     <div>
       {(selected as string[]).map(tag => (
@@ -69,10 +98,18 @@ export default view((props: ICreateModuleDialogProps) => {
     </div>
   );
 
+  const handlePopoverOpen = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    state.anchorEl = e.currentTarget;
+  };
+
+  const handlePopoverClose = () => {
+    state.anchorEl = undefined;
+  };
+
   return (
     <Dialog
       open={props.open}
-      onClose={props.close}
+      onClose={onDialogClose}
       maxWidth="sm"
       fullWidth
     >
@@ -96,7 +133,7 @@ export default view((props: ICreateModuleDialogProps) => {
         <RichTextEditor
           className={classes.editor}
         />
-        <FormGroup row style={{ display: 'flex', justifyContent: 'center'}}>
+        <FormGroup row style={{ display: 'flex', justifyContent: 'center' }}>
           <TextField
             className={classes.moduleImage}
             id="module-image"
@@ -125,7 +162,50 @@ export default view((props: ICreateModuleDialogProps) => {
             <FormHelperText>Optional</FormHelperText>
           </FormControl>
         </FormGroup>
+        <FormGroup className={classes.buttons} row>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div>
+              <input
+                accept=".zip"
+                id="module-file-upload"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={onUploadFile}
+              />
+              <label htmlFor="module-file-upload">
+                <Button id="module-file-upload-button" variant="contained" component="span">
+                  Upload scripts zip file
+                </Button>
+                <IconButton size="small" style={{ marginLeft: 10 }}>
+                  <HelpIcon onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose} />
+                </IconButton>
+              </label>
+            </div>
+            <Container style={{ height: 0, paddingTop: 5 }}>
+              <label htmlFor="module-file-upload-button">
+                {(state.file && state.file.name) || 'No file selected'}
+              </label>
+            </Container>
+          </div>
+          <ButtonGroup size="medium">
+            <Button onClick={onDialogClose}>Cancel</Button>
+            <Button color="secondary">Upload</Button>
+          </ButtonGroup>
+        </FormGroup>
       </div>
+      <Popover
+        className={classes.popover}
+        open={state.anchorEl !== undefined}
+        anchorEl={state.anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <Typography>
+          Help text here
+        </Typography>
+      </Popover>
     </Dialog>
   );
 });

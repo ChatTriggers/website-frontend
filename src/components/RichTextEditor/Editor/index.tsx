@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Editor, RenderBlockProps, EventHook } from 'slate-react';
 import { Value, Editor as EditorType } from 'slate';
 
