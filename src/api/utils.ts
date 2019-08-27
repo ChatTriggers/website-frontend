@@ -9,5 +9,6 @@ export const throwErr = (funcName: string, response: AxiosResponse<unknown>): ne
 
 export const axios = Axios.create({
   validateStatus: status => status >= 200 && status < 500,
-  withCredentials: true
+  withCredentials: true,
+  timeout: 5000
 });

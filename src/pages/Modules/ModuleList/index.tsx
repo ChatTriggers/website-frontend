@@ -8,6 +8,7 @@ import ModuleSkeleton from './ModuleSkeleton';
 import ModuleController from '../ModuleController';
 import CreateModuleDialog from '../Dialogs/CreateModuleDialog';
 import { Modules, Auth } from '../../../store';
+import ModuleError from './ModuleError';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   fab: {
@@ -29,6 +30,13 @@ export default view(() => {
     setOpen(false);
   };
 
+  const modules = 
+    Modules.store.error ? 
+      <ModuleError /> : 
+      Modules.store.modules.length > 0
+        ? Modules.store.modules.map(module => <Module key={module.id} {...module} />)
+        : Array.from(new Array(3)).map((_, index) => <ModuleSkeleton key={index} />);
+
   return (
     <>
       <CreateModuleDialog 
@@ -47,9 +55,7 @@ export default view(() => {
         </Tooltip>
       )}
       <ModuleController />
-      {Modules.store.modules.length > 0
-        ? Modules.store.modules.map(module => <Module key={module.id} {...module} />)
-        : Array.from(new Array(3)).map((_, index) => <ModuleSkeleton key={index} />)}
+      {modules}
     </>
   );
 });

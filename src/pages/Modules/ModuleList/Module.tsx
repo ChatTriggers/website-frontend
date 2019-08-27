@@ -8,9 +8,6 @@ import {
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { view } from 'react-easy-state';
 import { IModule as IModuleProps } from '../../../api';
-// import TagList from './TagList';
-
-// const maxTags = 3;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {

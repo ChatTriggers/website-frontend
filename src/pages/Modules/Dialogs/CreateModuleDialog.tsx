@@ -1,5 +1,19 @@
 import React from 'react';
-import { FormGroup, Dialog, Theme, TextField, Select, Chip, FormControl, InputLabel, MenuItem, Input } from '@material-ui/core';
+import { 
+  Container, 
+  Typography,
+  FormGroup, 
+  Dialog, 
+  Theme, 
+  TextField, 
+  Select, 
+  Chip, 
+  FormControl, 
+  FormHelperText, 
+  InputLabel, 
+  MenuItem, 
+  Input 
+} from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { store, view } from 'react-easy-state';
 import RichTextEditor from '../../../components/RichTextEditor';
@@ -14,15 +28,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     padding: theme.spacing(2)
   },
   moduleImage: {
-    width: '40%',
-    margin: '5%'
+    width: 250,
+    margin: theme.spacing(2)
   },
   moduleTags: {
-    width: '40%',
-    margin: '5%'
+    width: 250,
+    margin: theme.spacing(2)
   },
   editor: {
-    margin: 10
+    // margin: theme.spacing(2)
+    marginTop: theme.spacing(2)
   }
 }));
 
@@ -58,49 +73,59 @@ export default view((props: ICreateModuleDialogProps) => {
     <Dialog
       open={props.open}
       onClose={props.close}
-      className={classes.root}
+      maxWidth="sm"
+      fullWidth
     >
-      <FormGroup>
-        <TextField 
-          id="module-name"
-          title="Module name"
-          value={state.moduleName}
-          onChange={onChangeName}
-          helperText="Must match the name of the folder inside the .zip file"
-          fullWidth
+      <div className={classes.root}>
+        <Container maxWidth="sm">
+          {/* <Typography> */}
+            Create a Module
+          {/* </Typography> */}
+        </Container>
+        <FormGroup>
+          <TextField
+            style={{ margin: 10 }}
+            id="module-name"
+            label="Module name"
+            value={state.moduleName}
+            onChange={onChangeName}
+            helperText="Must match the name of the folder inside the .zip file"
+            fullWidth
+          />
+        </FormGroup>
+        <RichTextEditor
+          className={classes.editor}
         />
-      </FormGroup>
-      <RichTextEditor 
-        className={classes.editor}
-      />
-      <FormGroup row>
-        <TextField 
-          className={classes.moduleImage}
-          id="module-image"
-          label="Module Image Link"
-          value={state.moduleImage}
-          onChange={onChangeImage}
-          helperText="Optional"
-        />
-        <FormControl
-          className={classes.moduleTags}
-        >
-          <InputLabel htmlFor="module-tags">Module Tags</InputLabel>
-          <Select
-            multiple
-            value={state.tags}
-            onChange={onChangeTags}
-            input={<Input id="module-tags" />}
-            renderValue={selectRenderValue}
+        <FormGroup row style={{ display: 'flex', justifyContent: 'center'}}>
+          <TextField
+            className={classes.moduleImage}
+            id="module-image"
+            label="Module Image Link"
+            value={state.moduleImage}
+            onChange={onChangeImage}
+            helperText="Optional"
+          />
+          <FormControl
+            className={classes.moduleTags}
           >
-            {['Hypixel', 'Utility', 'Library', 'HUD'].map(tag => (
-              <MenuItem key={tag} value={tag}>
-                {tag}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </FormGroup>
+            <InputLabel htmlFor="module-tags">Module Tags</InputLabel>
+            <Select
+              multiple
+              value={state.tags}
+              onChange={onChangeTags}
+              input={<Input id="module-tags" />}
+              renderValue={selectRenderValue}
+            >
+              {['Hypixel', 'Utility', 'Library', 'HUD'].map(tag => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>Optional</FormHelperText>
+          </FormControl>
+        </FormGroup>
+      </div>
     </Dialog>
   );
 });

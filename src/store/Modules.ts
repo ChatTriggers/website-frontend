@@ -15,6 +15,7 @@ interface IModuleStore {
     onlyUserModules: boolean;
   };
   modules: IModule[];
+  error: boolean;
 }
 
 // tslint:disable-next-line:no-unnecessary-class
@@ -30,7 +31,8 @@ export class Modules {
       onlyTrusted: false,
       onlyUserModules: false
     },
-    modules: []
+    modules: [],
+    error: false
   });
 
   static get totalPages() {

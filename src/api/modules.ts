@@ -1,6 +1,7 @@
 import qs from 'querystring';
 import { axios, BASE_URL, IUser, Result, IResult, ApiErrors, throwErr } from '.';
 import { Modules, Auth } from '../store';
+import { AxiosResponse } from 'axios';
 
 export interface IModule {
   id: number;
@@ -25,14 +26,7 @@ export interface IModuleResponse {
 const MODULES_URL = `${BASE_URL}/modules`;
 const MODULE_ID_URL = (id: number) => `${BASE_URL}/modules/${id}`;
 
-export const getModules = async (
-  // limit = Modules.store.viewConfig.modulesPerPage, 
-  // offset = Modules.offset, 
-  // owner: string | undefined = undefined, 
-  // trusted = Modules.store.viewConfig.onlyTrusted, 
-  // flagged = Modules.store.viewConfig.onlyFlagged,
-  // query = Modules.store.viewConfig.search,
-): Promise<IModuleResponse> => {
+export const getModules = async (): Promise<IModuleResponse> => {
   Modules.store.modules = [];
   let owner: number | undefined;
 
@@ -41,16 +35,25 @@ export const getModules = async (
     owner = Auth.store.user!.id;
   }
   
-  const response = await axios.get(MODULES_URL, {
-    params: {
-      limit: Modules.store.viewConfig.modulesPerPage,
-      offset: Modules.offset,
-      owner,
-      trusted: Modules.store.viewConfig.onlyTrusted || undefined,
-      flagged: Modules.store.viewConfig.onlyFlagged || undefined,
-      q: Modules.store.viewConfig.search === '' ? undefined : Modules.store.viewConfig.search
-    }
-  });
+  let response: AxiosResponse<IModuleResponse>;
+
+  try {
+    response = await axios.get(MODULES_URL, {
+      params: {
+        limit: Modules.store.viewConfig.modulesPerPage,
+        offset: Modules.offset,
+        owner,
+        trusted: Modules.store.viewConfig.onlyTrusted || undefined,
+        flagged: Modules.store.viewConfig.onlyFlagged || undefined,
+        q: Modules.store.viewConfig.search === '' ? undefined : Modules.store.viewConfig.search
+      }
+    });
+
+    Modules.store.error = false;
+  } catch (e) {
+    Modules.store.error = true;
+    throw e;
+  }
 
   console.log('getModules:');
   console.log(response);
@@ -61,9 +64,12 @@ export const getModules = async (
 
       Modules.store.modules = moduleResponse.modules;
       Modules.store.meta = moduleResponse.meta;
+      Modules.store.error = false;
 
       return moduleResponse;
     default:
+      Modules.store.error = true;
+
       return throwErr('getModules', response);
   }
 };
