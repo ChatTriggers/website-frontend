@@ -7,7 +7,8 @@ import ModulePage from './ModulePage';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
-    display: 'flex'
+    display: 'flex',
+    minHeight: '100vh'
   },
   content: {
     flexGrow: 1,

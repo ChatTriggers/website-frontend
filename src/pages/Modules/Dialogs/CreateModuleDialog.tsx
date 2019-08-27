@@ -78,9 +78,9 @@ export default view((props: ICreateModuleDialogProps) => {
     >
       <div className={classes.root}>
         <Container maxWidth="sm">
-          {/* <Typography> */}
+          <Typography>
             Create a Module
-          {/* </Typography> */}
+          </Typography>
         </Container>
         <FormGroup>
           <TextField
