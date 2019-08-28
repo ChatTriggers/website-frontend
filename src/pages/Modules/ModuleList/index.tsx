@@ -5,9 +5,9 @@ import { Add as AddIcon } from '@material-ui/icons';
 import { view } from 'react-easy-state';
 import Module from './Module';
 import ModuleSkeleton from './ModuleSkeleton';
-import ModuleController from '../ModuleController';
-import CreateModuleDialog from '../Dialogs/CreateModuleDialog';
-import { Modules, Auth } from '../../../store';
+import ModuleController from '~modules/ModuleController';
+import CreateModuleDialog from '~modules/Dialogs/CreateModuleDialog';
+import { Modules, Auth } from '~store';
 import ModuleError from './ModuleError';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

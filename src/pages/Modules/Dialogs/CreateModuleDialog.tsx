@@ -21,7 +21,7 @@ import {
 import { HelpOutline as HelpIcon } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { store, view } from 'react-easy-state';
-import RichTextEditor from '../../../components/RichTextEditor';
+import RichTextEditor from '~components/RichTextEditor';
 
 interface ICreateModuleDialogProps {
   open: boolean;

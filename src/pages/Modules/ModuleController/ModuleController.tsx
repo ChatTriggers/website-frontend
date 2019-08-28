@@ -11,8 +11,8 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { view, store } from 'react-easy-state';
-import { getModules } from '../../../api';
-import { Auth, Modules } from '../../../store';
+import { getModules } from '~api';
+import { Auth, Modules } from '~store';
 import TablePagination from './TablePagination';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

@@ -2,8 +2,8 @@ import React from 'react';
 import { Theme, Box } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { view } from 'react-easy-state';
-import Drawer from './Drawer';
-import ModulePage from './ModulePage';
+import Drawer from '~modules/Drawer';
+import ModulePage from '~modules/ModulePage';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {

@@ -1,5 +1,5 @@
 import { store } from 'react-easy-state';
-import { IUser } from '../api';
+import { IUser } from '~api';
 
 interface IAuthStore {
   user: IUser | undefined;

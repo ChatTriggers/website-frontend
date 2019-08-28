@@ -1,6 +1,6 @@
 import qs from 'querystring';
 import { axios, BASE_URL, IUser, Result, IResult, ApiErrors, throwErr } from '.';
-import { Modules, Auth } from '../store';
+import { Modules, Auth } from '~store';
 import { AxiosResponse } from 'axios';
 
 export interface IModule {

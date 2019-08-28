@@ -9,8 +9,8 @@ import {
   CircularProgress
 } from '@material-ui/core';
 import { store, view } from 'react-easy-state';
-import { Auth } from '../../../store';
-import { login } from '../../../api';
+import { Auth } from '~store';
+import { login } from '~api';
 
 interface ICreateAccountDialogProps {
   open: boolean;

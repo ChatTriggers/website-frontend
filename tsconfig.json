@@ -19,9 +19,22 @@
     "noEmit": true,
     "jsx": "preserve",
     "experimentalDecorators": true,
-    "typeRoots": ["./src/types"]
+    "typeRoots": ["./src/types"],
+    "baseUrl": "src",
+    "paths": {
+      "~store/*": ["./store/*"],
+      "~store": ["./store/index"],
+      "~components/*": ["./components/*"],
+      "~components": ["./components/index"],
+      "~api/*": ["./api/*"],
+      "~api": ["./api/index"],
+      "~modules/*": ["./pages/Modules/*"],
+      "~modules": ["./pages/Modules/index"],
+      "~assets/*": ["./assets/*"],
+      "~assets": ["./assets"],
+      "~src/*": ["./*"],
+      "~src": ["./index"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules", "build"]
 }

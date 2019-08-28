@@ -9,8 +9,8 @@ import {
 } from '@material-ui/icons';
 import { makeStyles, createStyles, withStyles, WithStyles } from '@material-ui/styles';
 import { view } from 'react-easy-state';
-import { getModules } from '../../../api';
-import { Modules, MODULES_PER_PAGE_OPTIONS } from '../../../store';
+import { getModules } from '~api';
+import { Modules, MODULES_PER_PAGE_OPTIONS } from '~store';
 
 const useStylesActions = makeStyles((theme: Theme) => createStyles({
   root: {

@@ -22,10 +22,10 @@ import {
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { view } from 'react-easy-state';
-import { githubIcon, slate, logoLong } from '../../assets';
-import { Auth } from '../../store';
-import LoginDialog from './Dialogs/LoginDialog';
-import CreateAccountDialog from './Dialogs/CreateAccountDialog';
+import { githubIcon, slate, logoLong } from '~assets';
+import { Auth } from '~store';
+import LoginDialog from '~modules/Dialogs/LoginDialog';
+import CreateAccountDialog from '~modules/Dialogs/CreateAccountDialog';
 
 const drawerWidth = 240;
 

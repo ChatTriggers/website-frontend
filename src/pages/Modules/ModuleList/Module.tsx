@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { view } from 'react-easy-state';
-import { IModule as IModuleProps } from '../../../api';
+import { IModule as IModuleProps } from '~api';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {

@@ -1,5 +1,5 @@
 import { store } from 'react-easy-state';
-import { IModule, IModuleMetadata } from '../api';
+import { IModule, IModuleMetadata } from '~api';
 
 export const MODULES_PER_PAGE_OPTIONS = [10, 25, 50];
 
