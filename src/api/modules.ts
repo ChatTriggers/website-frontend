@@ -9,6 +9,7 @@ export interface IModule {
   owner: IUser;
   description: string;
   image: string;
+  tags: string[];
   downloads: number;
 }
 
