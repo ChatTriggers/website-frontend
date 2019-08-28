@@ -3,6 +3,9 @@
       "tslint-config-prettier",
       "tslint-react"
     ],
+    "jsRules": {
+      "no-empty": true
+    },
     "rules": {
       "adjacent-overload-signatures": true,
       "member-access": true,
