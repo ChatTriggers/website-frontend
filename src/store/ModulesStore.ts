@@ -34,6 +34,9 @@ class ModulesStore {
   @observable
   public error = false;
 
+  @observable
+  public allowedTags: string[] = [];
+
   @computed
   get totalPages() {
     return this.meta ? Math.ceil(this.meta.total / this.modulesPerPage) : 0;
@@ -117,6 +120,13 @@ class ModulesStore {
   @action
   public setOnlyUserModules = (onlyUserModules = true) => {
     this.onlyUserModules = onlyUserModules;
+
+    return this;
+  }
+
+  @action
+  public setAllowedTags = (tags: string[]) => {
+    this.allowedTags = tags;
 
     return this;
   }

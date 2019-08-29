@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Container,
   Typography,
   FormGroup,
   Dialog,
@@ -14,14 +13,12 @@ import {
   MenuItem,
   Button,
   ButtonGroup,
-  IconButton,
   Popover,
   Input,
   StyleRulesCallback
 } from '@material-ui/core';
-import { HelpOutline as HelpIcon } from '@material-ui/icons';
 import { withStyles } from '@material-ui/styles';
-import { observer, observable, action } from '~store';
+import { observer, observable, action, modulesStore } from '~store';
 import RichTextEditor from '~components/RichTextEditor';
 
 interface IEditModuleDialogProps {
@@ -167,7 +164,7 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
                 input={<Input id="module-tags" />}
                 renderValue={this.selectRenderValue}
               >
-                {['Hypixel', 'Utility', 'Library', 'HUD'].map(tag => ( // TODO: Get actual tags from website
+                {modulesStore.allowedTags.map(tag => ( // TODO: Get actual tags from website
                   <MenuItem key={tag} value={tag}>
                     {tag}
                   </MenuItem>

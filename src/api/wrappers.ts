@@ -82,3 +82,8 @@ export const getCurrentAccount = async () => {
     authStore.setUser(undefined);
   }
 };
+
+export const loadTags = async () => {
+  // TODO: Handle error
+  modulesStore.setAllowedTags(await raw.getTags());
+};

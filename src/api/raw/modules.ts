@@ -27,6 +27,7 @@ export interface IModuleResponse {
 
 const MODULES_URL = `${BASE_URL}/modules`;
 const MODULE_ID_URL = (id: number) => `${BASE_URL}/modules/${id}`;
+const TAGS_URL = `${BASE_URL}/tags`;
 
 export const getModules = async (
   limit?: number,
@@ -116,5 +117,13 @@ export const deleteModule = async (
     400: () => { throw ApiErrors.DeleteModule.MALFORMED_MODULE_ID(response.statusText); },
     403: () => { throw ApiErrors.DeleteModule.NO_PERMISSION(response.statusText); },
     404: () => { throw ApiErrors.DeleteModule.MODULE_NOT_FOUND(response.statusText); }
+  });
+};
+
+export const getTags = async () => {
+  const response = await axios.get<string[]>(TAGS_URL);
+
+  return validateStatusCode(response, {
+    200: () => response.data
   });
 };
