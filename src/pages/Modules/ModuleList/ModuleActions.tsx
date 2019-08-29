@@ -1,8 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
-import { ButtonGroup, Button, Theme } from '@material-ui/core';
+import { Button, Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { authStore, observer, observable, action } from '~store';
+import { observer, observable, action } from '~store';
 import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
 
 const styles = (theme: Theme) => ({

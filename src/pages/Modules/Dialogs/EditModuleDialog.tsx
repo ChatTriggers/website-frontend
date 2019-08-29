@@ -19,7 +19,6 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action, modulesStore } from '~store';
-import RichTextEditor from '~components/RichTextEditor';
 
 interface IEditModuleDialogProps {
   open: boolean;
