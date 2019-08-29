@@ -31,6 +31,11 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
   root: {
     padding: theme.spacing(2)
   },
+  title: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center'
+  },
   moduleImage: {
     width: 250,
     margin: theme.spacing(2)
@@ -40,8 +45,8 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
     margin: theme.spacing(2)
   },
   editor: {
-    // margin: theme.spacing(2)
-    marginTop: theme.spacing(2)
+    margin: theme.spacing(2),
+    width: theme.spacing(2) * 2 + 500
   },
   buttons: {
     display: 'flex',
@@ -62,6 +67,9 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
   private moduleImage = '';
 
   @observable
+  private moduleDescription = '';
+
+  @observable
   private file: File | undefined;
 
   @observable
@@ -78,6 +86,11 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
   @action
   private readonly onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.moduleImage = e.target.value;
+  }
+
+  @action
+  private readonly onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.moduleDescription = e.target.value;
   }
 
   @action
@@ -136,13 +149,19 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
         fullWidth
       >
         <div className={this.classes.root}>
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
+          <div className={this.classes.title}>
             <Typography variant="h5">
               Edit Module
             </Typography>
           </div>
-          <RichTextEditor
+          <TextField
             className={this.classes.editor}
+            id="module-description"
+            label="Module Description"
+            value={this.moduleDescription}
+            onChange={this.onChangeDescription}
+            multiline
+            helperText="Optional"
           />
           <FormGroup row style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField

@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Container,
   Typography,
   FormGroup,
   Dialog,
@@ -14,15 +13,12 @@ import {
   MenuItem,
   Button,
   ButtonGroup,
-  IconButton,
   Popover,
   Input,
   StyleRulesCallback
 } from '@material-ui/core';
-import { HelpOutline as HelpIcon } from '@material-ui/icons';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action, modulesStore } from '~store';
-import RichTextEditor from '~components/RichTextEditor';
 
 interface ICreateModuleDialogProps {
   open: boolean;
@@ -34,6 +30,15 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
   root: {
     padding: theme.spacing(2)
   },
+  title: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center'
+  },
+  moduleName: {
+    margin: theme.spacing(2),
+    width: theme.spacing(2) * 2 + 500
+  },
   moduleImage: {
     width: 250,
     margin: theme.spacing(2)
@@ -43,8 +48,8 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
     margin: theme.spacing(2)
   },
   editor: {
-    // margin: theme.spacing(2)
-    marginTop: theme.spacing(2)
+    margin: theme.spacing(2),
+    width: theme.spacing(2) * 2 + 500
   },
   buttons: {
     display: 'flex',
@@ -65,6 +70,9 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   private moduleImage = '';
 
   @observable
+  private moduleDescription = '';
+
+  @observable
   private file: File | undefined;
 
   @observable
@@ -81,6 +89,11 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   @action
   private readonly onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.moduleImage = e.target.value;
+  }
+
+  @action
+  private readonly onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.moduleDescription = e.target.value;
   }
 
   @action
@@ -123,10 +136,10 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   }
 
   private get classes() {
-    return (this.props as unknown as { 
-      classes: { 
-        [K in keyof ReturnType<typeof styles>]: string; 
-      } 
+    return (this.props as unknown as {
+      classes: {
+        [K in keyof ReturnType<typeof styles>]: string;
+      }
     }).classes;
   }
 
@@ -139,14 +152,14 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
         fullWidth
       >
         <div className={this.classes.root}>
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
+          <div className={this.classes.title}>
             <Typography variant="h5">
               Create a Module
             </Typography>
           </div>
           <FormGroup>
             <TextField
-              style={{ margin: 10 }}
+              className={this.classes.moduleName}
               id="module-name"
               label="Module name"
               value={this.moduleName}
@@ -155,8 +168,14 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
               fullWidth
             />
           </FormGroup>
-          <RichTextEditor
+          <TextField
             className={this.classes.editor}
+            id="module-description"
+            label="Module Description"
+            value={this.moduleDescription}
+            onChange={this.onChangeDescription}
+            multiline
+            helperText="Optional"
           />
           <FormGroup row style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField
