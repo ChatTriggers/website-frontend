@@ -21,9 +21,8 @@ import {
   ExitToApp as LoginIcon
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { view } from 'react-easy-state';
 import { githubIcon, slate, logoLong } from '~assets';
-import { Auth } from '~store';
+import { authStore, observer } from '~store';
 import LoginDialog from '~modules/Dialogs/LoginDialog';
 import CreateAccountDialog from '~modules/Dialogs/CreateAccountDialog';
 
@@ -80,7 +79,7 @@ const ListItemLink = (props: ListItemProps<'a', { button?: true }>) => (
   <ListItem button component="a" {...props} />
 );
 
-export default view(() => {
+export default observer(() => {
   const [open, setOpen] = React.useState(true);
   const [loggingIn, setLoggingIn] = React.useState(false);
   const [creatingAccount, setCreatingAccount] = React.useState(false);
@@ -181,14 +180,14 @@ export default view(() => {
         </List>
         <Divider />
         <List>
-          {Auth.isAuthed ? (
+          {authStore.isAuthed ? (
             <ListItem>
               <ListItemIcon>
                 <AccountCircleIcon />
               </ListItemIcon>
               <ListItemText>
                 {/* tslint:disable-next-line:no-non-null-assertion */}
-                {Auth.store.user!.name}
+                {authStore.user!.name}
               </ListItemText>
             </ListItem>
           ) : (

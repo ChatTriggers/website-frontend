@@ -2,7 +2,6 @@ import React from 'react';
 import { Paper, Container, Theme } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { view } from 'react-easy-state';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-export default view(() => {
+export default () => {
   const classes = useStyles({});
 
   return (
@@ -58,4 +57,4 @@ export default view(() => {
       </Container>
     </Paper>
   );
-});
+};

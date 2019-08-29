@@ -2,12 +2,11 @@ import React from 'react';
 import { Fab, Tooltip, Theme } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import { Add as AddIcon } from '@material-ui/icons';
-import { view } from 'react-easy-state';
 import Module from './Module';
 import ModuleSkeleton from './ModuleSkeleton';
 import ModuleController from '~modules/ModuleController';
 import CreateModuleDialog from '~modules/Dialogs/CreateModuleDialog';
-import { Modules, Auth } from '~store';
+import { modulesStore, authStore, observer } from '~store';
 import ModuleError from './ModuleError';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -18,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-export default view(() => {
+export default observer(() => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
 
@@ -31,10 +30,10 @@ export default view(() => {
   };
 
   const modules = 
-    Modules.store.error ? 
+    modulesStore.error ? 
       <ModuleError /> : 
-      Modules.store.modules.length > 0
-        ? Modules.store.modules.map(module => <Module key={module.id} {...module} />)
+      modulesStore.modules.length > 0
+        ? modulesStore.modules.map(module => <Module key={module.id} {...module} />)
         : Array.from(new Array(3)).map((_, index) => <ModuleSkeleton key={index} />);
 
   return (
@@ -43,7 +42,7 @@ export default view(() => {
         open={open}
         close={onDialogClose}
       />
-      {Auth.isAuthed &&  (
+      {authStore.isAuthed &&  (
         <Tooltip title="Create Module" placement="left">
           <Fab 
             className={classes.fab} 

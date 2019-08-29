@@ -9,13 +9,12 @@ import {
   Radio,
   RadioGroup
 } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/styles';
-import { view, store } from 'react-easy-state';
+import { withStyles } from '@material-ui/styles';
 import { getModules } from '~api';
-import { Auth, Modules } from '~store';
+import { authStore, modulesStore, observer, observable, action } from '~store';
 import TablePagination from './TablePagination';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const styles = (theme: Theme) => ({
   root: {
     margin: theme.spacing(5),
     padding: theme.spacing(2)
@@ -39,85 +38,94 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   pagination: {
     paddingRight: 0
   }
-}));
+});
 
-interface IStore {
-  timeout: NodeJS.Timeout | undefined;
-  selectedRadio: 'all' | 'user' | 'trusted' | 'flagged';
-}
+@observer
+class ModuleController extends React.Component {
+  @observable
+  private timeout: NodeJS.Timeout | undefined;
 
-export default view(() => {
-  const data = store<IStore>({
-    timeout: undefined,
-    selectedRadio: 'all'
-  });
+  @observable
+  private selectedRadio: 'all' | 'user' | 'trusted' | 'flagged' = 'all';
 
-  const classes = useStyles({});
-
-  const onSearchChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
-    if (data.timeout) {
-      clearTimeout(data.timeout);
+  @action
+  private readonly onSearchChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
     }
 
     const target = e.target;
-    Modules.store.viewConfig.search = target.value as string;
+    modulesStore.setSearch(target.value as string);
 
-    data.timeout = setTimeout(() => {
+    this.timeout = setTimeout(() => {
       getModules();
     }, 1500);
-  };
+  }
 
-  const onFilterChange = (_: React.ChangeEvent<{}>, value: string) => {
-    console.log(value);
+  @action
+  private readonly onFilterChange = (_: React.ChangeEvent<{}>, value: string) => {
     const val = value as ('all' | 'user' | 'trusted' | 'flagged');
-    
-    if (val !== data.selectedRadio) {
-      data.selectedRadio = val;
 
-      Modules.store.viewConfig.onlyFlagged = Auth.isAuthed && !Auth.isDefault && val === 'flagged';
-      Modules.store.viewConfig.onlyTrusted = val === 'trusted';
-      Modules.store.viewConfig.onlyUserModules = val === 'user';
+    if (val !== this.selectedRadio) {
+      this.selectedRadio = val;
+
+      modulesStore
+        .setOnlyFlagged(authStore.isAuthed && !authStore.isDefault && val === 'flagged')
+        .setOnlyTrusted(val === 'trusted')
+        .setOnlyUserModules(val === 'user');
 
       getModules();
     }
-  };
+  }
 
-  return (
-    <Paper
-      className={classes.root}
-      square
-      elevation={4}
-    >
-      <Container>
-        <FormGroup className={classes.searchContainer} row>
-          <TextField
-            className={classes.search}
-            id="search-query"
-            label="Search Modules"
-            InputLabelProps={{ shrink: true }}
-            value={Modules.store.viewConfig.search || ''}
-            onChange={onSearchChange}
-          />
-          <TablePagination className={classes.pagination} />
-        </FormGroup>
-        <Container className={classes.content}>
-          <RadioGroup
-            name="module-filter"
-            value={data.selectedRadio}
-            onChange={onFilterChange}
-            row
-          >
-            <FormControlLabel value="all" label="All Modules" control={<Radio />} />
-            <FormControlLabel value="trusted" label="Trusted Modules" control={<Radio />} />
-            {Auth.isAuthed && (
-              <FormControlLabel value="user" label="My Modules" control={<Radio />} />
-            )}
-            {Auth.isAuthed && !Auth.isDefault && (
-              <FormControlLabel value="flagged" label="Flagged Modules" control={<Radio />} />
-            )}
-          </RadioGroup>
+  private get classes() {
+    return (this.props as unknown as {
+      classes: {
+        [K in keyof ReturnType<typeof styles>]: string;
+      }
+    }).classes;
+  }
+
+  public render() {
+    return (
+      <Paper
+        className={this.classes.root}
+        square
+        elevation={4}
+      >
+        <Container>
+          <FormGroup className={this.classes.searchContainer} row>
+            <TextField
+              className={this.classes.search}
+              id="search-query"
+              label="Search Modules"
+              InputLabelProps={{ shrink: true }}
+              value={modulesStore.search || ''}
+              onChange={this.onSearchChange}
+            />
+            <TablePagination className={this.classes.pagination} />
+          </FormGroup>
+          <Container className={this.classes.content}>
+            <RadioGroup
+              name="module-filter"
+              value={this.selectedRadio}
+              onChange={this.onFilterChange}
+              row
+            >
+              <FormControlLabel value="all" label="All Modules" control={<Radio />} />
+              <FormControlLabel value="trusted" label="Trusted Modules" control={<Radio />} />
+              {authStore.isAuthed && (
+                <FormControlLabel value="user" label="My Modules" control={<Radio />} />
+              )}
+              {authStore.isAuthed && !authStore.isDefault && (
+                <FormControlLabel value="flagged" label="Flagged Modules" control={<Radio />} />
+              )}
+            </RadioGroup>
+          </Container>
         </Container>
-      </Container>
-    </Paper>
-  );
-});
+      </Paper>
+    );
+  }
+}
+
+export default withStyles(styles, { withTheme: true })(ModuleController);

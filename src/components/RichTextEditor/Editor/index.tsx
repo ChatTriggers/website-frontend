@@ -36,12 +36,12 @@ export default class extends React.Component<{}, IState> {
     value: initialValue,
   };
 
-  private onChange = ({ value }: { value: Value }) => {
+  private readonly onChange = ({ value }: { value: Value }) => {
     this.setState({ value });
   }
 
   // tslint:disable-next-line:no-any
-  private onKeyDown: EventHook = (event: any, editor, next) => {
+  private readonly onKeyDown: EventHook = (event: any, editor, next) => {
     // Return with no changes if it's not the "`" key with ctrl pressed.
     if (event.key !== '`' || !event.ctrlKey) return next();
 

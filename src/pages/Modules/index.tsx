@@ -1,7 +1,6 @@
 import React from 'react';
 import { Theme, Box } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { view } from 'react-easy-state';
 import Drawer from '~modules/Drawer';
 import ModulePage from '~modules/ModulePage';
 
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-export default view(() => {
+export default () => {
 const classes = useStyles();
 
   return (
@@ -28,4 +27,4 @@ const classes = useStyles();
       </Box>
     </div>
   );
-});
+};

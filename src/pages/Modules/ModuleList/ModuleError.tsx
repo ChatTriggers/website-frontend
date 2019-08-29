@@ -6,7 +6,6 @@ import {
   Theme
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
-import { view } from 'react-easy-state';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-export default view(() => {
+export default () => {
   const classes = useStyles({});
 
   return (
@@ -46,4 +45,4 @@ export default view(() => {
       </Container>
     </Paper>
   );
-});
+};

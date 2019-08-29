@@ -1,19 +1,18 @@
 import React from 'react';
-import { view } from 'react-easy-state';
 import ModuleList from '~modules/ModuleList';
-import { Modules, Auth } from '~store';
+import { modulesStore, authStore, observer } from '~store';
 import { getModules, getCurrentUser } from '~api';
 
-@view
+@observer
 export default class extends React.Component {
   public componentDidMount = async () => {
     const moduleResponse = await getModules();
-    Modules.store.modules = moduleResponse.modules;
+    modulesStore.setModules(moduleResponse.modules);
 
     const currentUserResponse = await getCurrentUser();
 
     if (currentUserResponse.ok) {
-      Auth.store.user = currentUserResponse.value;
+      authStore.setUser(currentUserResponse.value);
     }
   }
 

@@ -9,86 +9,103 @@ import {
   ClickAwayListener,
   Theme
 } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/styles';
-import { view } from 'react-easy-state';
+import { withStyles } from '@material-ui/styles';
+import { observer, observable, action } from '~store';
 
 interface ITagListProps {
   tags?: string[];
   maxTags: number;
 }
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const styles = (theme: Theme) => ({
   chip: {
     margin: '0 4px'
   },
   popper: {
     padding: theme.spacing(1)
   }
-}));
-
-export default view((props: ITagListProps) => {
-  const classes = useStyles();
-  const { tags, maxTags } = props;
-  const [tagExpand, setTagExpand] = React.useState(false);
-  const [anchor, setAnchor] = React.useState<undefined | HTMLElement>();
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setTagExpand(expand => !expand);
-
-    if (!anchor)
-      setAnchor(event.currentTarget);
-  };
-
-  const handleClickAway = () => {
-    setTagExpand(false);
-  };
-
-  return (
-    <>
-      {tags && (
-        <Container style={{ margin: 0, padding: 0 }}>
-          {tags.slice(0, maxTags).map(tag => (
-            <Chip
-              key={tag}
-              label={tag}
-              className={classes.chip}
-            />
-          ))}
-          {tags.length >= maxTags && (
-            <>
-              <Chip
-                label="..."
-                className={classes.chip}
-                clickable={true}
-                onClick={handleClick}
-              />
-              <Popper
-                open={tagExpand}
-                anchorEl={anchor}
-                transition
-              >
-                {({ TransitionProps }) => (
-                  <ClickAwayListener onClickAway={handleClickAway}>
-                    <Fade {...TransitionProps} timeout={350}>
-                      <Paper className={classes.popper}>
-                        <Typography>
-                          {tags.slice(maxTags).map(tag => (
-                            <Chip
-                              key={tag}
-                              label={tag}
-                              className={classes.chip}
-                            />
-                          ))}
-                        </Typography>
-                      </Paper>
-                    </Fade>
-                  </ClickAwayListener>
-                )}
-              </Popper>
-            </>
-          )}
-        </Container>
-      )}
-    </>
-  );
 });
+
+@observer
+class TagList extends React.Component<ITagListProps> {
+  @observable
+  private tagExpand = false;
+
+  @observable
+  private anchor: HTMLElement | undefined;
+
+  @action
+  private readonly handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    this.tagExpand = !this.tagExpand;
+
+    if (!this.anchor) {
+      this.anchor = e.currentTarget;
+    }
+  }
+
+  @action
+  private readonly handleClickAway = () => {
+    this.tagExpand = false;
+  }
+
+  private get classes() {
+    return (this.props as unknown as {
+      classes: {
+        [K in keyof ReturnType<typeof styles>]: string;
+      }
+    }).classes;
+  }
+
+  public render() {
+    return (
+      <>
+        {this.props.tags && (
+          <Container style={{ margin: 0, padding: 0 }}>
+            {this.props.tags.slice(0, this.props.maxTags).map(tag => (
+              <Chip
+                key={tag}
+                label={tag}
+                className={this.classes.chip}
+              />
+            ))}
+            {this.props.tags.length >= this.props.maxTags && (
+              <>
+                <Chip
+                  label="..."
+                  className={this.classes.chip}
+                  clickable={true}
+                  onClick={this.handleClick}
+                />
+                <Popper
+                  open={this.tagExpand}
+                  anchorEl={this.anchor}
+                  transition
+                >
+                  {({ TransitionProps }) => (
+                    <ClickAwayListener onClickAway={this.handleClickAway}>
+                      <Fade {...TransitionProps} timeout={350}>
+                        <Paper className={this.classes.popper}>
+                          <Typography>
+                            {this.props.tags && this.props.tags.slice(this.props.maxTags).map(tag => (
+                              <Chip
+                                key={tag}
+                                label={tag}
+                                className={this.classes.chip}
+                              />
+                            ))}
+                          </Typography>
+                        </Paper>
+                      </Fade>
+                    </ClickAwayListener>
+                  )}
+                </Popper>
+              </>
+            )}
+          </Container>
+        )}
+      </>
+    );
+  }
+}
+
+export default withStyles(styles, { withTheme: true })(TagList);

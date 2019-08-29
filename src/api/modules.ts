@@ -1,6 +1,6 @@
 import qs from 'querystring';
 import { axios, BASE_URL, IUser, Result, IResult, ApiErrors, throwErr } from '.';
-import { Modules, Auth } from '~store';
+import { modulesStore, authStore } from '~store';
 import { AxiosResponse } from 'axios';
 
 export interface IModule {
@@ -28,12 +28,12 @@ const MODULES_URL = `${BASE_URL}/modules`;
 const MODULE_ID_URL = (id: number) => `${BASE_URL}/modules/${id}`;
 
 export const getModules = async (): Promise<IModuleResponse> => {
-  Modules.store.modules = [];
+  modulesStore.clearModules();
   let owner: number | undefined;
 
-  if (Modules.store.viewConfig.onlyUserModules && Auth.isAuthed) {
+  if (modulesStore.onlyUserModules && authStore.isAuthed) {
     // tslint:disable-next-line:no-non-null-assertion
-    owner = Auth.store.user!.id;
+    owner = authStore.user!.id;
   }
   
   let response: AxiosResponse<IModuleResponse>;
@@ -41,18 +41,18 @@ export const getModules = async (): Promise<IModuleResponse> => {
   try {
     response = await axios.get(MODULES_URL, {
       params: {
-        limit: Modules.store.viewConfig.modulesPerPage,
-        offset: Modules.offset,
+        limit: modulesStore.modulesPerPage,
+        offset: modulesStore.offset,
         owner,
-        trusted: Modules.store.viewConfig.onlyTrusted || undefined,
-        flagged: Modules.store.viewConfig.onlyFlagged || undefined,
-        q: Modules.store.viewConfig.search === '' ? undefined : Modules.store.viewConfig.search
+        trusted: modulesStore.onlyTrusted || undefined,
+        flagged: modulesStore.onlyFlagged || undefined,
+        q: modulesStore.search === '' ? undefined : modulesStore.search
       }
     });
 
-    Modules.store.error = false;
+    modulesStore.clearError();
   } catch (e) {
-    Modules.store.error = true;
+    modulesStore.setError();
     throw e;
   }
 
@@ -61,15 +61,15 @@ export const getModules = async (): Promise<IModuleResponse> => {
 
   switch (response.status) {
     case 200:
-      const moduleResponse = response.data as IModuleResponse;
+      const moduleResponse = response.data;
 
-      Modules.store.modules = moduleResponse.modules;
-      Modules.store.meta = moduleResponse.meta;
-      Modules.store.error = false;
+      modulesStore.setModules(moduleResponse.modules)
+        .setMeta(moduleResponse.meta)
+        .clearError();
 
       return moduleResponse;
     default:
-      Modules.store.error = true;
+      modulesStore.setError();
 
       return throwErr('getModules', response);
   }
