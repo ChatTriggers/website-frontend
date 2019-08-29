@@ -29,8 +29,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     marginRight: theme.spacing(3)
   },
   titleChip: {
-    display: 'flex',
-    alignContent: 'start',
+    display: 'flex'
   },
   versionChip: {
     marginRight: theme.spacing(1)
@@ -77,7 +76,8 @@ export default (props: IModuleProps) => {
               className={classes.versionChip}
               key={release.id}
               color="secondary"
-              label={release.modVersion}
+              size="small"
+              label={<Typography variant="body2">{release.modVersion}</Typography>}
             />
           ))}
         </div>

@@ -65,7 +65,6 @@ class TagList extends React.Component<ITagListProps> {
               <Chip
                 key={tag}
                 label={tag}
-                variant="outlined"
                 className={this.classes.chip}
               />
             ))}
@@ -73,7 +72,6 @@ class TagList extends React.Component<ITagListProps> {
               <>
                 <Chip
                   label="..."
-                  variant="outlined"
                   className={this.classes.chip}
                   clickable={true}
                   onClick={this.handleClick}
@@ -86,18 +84,17 @@ class TagList extends React.Component<ITagListProps> {
                   {({ TransitionProps }) => (
                     <ClickAwayListener onClickAway={this.handleClickAway}>
                       <Fade {...TransitionProps} timeout={350}>
-                        <Paper className={this.classes.popper}>
+                        <div className={this.classes.popper}>
                           <Typography>
                             {this.props.tags && this.props.tags.slice(this.props.maxTags).map(tag => (
                               <Chip
                                 key={tag}
                                 label={tag}
-                                variant="outlined"
                                 className={this.classes.chip}
                               />
                             ))}
                           </Typography>
-                        </Paper>
+                        </div>
                       </Fade>
                     </ClickAwayListener>
                   )}
