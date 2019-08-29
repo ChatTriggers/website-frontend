@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Button, Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action } from '~store';
+import { deleteModule } from '~api';
 import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
 
 const styles = (theme: Theme) => ({
@@ -24,6 +25,7 @@ const styles = (theme: Theme) => ({
 interface IModuleActionsProps {
   className?: string;
   authed: boolean;
+  moduleId: number;
 }
 
 @observer
@@ -47,6 +49,12 @@ class ModuleActions extends React.Component<IModuleActionsProps> {
   @action
   private onClickEditModule = () => {
     this.editDialogOpen = true;
+  }
+
+  @action
+  private onClickDelete = () => {
+    // TODO: Prompt before actually deleting
+    deleteModule(this.props.moduleId);
   }
 
   public render() {
@@ -78,6 +86,7 @@ class ModuleActions extends React.Component<IModuleActionsProps> {
                 fullWidth
                 size="small"
                 variant="contained"
+                onClick={this.onClickDelete}
               >
                 Delete Module
               </Button>

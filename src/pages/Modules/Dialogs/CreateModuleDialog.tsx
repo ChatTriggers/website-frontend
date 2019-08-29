@@ -15,10 +15,12 @@ import {
   ButtonGroup,
   Popover,
   Input,
-  StyleRulesCallback
+  StyleRulesCallback,
+  CircularProgress
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { observer, observable, action, modulesStore } from '~store';
+import { observer, observable, action, modulesStore, computed } from '~store';
+import { createModule } from '~api';
 
 interface ICreateModuleDialogProps {
   open: boolean;
@@ -64,19 +66,31 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
 @observer
 class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   @observable
-  private moduleName = '';
+  private moduleName: string | undefined;
 
   @observable
-  private moduleImage = '';
+  private moduleImage: string | undefined;
 
   @observable
-  private moduleDescription = '';
-
-  @observable
-  private file: File | undefined;
+  private moduleDescription: string | undefined;
 
   @observable
   private tags: string[] = [];
+
+  @observable
+  private loading = false;
+
+  @observable
+  private valid = {
+    name: true,
+    image: true,
+    description: true
+  };
+
+  @computed
+  get isValid() {
+    return this.valid.name && this.valid.image && this.valid.description;
+  }
 
   @observable
   private anchorEl: SVGSVGElement | undefined;
@@ -84,16 +98,20 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   @action
   private readonly onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.moduleName = e.target.value;
+    this.valid.name = !!this.moduleName;
   }
 
   @action
   private readonly onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.moduleImage = e.target.value;
+    this.moduleImage = e.target.value || undefined;
+    this.valid.image = this.moduleImage === undefined ||
+      (!!this.moduleImage && /https?:\/\/(www.)?(i\.)?imgur\.com\//.test(this.moduleImage.toLowerCase()));
   }
 
   @action
   private readonly onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.moduleDescription = e.target.value;
+    this.valid.description = !!this.moduleDescription;
   }
 
   @action
@@ -102,19 +120,8 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   }
 
   @action
-  private readonly onUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      this.file = e.target.files[0];
-    }
-  }
-
-  @action
   private readonly onDialogClose = () => {
     this.props.close();
-
-    setTimeout(action(() => {
-      this.file = undefined;
-    }), 500);
   }
 
   private readonly selectRenderValue = (selected: unknown) => (
@@ -133,6 +140,13 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   @action
   private readonly handlePopoverClose = () => {
     this.anchorEl = undefined;
+  }
+
+  private readonly onUpload = async () => {
+    action(() => { this.loading = true; });
+    // tslint:disable-next-line:no-non-null-assertion
+    await createModule(this.moduleName!, this.moduleDescription!, this.tags, this.moduleImage || undefined);
+    action(() => { this.loading = false; });
   }
 
   private get classes() {
@@ -165,6 +179,7 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
               value={this.moduleName}
               onChange={this.onChangeName}
               helperText="Must match the name of the folder inside the .zip file"
+              error={!this.valid.name}
               fullWidth
             />
           </FormGroup>
@@ -174,8 +189,8 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
             label="Module Description"
             value={this.moduleDescription}
             onChange={this.onChangeDescription}
+            error={!this.valid.description}
             multiline
-            helperText="Optional"
           />
           <FormGroup row style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField
@@ -184,7 +199,8 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
               label="Module Image Link"
               value={this.moduleImage}
               onChange={this.onChangeImage}
-              helperText="Optional"
+              helperText="Optional (must be imgur link)"
+              error={!this.valid.image}
             />
             <FormControl
               className={this.classes.moduleTags}
@@ -209,7 +225,9 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
           <FormGroup className={this.classes.buttons} row>
             <ButtonGroup size="medium">
               <Button onClick={this.onDialogClose}>Cancel</Button>
-              <Button color="secondary">Upload</Button>
+              <Button onClick={this.onUpload} color="secondary" disabled={this.loading || !this.isValid}>
+                {this.loading ? <CircularProgress size={30} /> : 'Submit'}
+              </Button>
             </ButtonGroup>
           </FormGroup>
         </div>

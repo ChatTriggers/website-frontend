@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 export default (props: IModuleProps) => {
   const classes = useStyles({});
-  const { name, owner, tags, description, image, releases } = props;
+  const { id, name, owner, tags, description, image, releases } = props;
 
   return (
     <Paper
@@ -93,7 +93,11 @@ export default (props: IModuleProps) => {
           </Typography>
           <TagList tags={tags} maxTags={maxTags} />
         </Container>
-        <ModuleActions className={classes.actions} authed={(authStore.user && authStore.user.id === owner.id) || false} />
+        <ModuleActions
+          className={classes.actions}
+          authed={(authStore.user && authStore.user.id === owner.id) || false}
+          moduleId={id}
+        />
       </Container>
     </Paper>
   );

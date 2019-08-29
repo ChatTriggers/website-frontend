@@ -72,9 +72,6 @@ export const getModules = async () => {
   }
 };
 
-export const createModule = raw.createModule;
-export const createRelease = raw.createRelease;
-
 export const getCurrentAccount = async () => {
   try {
     authStore.setUser(await raw.getCurrentAccount());
@@ -87,3 +84,11 @@ export const loadTags = async () => {
   // TODO: Handle error
   modulesStore.setAllowedTags(await raw.getTags());
 };
+
+export const deleteModule = async (moduleId: number) => {
+  await raw.deleteModule(moduleId);
+  await getModules();
+}
+
+export const createModule = raw.createModule;
+export const createRelease = raw.createRelease;
