@@ -65,6 +65,7 @@ class TagList extends React.Component<ITagListProps> {
               <Chip
                 key={tag}
                 label={tag}
+                variant="outlined"
                 className={this.classes.chip}
               />
             ))}
@@ -72,6 +73,7 @@ class TagList extends React.Component<ITagListProps> {
               <>
                 <Chip
                   label="..."
+                  variant="outlined"
                   className={this.classes.chip}
                   clickable={true}
                   onClick={this.handleClick}
@@ -90,6 +92,7 @@ class TagList extends React.Component<ITagListProps> {
                               <Chip
                                 key={tag}
                                 label={tag}
+                                variant="outlined"
                                 className={this.classes.chip}
                               />
                             ))}
