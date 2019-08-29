@@ -81,7 +81,7 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   private loading = false;
 
   @observable
-  private valid = {
+  private readonly valid = {
     name: true,
     image: true,
     description: true

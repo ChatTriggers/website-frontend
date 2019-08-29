@@ -45,23 +45,23 @@ class ModuleActions extends React.Component<IModuleActionsProps> {
   }
 
   @action
-  private onEditDialogClose = () => {
+  private readonly onEditDialogClose = () => {
     this.editDialogOpen = false;
   }
 
   @action
-  private onClickEditModule = () => {
+  private readonly onClickEditModule = () => {
     this.editDialogOpen = true;
     this.deleteDialogOpen = false;
   }
 
   @action
-  private onDeleteDialogClose = () => {
+  private readonly onDeleteDialogClose = () => {
     this.deleteDialogOpen = false;
   }
 
   @action
-  private onClickDeleteModule = () => {
+  private readonly onClickDeleteModule = () => {
     this.editDialogOpen = false;
     this.deleteDialogOpen = true;
   }
