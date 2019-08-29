@@ -3,6 +3,7 @@ import {
   Paper,
   Container,
   Typography,
+  Chip,
   Theme
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
@@ -18,11 +19,21 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     margin: theme.spacing(5),
     padding: `${theme.spacing(2)}px 0`
   },
-  title: {
+  titleContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     alignContent: 'center',
     paddingBottom: theme.spacing(2)
+  },
+  title: {
+    marginRight: theme.spacing(3)
+  },
+  titleChip: {
+    display: 'flex',
+    alignContent: 'start',
+  },
+  versionChip: {
+    marginRight: theme.spacing(1)
   },
   body: {
     display: 'flex'
@@ -50,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 export default (props: IModuleProps) => {
   const classes = useStyles({});
-  const { name, owner, tags, description, image } = props;
+  const { name, owner, tags, description, image, releases } = props;
 
   return (
     <Paper
@@ -58,8 +69,18 @@ export default (props: IModuleProps) => {
       square
       elevation={4}
     >
-      <Container className={classes.title}>
-        <Typography variant="h5"><strong>{name}</strong></Typography>
+      <Container className={classes.titleContainer}>
+        <div className={classes.titleChip}>
+          <Typography className={classes.title} variant="h5"><strong>{name}</strong></Typography>
+          {releases.map(release => (
+            <Chip
+              className={classes.versionChip}
+              key={release.id}
+              color="secondary"
+              label={release.modVersion}
+            />
+          ))}
+        </div>
         <Typography variant="h6">By <strong>{owner.name}</strong></Typography>
       </Container>
       <Container className={classes.body}>
