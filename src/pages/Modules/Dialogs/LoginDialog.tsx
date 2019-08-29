@@ -8,7 +8,7 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
-import { authStore, observer, observable, action } from '~store';
+import { observer, observable, action } from '~store';
 import { login } from '~api';
 
 interface ICreateAccountDialogProps {
@@ -39,16 +39,13 @@ export default class LoginDialog extends React.Component<ICreateAccountDialogPro
 
   @action
   public onSubmit = async () => {
-    this.loading = true;
-    const result = await login(this.username, this.password);
-    this.loading = false;
-
-    if (result.ok) {
-      console.log('authed');
-      authStore.setUser(result.value);
+    try {
+      this.loading = true;
+      await login(this.username, this.password);
+      this.loading = false;
       this.props.close();
-    } else {
-      console.log('not authed :(');
+    } catch (e) {
+      console.error(e);
       // TODO: Handle error
     }
   }

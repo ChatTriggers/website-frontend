@@ -47,6 +47,7 @@
     "eslint-plugin-react": "7.12.4",
     "eslint-plugin-react-hooks": "^1.5.0",
     "file-loader": "3.0.1",
+    "form-data": "^2.5.0",
     "fs-extra": "7.0.1",
     "grommet": "^2.7.4",
     "html-webpack-plugin": "4.0.0-beta.5",

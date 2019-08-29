@@ -8,8 +8,8 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
-import { authStore, observer, observable, action } from '~store';
-import { login, createUser } from '~api';
+import { observer, observable, action } from '~store';
+import { createUser } from '~api';
 
 interface ICreateAccountDialogProps {
   open: boolean;
@@ -48,22 +48,14 @@ export default class CreateAccountDialog extends React.Component<ICreateAccountD
   @action
   public onSubmit = async () => {
     this.loading = true;
-    const result = await createUser(this.username, this.email, this.password);
-    
-    if (result.ok) {
-      console.log('created account');
-      
-      const result2 = await login(this.username, this.password);
+
+    try {
+      await createUser(this.username, this.email, this.password);
+      console.log('created account and logged in');
       this.loading = false;
-      
-      if (result2.ok) {
-        authStore.setUser(result2.value);
-        this.props.close();
-      } else {
-        console.log('this should never happen');
-      }
-    } else {
-      console.log('no created account :(');
+      this.props.close();
+    } catch (e) {
+      console.error(e);
       // TODO: Handle error
     }
   }

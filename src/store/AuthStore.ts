@@ -31,7 +31,7 @@ class AuthStore {
   }
 
   @action
-  public setUser = (user: IUser) => {
+  public setUser = (user?: IUser) => {
     this.user = user;
 
     return this;
