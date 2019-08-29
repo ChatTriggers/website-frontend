@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action, modulesStore, computed } from '~store';
-import { createModule } from '~api';
+import { createModule, getModules } from '~api';
 
 interface ICreateModuleDialogProps {
   open: boolean;
@@ -98,7 +98,7 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   @action
   private readonly onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.moduleName = e.target.value;
-    this.valid.name = !!this.moduleName;
+    this.valid.name = !!this.moduleName && /^\w+$/.test(this.moduleName);
   }
 
   @action
@@ -143,10 +143,12 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   }
 
   private readonly onUpload = async () => {
-    action(() => { this.loading = true; });
+    action(() => { this.loading = true; })();
     // tslint:disable-next-line:no-non-null-assertion
     await createModule(this.moduleName!, this.moduleDescription!, this.tags, this.moduleImage || undefined);
-    action(() => { this.loading = false; });
+    action(() => { this.loading = false; })();
+    this.props.close();
+    await getModules();
   }
 
   private get classes() {
