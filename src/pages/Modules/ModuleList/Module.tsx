@@ -7,7 +7,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { IModule as IModuleProps } from '~api';
+import { authStore } from '~store';
 import TagList from './TagList';
+import ModuleActions from './ModuleActions';
 
 const maxTags = 3;
 
@@ -40,6 +42,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     width: '300px',
     height: '100%',
     objectFit: 'cover'
+  },
+  actions: {
+    width: '300px'
   }
 }));
 
@@ -67,6 +72,7 @@ export default (props: IModuleProps) => {
           </Typography>
           <TagList tags={tags} maxTags={maxTags} />
         </Container>
+        <ModuleActions className={classes.actions} authed={(authStore.user && authStore.user.id === owner.id) || false} />
       </Container>
     </Paper>
   );
