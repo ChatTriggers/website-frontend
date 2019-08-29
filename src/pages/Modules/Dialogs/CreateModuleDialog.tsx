@@ -99,9 +99,9 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   private readonly onDialogClose = () => {
     this.props.close();
 
-    setTimeout(() => {
+    setTimeout(action(() => {
       this.file = undefined;
-    }, 500);
+    }), 500);
   }
 
   private readonly selectRenderValue = (selected: unknown) => (
