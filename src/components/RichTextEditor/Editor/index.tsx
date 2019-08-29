@@ -11,7 +11,7 @@ const initialValue = Value.fromJSON({
         nodes: [
           {
             object: 'text',
-            text: 'Placeholder text'
+            text: 'Module Description'
           }
         ]
       }

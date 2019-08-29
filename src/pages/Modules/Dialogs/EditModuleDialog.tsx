@@ -24,7 +24,7 @@ import { withStyles } from '@material-ui/styles';
 import { observer, observable, action } from '~store';
 import RichTextEditor from '~components/RichTextEditor';
 
-interface ICreateModuleDialogProps {
+interface IEditModuleDialogProps {
   open: boolean;
   close(): void;
 }
@@ -57,7 +57,7 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
 });
 
 @observer
-class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
+class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
   @observable
   private moduleName = '';
 
@@ -123,10 +123,10 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   }
 
   private get classes() {
-    return (this.props as unknown as { 
-      classes: { 
-        [K in keyof ReturnType<typeof styles>]: string; 
-      } 
+    return (this.props as unknown as {
+      classes: {
+        [K in keyof ReturnType<typeof styles>]: string;
+      }
     }).classes;
   }
 
@@ -141,20 +141,9 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
         <div className={this.classes.root}>
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
             <Typography variant="h5">
-              Create a Module
+              Edit Module
             </Typography>
           </div>
-          <FormGroup>
-            <TextField
-              style={{ margin: 10 }}
-              id="module-name"
-              label="Module name"
-              value={this.moduleName}
-              onChange={this.onChangeName}
-              helperText="Must match the name of the folder inside the .zip file"
-              fullWidth
-            />
-          </FormGroup>
           <RichTextEditor
             className={this.classes.editor}
           />
@@ -190,7 +179,7 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
           <FormGroup className={this.classes.buttons} row>
             <ButtonGroup size="medium">
               <Button onClick={this.onDialogClose}>Cancel</Button>
-              <Button color="secondary">Upload</Button>
+              <Button color="secondary">Submit</Button>
             </ButtonGroup>
           </FormGroup>
         </div>
@@ -212,4 +201,4 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(CreateModuleDialog);
+export default withStyles(styles, { withTheme: true })(EditModuleDialog);
