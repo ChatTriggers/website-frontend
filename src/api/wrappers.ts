@@ -88,7 +88,7 @@ export const loadTags = async () => {
 export const deleteModule = async (moduleId: number) => {
   await raw.deleteModule(moduleId);
   await getModules();
-}
+};
 
 export const createModule = raw.createModule;
 export const createRelease = raw.createRelease;

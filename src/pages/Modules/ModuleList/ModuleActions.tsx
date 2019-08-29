@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import { Button, Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action } from '~store';
-import { deleteModule } from '~api';
 import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
+import DeleteModuleDialog from '~modules/Dialogs/DeleteModuleDialog';
 
 const styles = (theme: Theme) => ({
   root: {
@@ -33,6 +33,9 @@ class ModuleActions extends React.Component<IModuleActionsProps> {
   @observable
   private editDialogOpen = false;
 
+  @observable
+  private deleteDialogOpen = false;
+
   private get classes() {
     return (this.props as unknown as {
       classes: {
@@ -49,18 +52,25 @@ class ModuleActions extends React.Component<IModuleActionsProps> {
   @action
   private onClickEditModule = () => {
     this.editDialogOpen = true;
+    this.deleteDialogOpen = false;
   }
 
   @action
-  private onClickDelete = () => {
-    // TODO: Prompt before actually deleting
-    deleteModule(this.props.moduleId);
+  private onDeleteDialogClose = () => {
+    this.deleteDialogOpen = false;
+  }
+
+  @action
+  private onClickDeleteModule = () => {
+    this.editDialogOpen = false;
+    this.deleteDialogOpen = true;
   }
 
   public render() {
     return (
       <>
         <EditModuleDialog open={this.editDialogOpen} close={this.onEditDialogClose} />
+        <DeleteModuleDialog open={this.deleteDialogOpen} close={this.onDeleteDialogClose} moduleId={this.props.moduleId} />
         <div className={this.props.className}>
           <Button
             className={this.classes.button}
@@ -86,7 +96,7 @@ class ModuleActions extends React.Component<IModuleActionsProps> {
                 fullWidth
                 size="small"
                 variant="contained"
-                onClick={this.onClickDelete}
+                onClick={this.onClickDeleteModule}
               >
                 Delete Module
               </Button>
