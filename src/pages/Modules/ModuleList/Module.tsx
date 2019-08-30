@@ -97,6 +97,9 @@ export default (props: IModuleProps) => {
           className={classes.actions}
           authed={(authStore.user && authStore.user.id === owner.id) || false}
           moduleId={id}
+          description={description}
+          image={image}
+          tags={tags}
         />
       </Container>
     </Paper>

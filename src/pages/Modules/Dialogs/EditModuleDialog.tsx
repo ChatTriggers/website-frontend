@@ -15,14 +15,20 @@ import {
   ButtonGroup,
   Popover,
   Input,
-  StyleRulesCallback
+  StyleRulesCallback,
+  CircularProgress
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { observer, observable, action, modulesStore } from '~store';
+import { observer, observable, action, modulesStore, computed } from '~store';
+import { updateModule, getModules } from '~api';
 
 interface IEditModuleDialogProps {
   open: boolean;
   close(): void;
+  moduleId: number;
+  description: string;
+  image?: string;
+  tags?: string[];
 }
 
 // tslint:disable-next-line:no-any
@@ -60,36 +66,42 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
 @observer
 class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
   @observable
-  private moduleName = '';
+  private moduleImage = this.props.image;
 
   @observable
-  private moduleImage = '';
+  private moduleDescription = this.props.description;
 
   @observable
-  private moduleDescription = '';
+  private tags = this.props.tags;
 
   @observable
-  private file: File | undefined;
+  private loading = false;
 
   @observable
-  private tags: string[] = [];
+  private readonly valid = {
+    image: true,
+    description: true
+  };
+
+  @computed
+  get isValid() {
+    return this.valid.image && this.valid.description;
+  }
 
   @observable
   private anchorEl: SVGSVGElement | undefined;
 
   @action
-  private readonly onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.moduleName = e.target.value;
-  }
-
-  @action
   private readonly onChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.moduleImage = e.target.value;
+    this.moduleImage = e.target.value || undefined;
+    this.valid.image = this.moduleImage === undefined ||
+      (!!this.moduleImage && /https?:\/\/(www.)?(i\.)?imgur\.com\//.test(this.moduleImage.toLowerCase()));
   }
 
   @action
   private readonly onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.moduleDescription = e.target.value;
+    this.valid.description = !!this.moduleDescription;
   }
 
   @action
@@ -98,19 +110,8 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
   }
 
   @action
-  private readonly onUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      this.file = e.target.files[0];
-    }
-  }
-
-  @action
   private readonly onDialogClose = () => {
     this.props.close();
-
-    setTimeout(action(() => {
-      this.file = undefined;
-    }), 500);
   }
 
   private readonly selectRenderValue = (selected: unknown) => (
@@ -122,13 +123,16 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
   )
 
   @action
-  private readonly handlePopoverOpen = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-    this.anchorEl = e.currentTarget;
-  }
-
-  @action
   private readonly handlePopoverClose = () => {
     this.anchorEl = undefined;
+  }
+
+  private readonly onUpload = async () => {
+    action(() => { this.loading = true; })();
+    // tslint:disable-next-line:no-non-null-assertion
+    await updateModule(this.props.moduleId, this.moduleDescription!, this.moduleImage, false, this.tags);
+    action(() => { this.loading = false; })();
+    this.props.close();
   }
 
   private get classes() {
@@ -159,8 +163,8 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
             label="Module Description"
             value={this.moduleDescription}
             onChange={this.onChangeDescription}
+            error={!this.valid.description}
             multiline
-            helperText="Optional"
           />
           <FormGroup row style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField
@@ -169,7 +173,8 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
               label="Module Image Link"
               value={this.moduleImage}
               onChange={this.onChangeImage}
-              helperText="Optional"
+              helperText="Optional (must be imgur link)"
+              error={!this.valid.image}
             />
             <FormControl
               className={this.classes.moduleTags}
@@ -194,7 +199,9 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
           <FormGroup className={this.classes.buttons} row>
             <ButtonGroup size="medium">
               <Button onClick={this.onDialogClose}>Cancel</Button>
-              <Button color="secondary">Submit</Button>
+              <Button onClick={this.onUpload} color="secondary" disabled={this.loading || !this.isValid}>
+                {this.loading ? <CircularProgress size={30} /> : 'Update'}
+              </Button>
             </ButtonGroup>
           </FormGroup>
         </div>

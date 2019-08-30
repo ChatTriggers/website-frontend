@@ -90,5 +90,16 @@ export const deleteModule = async (moduleId: number) => {
   await getModules();
 };
 
+export const updateModule = async (
+  moduleId: number,
+  description: string,
+  image?: string,
+  flagged = false,
+  tags: string[] = []
+) => {
+  await raw.updateModule(moduleId, description, image, flagged, tags);
+  await getModules();
+};
+
 export const createModule = raw.createModule;
 export const createRelease = raw.createRelease;

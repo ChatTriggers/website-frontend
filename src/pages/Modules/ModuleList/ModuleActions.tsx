@@ -26,6 +26,9 @@ interface IModuleActionsProps {
   className?: string;
   authed: boolean;
   moduleId: number;
+  description: string;
+  image?: string;
+  tags?: string[];
 }
 
 @observer
@@ -69,8 +72,19 @@ class ModuleActions extends React.Component<IModuleActionsProps> {
   public render() {
     return (
       <>
-        <EditModuleDialog open={this.editDialogOpen} close={this.onEditDialogClose} />
-        <DeleteModuleDialog open={this.deleteDialogOpen} close={this.onDeleteDialogClose} moduleId={this.props.moduleId} />
+        <EditModuleDialog
+          open={this.editDialogOpen}
+          close={this.onEditDialogClose}
+          moduleId={this.props.moduleId}
+          description={this.props.description}
+          image={this.props.image}
+          tags={this.props.tags}
+        />
+        <DeleteModuleDialog
+          open={this.deleteDialogOpen}
+          close={this.onDeleteDialogClose}
+          moduleId={this.props.moduleId}
+        />
         <div className={this.props.className}>
           <Button
             className={this.classes.button}
