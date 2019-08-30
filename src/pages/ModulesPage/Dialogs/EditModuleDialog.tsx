@@ -21,6 +21,7 @@ import {
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action, modulesStore, computed } from '~store';
 import { updateModule, getModules } from '~api';
+import { StyledComponent } from '~components';
 
 interface IEditModuleDialogProps {
   open: boolean;
@@ -64,7 +65,7 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
 });
 
 @observer
-class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
+class EditModuleDialog extends StyledComponent<typeof styles, IEditModuleDialogProps> {
   @observable
   private moduleImage = this.props.image;
 
@@ -133,14 +134,6 @@ class EditModuleDialog extends React.Component<IEditModuleDialogProps> {
     await updateModule(this.props.moduleId, this.moduleDescription!, this.moduleImage, false, this.tags);
     action(() => { this.loading = false; })();
     this.props.close();
-  }
-
-  private get classes() {
-    return (this.props as unknown as {
-      classes: {
-        [K in keyof ReturnType<typeof styles>]: string;
-      }
-    }).classes;
   }
 
   public render() {

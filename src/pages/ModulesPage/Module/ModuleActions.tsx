@@ -3,8 +3,9 @@ import clsx from 'clsx';
 import { Button, Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action } from '~store';
-import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
-import DeleteModuleDialog from '~modules/Dialogs/DeleteModuleDialog';
+import EditModuleDialog from '~src/pages/ModulesPage/Dialogs/EditModuleDialog';
+import DeleteModuleDialog from '~src/pages/ModulesPage/Dialogs/DeleteModuleDialog';
+import { StyledComponent } from '~components';
 
 const styles = (theme: Theme) => ({
   root: {
@@ -32,20 +33,12 @@ interface IModuleActionsProps {
 }
 
 @observer
-class ModuleActions extends React.Component<IModuleActionsProps> {
+class ModuleActions extends StyledComponent<typeof styles, IModuleActionsProps> {
   @observable
   private editDialogOpen = false;
 
   @observable
   private deleteDialogOpen = false;
-
-  private get classes() {
-    return (this.props as unknown as {
-      classes: {
-        [K in keyof ReturnType<typeof styles>]: string;
-      }
-    }).classes;
-  }
 
   @action
   private readonly onEditDialogClose = () => {

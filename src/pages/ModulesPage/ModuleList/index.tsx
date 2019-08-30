@@ -2,10 +2,10 @@ import React from 'react';
 import { Fab, Tooltip, Theme } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import { Add as AddIcon } from '@material-ui/icons';
-import Module from './Module';
+import Module from '../Module';
 import ModuleSkeleton from './ModuleSkeleton';
-import ModuleController from '~modules/ModuleController';
-import CreateModuleDialog from '~modules/Dialogs/CreateModuleDialog';
+import ModuleController from '~src/pages/ModulesPage/ModuleController';
+import CreateModuleDialog from '~src/pages/ModulesPage/Dialogs/CreateModuleDialog';
 import { modulesStore, authStore, observer } from '~store';
 import ModuleError from './ModuleError';
 
@@ -29,23 +29,23 @@ export default observer(() => {
     setOpen(false);
   };
 
-  const modules = 
-    modulesStore.error ? 
-      <ModuleError /> : 
+  const modules =
+    modulesStore.error ?
+      <ModuleError /> :
       modulesStore.modules.length > 0
         ? modulesStore.modules.map(module => <Module key={module.id} {...module} />)
         : Array.from(new Array(3)).map((_, index) => <ModuleSkeleton key={index} />);
 
   return (
     <>
-      <CreateModuleDialog 
+      <CreateModuleDialog
         open={open}
         close={onDialogClose}
       />
-      {authStore.isAuthed &&  (
+      {authStore.isAuthed && (
         <Tooltip title="Create Module" placement="left">
-          <Fab 
-            className={classes.fab} 
+          <Fab
+            className={classes.fab}
             color="primary"
             onClick={onFabClick}
           >

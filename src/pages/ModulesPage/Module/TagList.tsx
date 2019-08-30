@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action } from '~store';
+import { StyledComponent } from '~components';
 
 interface ITagListProps {
   tags?: string[];
@@ -26,7 +27,7 @@ const styles = (theme: Theme) => ({
 });
 
 @observer
-class TagList extends React.Component<ITagListProps> {
+class TagList extends StyledComponent<typeof styles, ITagListProps> {
   @observable
   private tagExpand = false;
 
@@ -45,14 +46,6 @@ class TagList extends React.Component<ITagListProps> {
   @action
   private readonly handleClickAway = () => {
     this.tagExpand = false;
-  }
-
-  private get classes() {
-    return (this.props as unknown as {
-      classes: {
-        [K in keyof ReturnType<typeof styles>]: string;
-      }
-    }).classes;
   }
 
   public render() {

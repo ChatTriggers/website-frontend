@@ -13,6 +13,7 @@ import { withStyles } from '@material-ui/styles';
 import { getModules } from '~api';
 import { authStore, modulesStore, observer, observable, action } from '~store';
 import TablePagination from './TablePagination';
+import { StyledComponent } from '~components';
 
 const styles = (theme: Theme) => ({
   root: {
@@ -43,7 +44,7 @@ const styles = (theme: Theme) => ({
 });
 
 @observer
-class ModuleController extends React.Component {
+class ModuleController extends StyledComponent<typeof styles> {
   @observable
   private timeout: NodeJS.Timeout | undefined;
 
@@ -78,14 +79,6 @@ class ModuleController extends React.Component {
 
       getModules();
     }
-  }
-
-  private get classes() {
-    return (this.props as unknown as {
-      classes: {
-        [K in keyof ReturnType<typeof styles>]: string;
-      }
-    }).classes;
   }
 
   public render() {

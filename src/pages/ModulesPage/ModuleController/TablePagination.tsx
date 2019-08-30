@@ -10,6 +10,7 @@ import {
 import { makeStyles, createStyles, withStyles } from '@material-ui/styles';
 import { getModules } from '~api';
 import { modulesStore, MODULES_PER_PAGE_OPTIONS, observer } from '~store';
+import { StyledComponent } from '~components';
 
 const useStylesActions = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -29,7 +30,7 @@ const useStylesActions = makeStyles((theme: Theme) => createStyles({
 
 const TablePaginationActions = observer(() => {
   const classes = useStylesActions({});
-  
+
   const getPageClickHandler = (pageGetter: (page: number) => number) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const newPage = pageGetter(modulesStore.page);
     if (newPage === modulesStore.page) return;
@@ -99,19 +100,11 @@ interface ITablePaginationProps {
 }
 
 @observer
-class TablePagination extends React.Component<ITablePaginationProps> {
+class TablePagination extends StyledComponent<typeof stylesPagination, ITablePaginationProps> {
   get numPages() {
     if (modulesStore.modules.length === 0) return 0;
 
     return Math.ceil(modulesStore.modules.length / modulesStore.modulesPerPage);
-  }
-
-  private get classes() {
-    return (this.props as unknown as { 
-      classes: { 
-        [K in keyof ReturnType<typeof stylesPagination>]: string; 
-      } 
-    }).classes;
   }
 
   private readonly handleChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>) => {

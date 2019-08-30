@@ -23,8 +23,8 @@ import {
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { githubIcon, slate, logoLong } from '~assets';
 import { authStore, observer } from '~store';
-import LoginDialog from '~modules/Dialogs/LoginDialog';
-import CreateAccountDialog from '~modules/Dialogs/CreateAccountDialog';
+import LoginDialog from '~src/pages/ModulesPage/Dialogs/LoginDialog';
+import CreateAccountDialog from '~src/pages/ModulesPage/Dialogs/CreateAccountDialog';
 
 const drawerWidth = 240;
 

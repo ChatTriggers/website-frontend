@@ -12,6 +12,7 @@ import {
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action } from '~store';
 import { deleteModule } from '~api';
+import { StyledComponent } from '~components';
 
 interface ICreateModuleDialogProps {
   open: boolean;
@@ -35,7 +36,7 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
 });
 
 @observer
-class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
+class CreateModuleDialog extends StyledComponent<typeof styles, ICreateModuleDialogProps> {
   @observable
   private loading = false;
 
@@ -50,14 +51,6 @@ class CreateModuleDialog extends React.Component<ICreateModuleDialogProps> {
     await deleteModule(this.props.moduleId);
     action(() => { this.loading = false; })();
     this.props.close();
-  }
-
-  private get classes() {
-    return (this.props as unknown as {
-      classes: {
-        [K in keyof ReturnType<typeof styles>]: string;
-      }
-    }).classes;
   }
 
   public render() {

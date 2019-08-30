@@ -103,3 +103,4 @@ export const updateModule = async (
 
 export const createModule = raw.createModule;
 export const createRelease = raw.createRelease;
+export const requestPasswordComplete = raw.requestPasswordComplete;
