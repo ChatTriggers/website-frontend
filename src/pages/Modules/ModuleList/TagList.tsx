@@ -67,7 +67,7 @@ class TagList extends React.Component<ITagListProps> {
                 className={this.classes.chip}
               />
             ))}
-            {this.props.tags.length >= this.props.maxTags && (
+            {this.props.tags.length > this.props.maxTags && (
               <>
                 <Chip
                   label="..."
