@@ -17,6 +17,7 @@ const maxTags = 3;
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     margin: theme.spacing(5),
+    maxWidth: 1250,
     padding: `${theme.spacing(2)}px 0`
   },
   titleContainer: {

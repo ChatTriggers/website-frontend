@@ -1,4 +1,7 @@
 import React from 'react';
+import {
+  Container
+} from '@material-ui/core';
 import ModuleList from '~modules/ModuleList';
 import { observer } from '~store';
 import { getModules, getCurrentAccount, loadTags } from '~api';
@@ -13,7 +16,9 @@ export default class extends React.Component {
 
   public render() {
     return (
-      <ModuleList />
+      <Container>
+        <ModuleList />
+      </Container>
     );
   }
 }

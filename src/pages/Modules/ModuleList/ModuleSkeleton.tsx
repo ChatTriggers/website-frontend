@@ -6,6 +6,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     margin: theme.spacing(5),
+    maxWidth: 1250,
     padding: `${theme.spacing(2)}px 0`,
     animation: '1s $fadeIn'
   },
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   '@keyframes fadeIn': {
     from: { opacity: 0 },
-    to:   { opacity: 1 }
+    to: { opacity: 1 }
   }
 }));
 

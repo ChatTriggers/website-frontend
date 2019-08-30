@@ -17,7 +17,9 @@ import TablePagination from './TablePagination';
 const styles = (theme: Theme) => ({
   root: {
     margin: theme.spacing(5),
-    padding: theme.spacing(2)
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2),
+    maxWidth: 1215
   },
   content: {
     margin: 0,
