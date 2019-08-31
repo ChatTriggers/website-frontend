@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  ButtonGroup,
   Table,
   TableBody,
   TableCell,
@@ -39,7 +40,7 @@ const styles: StyleRulesCallback<Theme, {}> = (theme: Theme) => ({
     whiteSpace: 'nowrap'
   },
   table: {
-    minWidth: 650
+    minWidth: 750
   },
   releases: {
     whiteSpace: 'pre-wrap'
@@ -86,9 +87,9 @@ export class ReleasesDialog extends StyledComponent<typeof styles, IReleasesDial
           </Table>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.close} color="primary">
+          <Button onClick={this.props.close} variant="contained" color="secondary">
             Close
-            </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     );

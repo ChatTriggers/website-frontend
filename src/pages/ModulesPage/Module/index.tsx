@@ -6,15 +6,20 @@ import {
   Chip,
   Theme
 } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/styles';
+import { withStyles } from '@material-ui/styles';
 import { IModule as IModuleProps } from '~api';
-import { authStore } from '~store';
+import { authStore, observer, observable, action } from '~store';
 import TagList from './TagList';
 import ModuleActions from './ModuleActions';
+import { StyledComponent } from '~components';
+import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
+import DeleteModuleDialog from '~modules/Dialogs/DeleteModuleDialog';
+import ReleasesDialog from '~modules/Dialogs/ReleasesDialog';
+import { StyleRules } from '@material-ui/core/styles';
 
 const maxTags = 3;
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const styles = (theme: Theme): StyleRules => ({
   root: {
     margin: theme.spacing(5),
     maxWidth: 1250,
@@ -57,49 +62,85 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   actions: {
     width: '300px'
   }
-}));
+});
 
-export default (props: IModuleProps) => {
-  const classes = useStyles({});
-  const { name, owner, tags, description, image, releases } = props;
+@observer
+class Module extends StyledComponent<typeof styles, IModuleProps> {
+  @observable
+  private openDialog: 'edit' | 'delete' | 'releases' | undefined;
 
-  return (
-    <Paper
-      className={classes.root}
-      square
-      elevation={4}
-    >
-      <Container className={classes.titleContainer}>
-        <div className={classes.titleChip}>
-          <Typography className={classes.title} variant="h5"><strong>{name}</strong></Typography>
-          {releases.map(release => (
-            <Chip
-              className={classes.versionChip}
-              key={release.id}
-              color="secondary"
-              size="small"
-              label={<Typography variant="body2">{release.modVersion}</Typography>}
-            />
-          ))}
-        </div>
-        <Typography variant="h6">By <strong>{owner.name}</strong></Typography>
-      </Container>
-      <Container className={classes.body}>
-        <div className={classes.imageOuter}>
-          <img className={classes.image} src={image || 'https://www.chattriggers.com/default.png'} alt="Module" />
-        </div>
-        <Container className={classes.bodyMiddle}>
-          <Typography>
-            {description}
-          </Typography>
-          <TagList tags={tags} maxTags={maxTags} />
-        </Container>
-        <ModuleActions
-          className={classes.actions}
-          authed={(authStore.user && authStore.user.id === owner.id) || false}
-          module={props}
+  @action
+  private readonly onDialogClose = () => {
+    this.openDialog = undefined;
+  }
+
+  @action
+  private readonly setOpenDialog = (openDialog?: 'edit' | 'delete' | 'releases') => {
+    this.openDialog = openDialog;
+  }
+
+  public render() {
+    return (
+      <>
+        <EditModuleDialog
+          open={this.openDialog === 'edit'}
+          close={this.onDialogClose}
+          moduleId={this.props.id}
+          description={this.props.description}
+          image={this.props.image}
+          tags={this.props.tags}
         />
-      </Container>
-    </Paper>
-  );
-};
+        <DeleteModuleDialog
+          open={this.openDialog === 'delete'}
+          close={this.onDialogClose}
+          moduleId={this.props.id}
+        />
+        <ReleasesDialog
+          open={this.openDialog === 'releases'}
+          close={this.onDialogClose}
+          releases={this.props.releases}
+        />
+        <Paper
+          className={this.classes.root}
+          square
+          elevation={4}
+        >
+          <Container className={this.classes.titleContainer}>
+            <div className={this.classes.titleChip}>
+              <Typography className={this.classes.title} variant="h5"><strong>{this.props.name}</strong></Typography>
+              {this.props.releases.map(release => (
+                <Chip
+                  className={this.classes.versionChip}
+                  key={release.id}
+                  color="secondary"
+                  size="small"
+                  label={<Typography variant="body2">{release.modVersion}</Typography>}
+                />
+              ))}
+            </div>
+            <Typography variant="h6">By <strong>{this.props.owner.name}</strong></Typography>
+          </Container>
+          <Container className={this.classes.body}>
+            <div className={this.classes.imageOuter}>
+              <img className={this.classes.image} src={this.props.image || 'https://www.chattriggers.com/default.png'} alt="Module" />
+            </div>
+            <Container className={this.classes.bodyMiddle}>
+              <Typography>
+                {this.props.description}
+              </Typography>
+              <TagList tags={this.props.tags} maxTags={maxTags} />
+            </Container>
+            <ModuleActions
+              className={this.classes.actions}
+              authed={(authStore.user && authStore.user.id === this.props.owner.id) || false}
+              module={this.props}
+              setOpenDialog={this.setOpenDialog}
+            />
+          </Container>
+        </Paper>
+      </>
+    );
+  }
+}
+
+export default withStyles(styles, { withTheme: true })(Module);

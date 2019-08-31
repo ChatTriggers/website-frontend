@@ -2,10 +2,6 @@ import React from 'react';
 import clsx from 'clsx';
 import { Button, Theme, Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { observer, observable, action } from '~store';
-import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
-import DeleteModuleDialog from '~modules/Dialogs/DeleteModuleDialog';
-import ReleasesDialog from '~modules/Dialogs/ReleasesDialog';
 import { StyledComponent } from '~components';
 import { IModule } from '~api';
 
@@ -29,67 +25,19 @@ interface IModuleActionsProps {
   className?: string;
   authed: boolean;
   module: IModule;
+  setOpenDialog(openDialog?: 'edit' | 'delete' | 'releases'): void;
 }
 
-@observer
 class ModuleActions extends StyledComponent<typeof styles, IModuleActionsProps> {
-  @observable
-  private openDialog: 'edit' | 'delete' | 'releases' | undefined;
+  private readonly onClickReleases = this.props.setOpenDialog.bind(this, 'releases');
 
-  @action
-  private readonly onDialogClose = () => {
-    this.openDialog = undefined;
-  }
+  private readonly onClickEditModule = this.props.setOpenDialog.bind(this, 'edit');
 
-  @action
-  private readonly onClickEditModule = () => {
-    this.openDialog = 'edit';
-  }
-
-  @action
-  private readonly onClickDeleteModule = () => {
-    this.openDialog = 'delete';
-  }
-
-  @action
-  private readonly onClickReleases = () => {
-    this.openDialog = 'releases';
-  }
+  private readonly onClickDeleteModule = this.props.setOpenDialog.bind(this, 'delete');
 
   public render() {
-    const releasesButton = (
-      <Button
-        className={this.classes.button}
-        fullWidth
-        size="small"
-        variant="contained"
-        onClick={this.onClickReleases}
-        disabled={this.props.module.releases.length === 0}
-      >
-        View Releases
-      </Button>
-    );
-
     return (
       <>
-        <EditModuleDialog
-          open={this.openDialog === 'edit'}
-          close={this.onDialogClose}
-          moduleId={this.props.module.id}
-          description={this.props.module.description}
-          image={this.props.module.image}
-          tags={this.props.module.tags}
-        />
-        <DeleteModuleDialog
-          open={this.openDialog === 'delete'}
-          close={this.onDialogClose}
-          moduleId={this.props.module.id}
-        />
-        <ReleasesDialog
-          open={this.openDialog === 'releases'}
-          close={this.onDialogClose}
-          releases={this.props.module.releases}
-        />
         <div className={this.props.className}>
           <Tooltip
             title="This module has no releases"
@@ -105,7 +53,7 @@ class ModuleActions extends StyledComponent<typeof styles, IModuleActionsProps> 
                 onClick={this.onClickReleases}
                 disabled={this.props.module.releases.length === 0}
               >
-                View Releases
+                {this.props.authed ? 'Manage' : 'View'} Releases
               </Button>
             </div>
           </Tooltip>
