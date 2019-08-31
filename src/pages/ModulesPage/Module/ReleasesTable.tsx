@@ -7,20 +7,17 @@ import { IRelease } from '~api';
 
 interface IReleasesTableProps {
   releases: IRelease[];
+  style?: React.CSSProperties;
 }
 
 const styles = (theme: Theme): StyleRules => ({
   root: {
-    width: '100%',
+    margin: theme.spacing(5),
     marginTop: theme.spacing(2),
-    overflowX: 'auto'
+    marginBottom: theme.spacing(2)
   },
   tableHeader: {
-    // paddingRight: 0
     whiteSpace: 'nowrap'
-  },
-  table: {
-    minWidth: 750
   },
   releases: {
     whiteSpace: 'pre-wrap'
@@ -30,11 +27,7 @@ const styles = (theme: Theme): StyleRules => ({
 class ReleasesTable extends StyledComponent<typeof styles, IReleasesTableProps> {
   public render() {
     return (
-      <Paper
-        className={this.classes.root}
-        elevation={4}
-        square
-      >
+      <div className={this.classes.root}>
         <Table className={this.classes.table}>
           <TableHead>
             <TableRow>
@@ -55,7 +48,7 @@ class ReleasesTable extends StyledComponent<typeof styles, IReleasesTableProps> 
             ))}
           </TableBody>
         </Table>
-      </Paper>
+      </div>
     );
   }
 }

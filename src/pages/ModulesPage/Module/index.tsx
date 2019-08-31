@@ -4,7 +4,8 @@ import {
   Container,
   Typography,
   Chip,
-  Theme
+  Theme,
+  Collapse
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { IModule as IModuleProps } from '~api';
@@ -14,8 +15,8 @@ import ModuleActions from './ModuleActions';
 import { StyledComponent } from '~components';
 import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
 import DeleteModuleDialog from '~modules/Dialogs/DeleteModuleDialog';
-import ReleasesDialog from '~modules/Dialogs/ReleasesDialog';
 import { StyleRules } from '@material-ui/core/styles';
+import ReleasesTable from './ReleasesTable';
 
 const maxTags = 3;
 
@@ -49,7 +50,7 @@ const styles = (theme: Theme): StyleRules => ({
     justifyContent: 'space-between'
   },
   imageOuter: {
-    border: '3px solid gray',
+    // border: '3px solid gray',
     width: '300px',
     height: '200px',
     paddingLeft: 0
@@ -76,7 +77,7 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
 
   @action
   private readonly setOpenDialog = (openDialog?: 'edit' | 'delete' | 'releases') => {
-    this.openDialog = openDialog;
+    this.openDialog = this.openDialog === openDialog ? undefined : openDialog;
   }
 
   public render() {
@@ -94,11 +95,6 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
           open={this.openDialog === 'delete'}
           close={this.onDialogClose}
           moduleId={this.props.id}
-        />
-        <ReleasesDialog
-          open={this.openDialog === 'releases'}
-          close={this.onDialogClose}
-          releases={this.props.releases}
         />
         <Paper
           className={this.classes.root}
@@ -137,6 +133,9 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
               setOpenDialog={this.setOpenDialog}
             />
           </Container>
+          <Collapse in={this.openDialog === 'releases'}>
+            <ReleasesTable releases={this.props.releases} />
+          </Collapse>
         </Paper>
       </>
     );
