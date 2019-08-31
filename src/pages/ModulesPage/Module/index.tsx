@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 export default (props: IModuleProps) => {
   const classes = useStyles({});
-  const { id, name, owner, tags, description, image, releases } = props;
+  const { name, owner, tags, description, image, releases } = props;
 
   return (
     <Paper
@@ -97,10 +97,7 @@ export default (props: IModuleProps) => {
         <ModuleActions
           className={classes.actions}
           authed={(authStore.user && authStore.user.id === owner.id) || false}
-          moduleId={id}
-          description={description}
-          image={image}
-          tags={tags}
+          module={props}
         />
       </Container>
     </Paper>

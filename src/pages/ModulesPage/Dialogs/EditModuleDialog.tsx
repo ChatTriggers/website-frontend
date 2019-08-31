@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { observer, observable, action, modulesStore, computed } from '~store';
-import { updateModule, getModules } from '~api';
+import { updateModule } from '~api';
 import { StyledComponent } from '~components';
 
 interface IEditModuleDialogProps {

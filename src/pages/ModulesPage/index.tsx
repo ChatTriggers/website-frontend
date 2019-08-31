@@ -1,5 +1,5 @@
 import React from 'react';
-import { Theme, Box, Container } from '@material-ui/core';
+import { Theme, Box } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import Drawer from '~src/pages/ModulesPage/Drawer';
 import ModuleList from '~src/pages/ModulesPage/ModuleList';
