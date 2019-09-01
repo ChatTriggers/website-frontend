@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Table, TableBody, TableHead, TableCell, TableRow, Theme } from '@material-ui/core';
+import { Table, TableBody, TableHead, TableCell, TableRow, Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { StyledComponent } from '~components';
 import { StyleRules } from '@material-ui/core/styles';

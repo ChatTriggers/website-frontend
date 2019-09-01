@@ -11,7 +11,7 @@ interface ICodeBlockProps {
 export default class CodeBlock extends React.Component<ICodeBlockProps> {
   private el: HTMLElement | undefined;
 
-  private setRef = (ref: HTMLElement) => {
+  private readonly setRef = (ref: HTMLElement) => {
     this.el = ref;
   }
 
@@ -23,7 +23,7 @@ export default class CodeBlock extends React.Component<ICodeBlockProps> {
     this.highlightCode();
   }
 
-  private highlightCode = () => {
+  private readonly highlightCode = () => {
     if (this.el)
       hljs.highlightBlock(this.el);
   }
