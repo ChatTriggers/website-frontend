@@ -1,9 +1,8 @@
 language: node_js
-dist: "trusty"
 node_js:
   - 10
 before_install:
-    - sudo apt install python3-setuptools python3-pip
+    - curl -sS https://bootstrap.pypa.io/get-pip.py | sudo python3
     - pip3 install paramiko
 script:
     - yarn build
