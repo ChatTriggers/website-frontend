@@ -4,7 +4,6 @@ import { Paper, Typography, TextField, ButtonGroup, Button, Theme, CircularProgr
 import { withStyles } from '@material-ui/styles';
 import { StyleRulesCallback } from '@material-ui/styles/withStyles';
 import { observer, observable, action, computed } from '~store';
-import { History } from 'history';
 import { StaticContext } from 'react-router';
 import { requestPasswordComplete } from '~api';
 import qs from 'querystring';
