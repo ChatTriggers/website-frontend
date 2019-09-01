@@ -22,6 +22,7 @@ import { withStyles } from '@material-ui/styles';
 import { observer, observable, action, modulesStore, computed } from '~store';
 import { createModule, getModules } from '~api';
 import { StyledComponent } from '~components';
+import Editor from '~components/MarkdownEditor';
 
 interface ICreateModuleDialogProps {
   open: boolean;
@@ -33,6 +34,9 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
   root: {
     padding: theme.spacing(2)
   },
+  dialog: {
+    maxWidth: 800
+  },
   title: {
     width: '100%',
     display: 'flex',
@@ -40,18 +44,19 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
   },
   moduleName: {
     margin: theme.spacing(2),
-    width: theme.spacing(2) * 2 + 500
+    width: 800 - theme.spacing(2) * 4
   },
   moduleImage: {
-    width: 250,
+    width: 400 - theme.spacing(2) * 4,
     margin: theme.spacing(2)
   },
   moduleTags: {
-    width: 250,
+    width: 400 - theme.spacing(2) * 4,
     margin: theme.spacing(2)
   },
   editor: {
     margin: theme.spacing(2),
+    marginBottom: 0,
     width: theme.spacing(2) * 2 + 500
   },
   buttons: {
@@ -110,8 +115,8 @@ class CreateModuleDialog extends StyledComponent<typeof styles, ICreateModuleDia
   }
 
   @action
-  private readonly onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.moduleDescription = e.target.value;
+  private readonly onChangeDescription = (value: string) => {
+    this.moduleDescription = value;
     this.valid.description = !!this.moduleDescription;
   }
 
@@ -159,6 +164,9 @@ class CreateModuleDialog extends StyledComponent<typeof styles, ICreateModuleDia
         onClose={this.onDialogClose}
         maxWidth="sm"
         fullWidth
+        classes={{
+          paper: this.classes.dialog
+        }}
       >
         <div className={this.classes.root}>
           <div className={this.classes.title}>
@@ -175,18 +183,9 @@ class CreateModuleDialog extends StyledComponent<typeof styles, ICreateModuleDia
               onChange={this.onChangeName}
               helperText="Must match the name of the folder inside the .zip file"
               error={!this.valid.name}
-              fullWidth
             />
           </FormGroup>
-          <TextField
-            className={this.classes.editor}
-            id="module-description"
-            label="Module Description"
-            value={this.moduleDescription}
-            onChange={this.onChangeDescription}
-            error={!this.valid.description}
-            multiline
-          />
+          <Editor value={this.moduleDescription} handleChange={this.onChangeDescription} />
           <FormGroup row style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField
               className={this.classes.moduleImage}
@@ -218,7 +217,7 @@ class CreateModuleDialog extends StyledComponent<typeof styles, ICreateModuleDia
             </FormControl>
           </FormGroup>
           <FormGroup className={this.classes.buttons} row>
-            <ButtonGroup size="medium">
+            <ButtonGroup size="medium" variant="contained">
               <Button onClick={this.onDialogClose}>Cancel</Button>
               <Button onClick={this.onUpload} color="secondary" disabled={this.loading || !this.isValid}>
                 {this.loading ? <CircularProgress size={30} /> : 'Submit'}
@@ -239,7 +238,7 @@ class CreateModuleDialog extends StyledComponent<typeof styles, ICreateModuleDia
             Help text here
           </Typography>
         </Popover>
-      </Dialog>
+      </Dialog >
     );
   }
 }

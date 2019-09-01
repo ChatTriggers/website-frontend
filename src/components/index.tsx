@@ -1,4 +1,4 @@
 import StyledComponent from './StyledComponent';
-import RichTextEditor from './RichTextEditor';
+import MarkdownEditor from './MarkdownEditor';
 
-export { StyledComponent, RichTextEditor };
+export { StyledComponent, MarkdownEditor as RichTextEditor };
