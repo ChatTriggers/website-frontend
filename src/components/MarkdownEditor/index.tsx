@@ -1,7 +1,7 @@
 import React from 'react';
-import Editor from 'for-editor-dark';
 import { withTheme } from '@material-ui/styles';
 import { Theme } from '@material-ui/core';
+import Editor from 'for-editor-dark';
 
 interface IMarkdownEditorProps {
   value?: string;

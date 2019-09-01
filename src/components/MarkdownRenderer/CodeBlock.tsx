@@ -1,6 +1,6 @@
 import React from 'react';
-import hljs from 'highlight.js';
 import { Theme } from '@material-ui/core';
+import hljs from 'highlight.js';
 
 interface ICodeBlockProps {
   value: string;

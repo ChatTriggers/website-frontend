@@ -12,8 +12,8 @@ import {
 import { withStyles } from '@material-ui/styles';
 import { getModules } from '~api';
 import { authStore, modulesStore, observer, observable, action } from '~store';
-import TablePagination from './TablePagination';
 import { StyledComponent } from '~components';
+import TablePagination from './TablePagination';
 
 const styles = (theme: Theme) => ({
   root: {

@@ -1,3 +1,4 @@
+import qs from 'querystring';
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Paper, Typography, TextField, ButtonGroup, Button, Theme, CircularProgress } from '@material-ui/core';
@@ -6,7 +7,6 @@ import { StyleRulesCallback } from '@material-ui/styles/withStyles';
 import { observer, observable, action, computed } from '~store';
 import { StaticContext } from 'react-router';
 import { requestPasswordComplete } from '~api';
-import qs from 'querystring';
 import { StyledComponent } from '~components';
 
 // tslint:disable-next-line:no-any

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, TableBody, TableHead, TableCell, TableRow, Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { StyledComponent } from '~components';
 import { StyleRules } from '@material-ui/core/styles';
+import { StyledComponent } from '~components';
 import { IRelease } from '~api';
 
 interface IReleasesTableProps {

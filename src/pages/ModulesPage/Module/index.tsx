@@ -8,17 +8,17 @@ import {
   Collapse
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
+import { StyleRules } from '@material-ui/core/styles';
+import { Element } from 'react-scroll';
 import { IModule as IModuleProps } from '~api';
 import { authStore, observer, observable, action } from '~store';
-import { Element } from 'react-scroll';
-import TagList from './TagList';
-import ModuleActions from './ModuleActions';
 import { StyledComponent } from '~components';
 import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
 import DeleteModuleDialog from '~modules/Dialogs/DeleteModuleDialog';
-import { StyleRules } from '@material-ui/core/styles';
-import ReleasesTable from './ReleasesTable';
 import MarkdownRenderer from '~components/MarkdownRenderer';
+import ReleasesTable from './ReleasesTable';
+import TagList from './TagList';
+import ModuleActions from './ModuleActions';
 
 const maxTags = 3;
 

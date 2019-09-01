@@ -2,11 +2,11 @@ import React from 'react';
 import { Fab, Tooltip, Theme } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import { Add as AddIcon } from '@material-ui/icons';
-import Module from '../Module';
-import ModuleSkeleton from './ModuleSkeleton';
+import { modulesStore, authStore, observer } from '~store';
 import ModuleController from '~src/pages/ModulesPage/ModuleController';
 import CreateModuleDialog from '~src/pages/ModulesPage/Dialogs/CreateModuleDialog';
-import { modulesStore, authStore, observer } from '~store';
+import Module from '../Module';
+import ModuleSkeleton from './ModuleSkeleton';
 import ModuleError from './ModuleError';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

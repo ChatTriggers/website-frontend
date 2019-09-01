@@ -2,9 +2,9 @@ import React from 'react';
 import clsx from 'clsx';
 import { Button, Theme, Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
+import { Link } from 'react-scroll';
 import { StyledComponent } from '~components';
 import { IModule } from '~api';
-import { Link } from 'react-scroll';
 
 const styles = (theme: Theme) => ({
   root: {
