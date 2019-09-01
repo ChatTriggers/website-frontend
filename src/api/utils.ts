@@ -1,7 +1,7 @@
 import { default as Axios } from 'axios';
 
 export const BASE_URL = process.env.NODE_ENV === 'production'
-  ? `https://${window.location.host}/api`
+  ? `http://${window.location.host}/api`
   : 'http://localhost:7000/api';
 
 export const axios = Axios.create({
