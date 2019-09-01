@@ -8,6 +8,7 @@ import {
   Collapse
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
+import ReactMarkdown from 'react-markdown';
 import { IModule as IModuleProps } from '~api';
 import { authStore, observer, observable, action } from '~store';
 import TagList from './TagList';
@@ -17,6 +18,7 @@ import EditModuleDialog from '~modules/Dialogs/EditModuleDialog';
 import DeleteModuleDialog from '~modules/Dialogs/DeleteModuleDialog';
 import { StyleRules } from '@material-ui/core/styles';
 import ReleasesTable from './ReleasesTable';
+import CodeBlock from '~components/MarkdownEditor/CodeBlock';
 
 const maxTags = 3;
 
@@ -121,9 +123,11 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
               <img className={this.classes.image} src={this.props.image || 'https://www.chattriggers.com/default.png'} alt="Module" />
             </div>
             <Container className={this.classes.bodyMiddle}>
-              <Typography>
-                {this.props.description}
-              </Typography>
+              <ReactMarkdown
+                source={this.props.description}
+                skipHtml={true}
+                renderers={{ code: CodeBlock }}
+              />
               <TagList tags={this.props.tags} maxTags={maxTags} />
             </Container>
             <ModuleActions
