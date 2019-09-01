@@ -24,7 +24,7 @@ class MySFTPClient(paramiko.SFTPClient):
             else:
                 raise
 
-transport = paramiko.Transport(("chattriggers.com", 22))
+transport = paramiko.Transport(("167.99.3.229", 22))
 transport.connect(username=os.environ["SERVER_USER"], password=os.environ["SERVER_PASS"])
 sftp = MySFTPClient.from_transport(transport)
 sftp.mkdir("/root/web", ignore_existing=True)
