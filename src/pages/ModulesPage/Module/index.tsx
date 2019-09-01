@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/styles';
 import ReactMarkdown from 'react-markdown';
 import { IModule as IModuleProps } from '~api';
 import { authStore, observer, observable, action } from '~store';
+import { Element } from 'react-scroll';
 import TagList from './TagList';
 import ModuleActions from './ModuleActions';
 import { StyledComponent } from '~components';
@@ -98,49 +99,52 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
           close={this.onDialogClose}
           moduleId={this.props.id}
         />
-        <Paper
-          className={this.classes.root}
-          square
-          elevation={4}
-        >
-          <Container className={this.classes.titleContainer}>
-            <div className={this.classes.titleChip}>
-              <Typography className={this.classes.title} variant="h5"><strong>{this.props.name}</strong></Typography>
-              {this.props.releases.map(release => (
-                <Chip
-                  className={this.classes.versionChip}
-                  key={release.id}
-                  color="secondary"
-                  size="small"
-                  label={<Typography variant="body2">{release.modVersion}</Typography>}
-                />
-              ))}
-            </div>
-            <Typography variant="h6">By <strong>{this.props.owner.name}</strong></Typography>
-          </Container>
-          <Container className={this.classes.body}>
-            <div className={this.classes.imageOuter}>
-              <img className={this.classes.image} src={this.props.image || 'https://www.chattriggers.com/default.png'} alt="Module" />
-            </div>
-            <Container className={this.classes.bodyMiddle}>
-              <ReactMarkdown
-                source={this.props.description}
-                skipHtml={true}
-                renderers={{ code: CodeBlock }}
-              />
-              <TagList tags={this.props.tags} maxTags={maxTags} />
+        <Element name={`module-${this.props.id}`}>
+          <Paper
+            className={this.classes.root}
+            square
+            elevation={4}
+          >
+            <Container className={this.classes.titleContainer}>
+              <div className={this.classes.titleChip}>
+                <Typography className={this.classes.title} variant="h5"><strong>{this.props.name}</strong></Typography>
+                {this.props.releases.map(release => (
+                  <Chip
+                    className={this.classes.versionChip}
+                    key={release.id}
+                    color="secondary"
+                    size="small"
+                    label={<Typography variant="body2">{release.modVersion}</Typography>}
+                  />
+                ))}
+              </div>
+              <Typography variant="h6">By <strong>{this.props.owner.name}</strong></Typography>
             </Container>
-            <ModuleActions
-              className={this.classes.actions}
-              authed={(authStore.user && authStore.user.id === this.props.owner.id) || false}
-              module={this.props}
-              setOpenDialog={this.setOpenDialog}
-            />
-          </Container>
-          <Collapse in={this.openDialog === 'releases'}>
-            <ReleasesTable releases={this.props.releases} />
-          </Collapse>
-        </Paper>
+            <Container className={this.classes.body}>
+              <div className={this.classes.imageOuter}>
+                <img className={this.classes.image} src={this.props.image || 'https://www.chattriggers.com/default.png'} alt="Module" />
+              </div>
+              <Container className={this.classes.bodyMiddle}>
+                <ReactMarkdown
+                  source={this.props.description}
+                  skipHtml={true}
+                  renderers={{ code: CodeBlock }}
+                />
+                <TagList tags={this.props.tags} maxTags={maxTags} />
+              </Container>
+              <ModuleActions
+                className={this.classes.actions}
+                authed={(authStore.user && authStore.user.id === this.props.owner.id) || false}
+                module={this.props}
+                setOpenDialog={this.setOpenDialog}
+                opened={this.openDialog === 'releases'}
+              />
+            </Container>
+            <Collapse in={this.openDialog === 'releases'}>
+              <ReleasesTable releases={this.props.releases} />
+            </Collapse>
+          </Paper>
+        </Element>
       </>
     );
   }

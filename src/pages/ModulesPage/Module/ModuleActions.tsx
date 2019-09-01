@@ -4,6 +4,7 @@ import { Button, Theme, Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { StyledComponent } from '~components';
 import { IModule } from '~api';
+import { Link } from 'react-scroll';
 
 const styles = (theme: Theme) => ({
   root: {
@@ -25,6 +26,7 @@ interface IModuleActionsProps {
   className?: string;
   authed: boolean;
   module: IModule;
+  opened: boolean;
   setOpenDialog(openDialog?: 'edit' | 'delete' | 'releases'): void;
 }
 
@@ -36,6 +38,19 @@ class ModuleActions extends StyledComponent<typeof styles, IModuleActionsProps> 
   private readonly onClickDeleteModule = this.props.setOpenDialog.bind(this, 'delete');
 
   public render() {
+    const releasesButton = (
+      <Button
+        className={this.classes.button}
+        fullWidth
+        size="small"
+        variant="contained"
+        onClick={this.onClickReleases}
+        disabled={this.props.module.releases.length === 0}
+      >
+        {this.props.authed ? 'Manage' : 'View'} Releases
+      </Button>
+    );
+
     return (
       <>
         <div className={this.props.className}>
@@ -45,16 +60,11 @@ class ModuleActions extends StyledComponent<typeof styles, IModuleActionsProps> 
             open={this.props.module.releases.length === 0 ? undefined : false}
           >
             <div>
-              <Button
-                className={this.classes.button}
-                fullWidth
-                size="small"
-                variant="contained"
-                onClick={this.onClickReleases}
-                disabled={this.props.module.releases.length === 0}
-              >
-                {this.props.authed ? 'Manage' : 'View'} Releases
-              </Button>
+              {this.props.opened ? releasesButton : (
+                <Link to={`module-${this.props.module.id}`} smooth offset={-30} duration={500}>
+                  {releasesButton}
+                </Link>
+              )}
             </div>
           </Tooltip>
           {this.props.authed && (
