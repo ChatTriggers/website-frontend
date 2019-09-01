@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - 10
+before_install:
+    - curl -sS https://bootstrap.pypa.io/get-pip.py | sudo python3
+    - sudo pip3 install paramiko
+script:
+    - yarn build
+after_success:
+    - wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    #- ./send.sh success $WEBHOOK_URL
+    - cd scripts/
+    - python3 deploy.py
+after_failure:
+    - wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    #- ./send.sh failure $WEBHOOK_URL
