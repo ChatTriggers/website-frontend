@@ -25,7 +25,7 @@ const maxTags = 3;
 const styles = (theme: Theme): StyleRules => ({
   root: {
     margin: theme.spacing(5),
-    maxWidth: 1250,
+    maxWidth: 1100,
     padding: `${theme.spacing(2)}px 0`
   },
   titleContainer: {
