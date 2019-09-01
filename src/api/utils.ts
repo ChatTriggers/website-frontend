@@ -1,6 +1,5 @@
 import { default as Axios } from 'axios';
 
-// export const BASE_URL = `${window.location.protocol}//${window.location.host}/api`;
 export const BASE_URL = process.env.NODE_ENV === 'production'
   ? `https://${window.location.host}/api`
   : 'http://localhost:7000/api';

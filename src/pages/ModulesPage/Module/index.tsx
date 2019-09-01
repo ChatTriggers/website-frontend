@@ -131,7 +131,7 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
               </Container>
               <ModuleActions
                 className={this.classes.actions}
-                authed={(authStore.user && authStore.user.id === this.props.owner.id) || false}
+                authed={(authStore.user && (authStore.user.id === this.props.owner.id || authStore.isTrusted || authStore.isAdmin)) || false}
                 module={this.props}
                 setOpenDialog={this.setOpenDialog}
                 opened={this.openDialog === 'releases'}
