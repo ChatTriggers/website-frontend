@@ -8,6 +8,8 @@ import {
   ListItemText,
   IconButton,
   Divider,
+  Menu,
+  MenuItem,
   Theme
 } from '@material-ui/core';
 import { ListItemProps } from '@material-ui/core/ListItem';
@@ -18,13 +20,15 @@ import {
   AccountCircle as AccountCircleIcon,
   Home as HomeIcon,
   Create as CreateIcon,
-  ExitToApp as LoginIcon
+  ExitToApp as LoginIcon,
+  Settings as SettingsIcon
 } from '@material-ui/icons';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import { githubIcon, slate, logoLong } from '~assets';
 import { authStore, observer } from '~store';
 import LoginDialog from '~src/pages/ModulesPage/Dialogs/LoginDialog';
 import CreateAccountDialog from '~src/pages/ModulesPage/Dialogs/CreateAccountDialog';
+import { logout } from '~api';
 
 const drawerWidth = 240;
 
@@ -83,8 +87,22 @@ export default observer(() => {
   const [open, setOpen] = React.useState(true);
   const [loggingIn, setLoggingIn] = React.useState(false);
   const [creatingAccount, setCreatingAccount] = React.useState(false);
+  const [settingsEl, setSettingsEl] = React.useState<SVGSVGElement | undefined>();
 
   const classes = useStyles();
+
+  const handleSettingsClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    setSettingsEl(e.currentTarget);
+  };
+
+  const handleSettingsClose = () => {
+    setSettingsEl(undefined);
+  };
+
+  const onLogout = async () => {
+    await logout();
+    handleSettingsClose();
+  };
 
   const onDrawerChange = () => {
     setOpen(isOpen => !isOpen);
@@ -180,14 +198,18 @@ export default observer(() => {
         </List>
         <Divider />
         <List>
-          {authStore.isAuthed ? (
+          {!!authStore.user ? (
             <ListItem>
               <ListItemIcon>
                 <AccountCircleIcon />
               </ListItemIcon>
               <ListItemText>
-                {/* tslint:disable-next-line:no-non-null-assertion */}
-                {authStore.user!.name}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignContent: 'center' }}>
+                  {authStore.user.name}
+                  <IconButton size="small">
+                    <SettingsIcon onClick={handleSettingsClick} />
+                  </IconButton>
+                </div>
               </ListItemText>
             </ListItem>
           ) : (
@@ -214,6 +236,13 @@ export default observer(() => {
             )}
         </List>
       </Drawer>
+      <Menu
+        anchorEl={settingsEl}
+        open={!!settingsEl}
+        onClose={handleSettingsClose}
+      >
+        <MenuItem onClick={onLogout}>Logout</MenuItem>
+      </Menu>
     </div>
   );
 });

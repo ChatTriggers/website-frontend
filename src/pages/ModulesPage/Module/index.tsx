@@ -124,7 +124,7 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
                 <img className={this.classes.image} src={this.props.image || 'https://www.chattriggers.com/default.png'} alt="Module" />
               </div>
               <Container className={this.classes.bodyMiddle}>
-                <div style={{ overflowY: 'scroll', height: 160 }}>
+                <div style={{ overflowY: 'auto', height: 160 }}>
                   <MarkdownRenderer source={this.props.description} />
                 </div>
                 <TagList tags={this.props.tags} maxTags={maxTags} />

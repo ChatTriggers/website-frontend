@@ -36,7 +36,7 @@ export const login = async (
 };
 
 export const logout = async () => {
-  const response = await axios.post<undefined>(ACCOUNT_LOGOUT_URL);
+  const response = await axios.get<undefined>(ACCOUNT_LOGOUT_URL);
 
   return validateStatusCode(response, {
     200: () => response.data
@@ -101,7 +101,7 @@ export const requestPasswordComplete = async (
     password,
     token
   }));
-  
+
   return validateStatusCode(response, {
     200: () => response.data,
     400: () => { throw ApiErrors.PasswordResetComplete.REQUEST_ISSUE(response.statusText); },
