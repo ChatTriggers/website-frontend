@@ -22,6 +22,7 @@ import { withStyles } from '@material-ui/styles';
 import { observer, observable, action, modulesStore, computed } from '~store';
 import { updateModule } from '~api';
 import { StyledComponent } from '~components';
+import Editor from '~components/MarkdownEditor';
 
 interface IEditModuleDialogProps {
   open: boolean;
@@ -37,17 +38,20 @@ const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
   root: {
     padding: theme.spacing(2)
   },
+  dialog: {
+    maxWidth: 800
+  },
   title: {
     width: '100%',
     display: 'flex',
     justifyContent: 'center'
   },
   moduleImage: {
-    width: 250,
+    width: '45%',
     margin: theme.spacing(2)
   },
   moduleTags: {
-    width: 250,
+    width: '45%',
     margin: theme.spacing(2)
   },
   editor: {
@@ -100,8 +104,8 @@ class EditModuleDialog extends StyledComponent<typeof styles, IEditModuleDialogP
   }
 
   @action
-  private readonly onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.moduleDescription = e.target.value;
+  private readonly onChangeDescription = (value: string) => {
+    this.moduleDescription = value;
     this.valid.description = !!this.moduleDescription;
   }
 
@@ -143,6 +147,9 @@ class EditModuleDialog extends StyledComponent<typeof styles, IEditModuleDialogP
         onClose={this.onDialogClose}
         maxWidth="sm"
         fullWidth
+        classes={{
+          paper: this.classes.dialog
+        }}
       >
         <div className={this.classes.root}>
           <div className={this.classes.title}>
@@ -150,15 +157,7 @@ class EditModuleDialog extends StyledComponent<typeof styles, IEditModuleDialogP
               Edit Module
             </Typography>
           </div>
-          <TextField
-            className={this.classes.editor}
-            id="module-description"
-            label="Module Description"
-            value={this.moduleDescription}
-            onChange={this.onChangeDescription}
-            error={!this.valid.description}
-            multiline
-          />
+          <Editor value={this.moduleDescription} handleChange={this.onChangeDescription} />
           <FormGroup row style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField
               className={this.classes.moduleImage}
