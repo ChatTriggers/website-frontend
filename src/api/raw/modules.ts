@@ -43,12 +43,14 @@ export const getModules = async (
       limit,
       offset,
       owner,
-      trusted,
-      flagged,
+      trusted: trusted || undefined,
+      flagged: flagged || undefined,
       tag,
       q
     }
   });
+
+  console.log(response);
 
   return validateStatusCode(response, {
     200: () => response.data
