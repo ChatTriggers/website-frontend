@@ -18,7 +18,7 @@ interface ICreateAccountDialogProps {
 
 @observer
 export default class LoginDialog extends React.Component<ICreateAccountDialogProps> {
-  @observable 
+  @observable
   private username = '';
 
   @observable
@@ -40,9 +40,9 @@ export default class LoginDialog extends React.Component<ICreateAccountDialogPro
   @action
   public onSubmit = async () => {
     try {
-      this.loading = true;
+      action(() => { this.loading = true; })();
       await login(this.username, this.password);
-      this.loading = false;
+      action(() => { this.loading = false; })();
       this.props.close();
     } catch (e) {
       console.error(e);

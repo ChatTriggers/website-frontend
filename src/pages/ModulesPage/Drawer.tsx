@@ -87,11 +87,11 @@ export default observer(() => {
   const [open, setOpen] = React.useState(true);
   const [loggingIn, setLoggingIn] = React.useState(false);
   const [creatingAccount, setCreatingAccount] = React.useState(false);
-  const [settingsEl, setSettingsEl] = React.useState<SVGSVGElement | undefined>();
+  const [settingsEl, setSettingsEl] = React.useState<HTMLButtonElement | undefined>();
 
   const classes = useStyles();
 
-  const handleSettingsClick = (e: React.MouseEvent<SVGSVGElement>) => {
+  const handleSettingsClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setSettingsEl(e.currentTarget);
   };
 
@@ -206,8 +206,8 @@ export default observer(() => {
               <ListItemText>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignContent: 'center' }}>
                   {authStore.user.name}
-                  <IconButton size="small">
-                    <SettingsIcon onClick={handleSettingsClick} />
+                  <IconButton size="small" onClick={handleSettingsClick}>
+                    <SettingsIcon />
                   </IconButton>
                 </div>
               </ListItemText>

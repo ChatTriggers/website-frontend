@@ -138,7 +138,7 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
               />
             </Container>
             <Collapse in={this.openDialog === 'releases'}>
-              <ReleasesTable releases={this.props.releases} />
+              <ReleasesTable module={this.props} />
             </Collapse>
           </Paper>
         </Element>

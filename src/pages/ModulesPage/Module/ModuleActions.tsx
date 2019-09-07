@@ -45,7 +45,7 @@ class ModuleActions extends StyledComponent<typeof styles, IModuleActionsProps> 
         size="small"
         variant="contained"
         onClick={this.onClickReleases}
-        disabled={this.props.module.releases.length === 0}
+        disabled={this.props.module.releases.length === 0 && !this.props.authed}
       >
         {this.props.authed ? 'Manage' : 'View'} Releases
       </Button>
