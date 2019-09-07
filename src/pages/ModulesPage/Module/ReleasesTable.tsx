@@ -23,13 +23,13 @@ const styles = (theme: Theme): StyleRules => ({
 });
 
 class ReleasesTable extends StyledComponent<typeof styles, IReleasesTableProps> {
-  private fileInput = React.createRef<HTMLInputElement>();
+  private readonly fileInput = React.createRef<HTMLInputElement>();
 
   private get module() {
     return this.props.module;
   }
 
-  private columns: Array<Column<IRelease>> = [
+  private readonly columns: Array<Column<IRelease>> = [
     {
       title: 'Release Version',
       field: 'releaseVersion',
@@ -111,7 +111,7 @@ class ReleasesTable extends StyledComponent<typeof styles, IReleasesTableProps> 
     }
   ];
 
-  private onRowAdd = async (release: IRelease): Promise<void> => {
+  private readonly onRowAdd = async (release: IRelease): Promise<void> => {
     console.log('before onRowAdd: ', release);
     release.scripts = (this.fileInput.current && this.fileInput.current.files && this.fileInput.current.files[0]) || undefined;
     console.log('after onRowAdd: ', release);
@@ -146,7 +146,7 @@ class ReleasesTable extends StyledComponent<typeof styles, IReleasesTableProps> 
     })();
   }
 
-  private onRowUpdate = async (release: IRelease, oldRelease?: IRelease): Promise<void> => {
+  private readonly onRowUpdate = async (release: IRelease, oldRelease?: IRelease): Promise<void> => {
     const modVersion = oldRelease ? (
       release.modVersion === oldRelease.modVersion ? undefined : release.modVersion
     ) : undefined;
@@ -178,7 +178,7 @@ class ReleasesTable extends StyledComponent<typeof styles, IReleasesTableProps> 
     })();
   }
 
-  private onRowDelete = async (release: IRelease) => {
+  private readonly onRowDelete = async (release: IRelease) => {
     deleteRelease(this.module.id, release.id);
 
     action(() => {
