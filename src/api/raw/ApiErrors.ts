@@ -40,6 +40,11 @@ const ApiErrorsDesc = {
     MALFORMED_DATA: 'Part of the data is not the correct type',
     NO_PERMISSION: 'User does not have permission to edit this module',
     MODULE_NOT_FOUND: 'No module with the given moduleId found'
+  },
+  DeleteRelease: {
+    MALFORMED_DATA: 'Part of the data is not the correct type',
+    NO_PERMISSION: 'User does not have permission to edit this module',
+    MODULE_NOT_FOUND: 'No module with the given moduleId found'
   }
 };
 
