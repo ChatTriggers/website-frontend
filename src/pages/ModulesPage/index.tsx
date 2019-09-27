@@ -1,40 +1,44 @@
 import React from 'react';
-import { Theme, Box } from '@material-ui/core';
+import { Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import Drawer from '~src/pages/ModulesPage/Drawer';
-import ModuleList from '~src/pages/ModulesPage/ModuleList';
 import { getModules, getCurrentAccount, loadTags } from '~api';
-import { StyledComponent } from '~components';
+import { modulesStore, observer } from '~store';
+import { Drawer, StyledComponent, Styles } from '~components';
+import ModuleList from '~components/ModuleList';
 
-const styles = (theme: Theme) => ({
-  root: {
-    display: 'flex',
-    minHeight: '100vh'
+const styles = () => ({
+  noModules: {
+    width: '100vw',
+    height: '100vh'
   },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    backgroundColor: theme.palette.background.default
+  modules: {
+    width: '100vw'
   }
 });
 
-class ModulePage extends StyledComponent<typeof styles> {
-  public componentDidMount = async () => {
-    await getModules();
-    await getCurrentAccount();
-    await loadTags();
+@observer
+class ModulesPage extends StyledComponent<typeof styles> {
+  public componentWillMount = async () => {
+    if (modulesStore.modules.length === 0) {
+      getModules();
+      getCurrentAccount();
+      loadTags();
+    }
   }
 
   public render() {
     return (
-      <div className={this.classes.root}>
-        <Drawer />
-        <Box className={this.classes.content}>
-          <ModuleList />
-        </Box>
-      </div>
+      <Drawer title="Modules">
+        {modulesStore.modules.length > 0 ? (
+          <div className={this.classes.modules}>
+            <ModuleList />
+          </div>
+        ) : (
+            <div className={this.classes.noModules} />
+          )}
+      </Drawer>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(ModulePage);
+export default withStyles(styles)(ModulesPage);
