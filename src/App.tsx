@@ -4,6 +4,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import theme from './styles/theme';
 import PasswordResetPage from './pages/PasswordReset';
 import LoginPage from './pages/LoginPage';
+import CreateAccountPage from './pages/CreateAccountPage';
 import ModulesListPage from './pages/ModulesListPage';
 import MobileFilterPage from './pages/MobileFilterPage';
 import ModulePage from './pages/ModulePage';
@@ -13,6 +14,7 @@ const App: React.FunctionComponent = () => (
     <Router>
       <Route path="/passwordreset" component={PasswordResetPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/create-account" component={CreateAccountPage} />
       <Route path="/modules" exact component={ModulesListPage} />
       <Route path="/modules/filter" component={MobileFilterPage} />
       <Route path="/modules/search/:module([\w ]+)" component={ModulePage} />
