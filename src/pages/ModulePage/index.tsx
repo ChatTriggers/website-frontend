@@ -171,15 +171,17 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                 <TagList tags={this.module.tags} maxTags={99} />
               </Paper>
             )}
-            <Paper
-              className={this.classes.paper}
-              elevation={4}
-            >
-              <Typography variant="subtitle1">
-                Releases
-              </Typography>
-              <ReleasesTable releases={this.module.releases} />
-            </Paper>
+            {this.module.releases.length > 0 && (
+              <Paper
+                className={this.classes.paper}
+                elevation={4}
+              >
+                <Typography variant="subtitle1">
+                  Releases
+                </Typography>
+                <ReleasesTable releases={this.module.releases} />
+              </Paper>
+            )}
           </div>
         )) || <div />}
       </Drawer>
