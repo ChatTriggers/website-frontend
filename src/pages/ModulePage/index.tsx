@@ -27,6 +27,7 @@ type ModuleProps = RouteComponentProps<{ module: string }>
 const styles: Styles = (theme: Theme) => ({
   root: {
     width: '100vw',
+    minHeight: 'calc(100vh - 72px)',
   },
   paperContainer: {
     margin: 'auto',
