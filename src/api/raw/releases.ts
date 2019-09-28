@@ -23,10 +23,7 @@ export const createRelease = async (
 
   const response = await axios.post<IRelease>(RELEASES_URL(moduleId), formData);
 
-  return validateStatusCode(response, {
-    201: () => response.data,
-    400: () => { throw ApiErrors.CreateRelease.MALFORMED_DATA(response.statusText); },
-  });
+  return validateStatusCode(response, ApiErrors.CreateRelease);
 };
 
 export const updateRelease = async (
@@ -35,17 +32,12 @@ export const updateRelease = async (
   modVersion?: string,
   changelog?: string,
 ): Promise<undefined> => {
-  if (!modVersion && !changelog) return;
+  if (!modVersion && !changelog) return undefined;
 
   const params = qs.stringify({ modVersion, changelog });
   const response = await axios.patch<undefined>(RELEASES_URL_SPECIFIC(moduleId, releaseId), params);
 
-  validateStatusCode(response, {
-    200: () => undefined,
-    400: () => { throw ApiErrors.UpdateRelease.MALFORMED_DATA(response.statusText); },
-    403: () => { throw ApiErrors.UpdateRelease.NO_PERMISSION(response.statusText); },
-    404: () => { throw ApiErrors.UpdateRelease.MODULE_NOT_FOUND(response.statusText); },
-  });
+  return validateStatusCode(response, ApiErrors.UpdateRelease);
 };
 
 export const deleteRelease = async (
@@ -54,10 +46,5 @@ export const deleteRelease = async (
 ): Promise<undefined> => {
   const response = await axios.delete<undefined>(RELEASES_URL_SPECIFIC(moduleId, releaseId));
 
-  return validateStatusCode(response, {
-    200: () => undefined,
-    400: () => { throw ApiErrors.DeleteRelease.MALFORMED_DATA(response.statusText); },
-    403: () => { throw ApiErrors.DeleteRelease.NO_PERMISSION(response.statusText); },
-    404: () => { throw ApiErrors.DeleteRelease.MODULE_NOT_FOUND(response.statusText); },
-  });
+  return validateStatusCode(response, ApiErrors.DeleteRelease);
 };

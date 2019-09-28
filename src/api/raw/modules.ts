@@ -28,9 +28,7 @@ export const getModules = async (
     },
   });
 
-  return validateStatusCode(response, {
-    200: () => response.data,
-  });
+  return validateStatusCode(response);
 };
 
 export const createModule = async (
@@ -46,9 +44,7 @@ export const createModule = async (
     image,
   }));
 
-  return validateStatusCode(response, {
-    201: () => response.data,
-  });
+  return validateStatusCode(response);
 };
 
 export const getSingleModule = async (
@@ -56,11 +52,7 @@ export const getSingleModule = async (
 ): Promise<IModule> => {
   const response = await axios.get<IModule>(MODULE_ID_URL(moduleId));
 
-  return validateStatusCode(response, {
-    200: () => response.data,
-    400: () => { throw ApiErrors.GetModule.MALFORMED_MODULE_ID(response.statusText); },
-    404: () => { throw ApiErrors.GetModule.MODULE_NOT_FOUND(response.statusText); },
-  });
+  return validateStatusCode(response, ApiErrors.GetModule);
 };
 
 export const updateModule = async (
@@ -77,12 +69,7 @@ export const updateModule = async (
     tags,
   }));
 
-  return validateStatusCode(response, {
-    200: () => response.data,
-    400: () => { throw ApiErrors.UpdateModule.MALFORMED_DATA(response.statusText); },
-    403: () => { throw ApiErrors.UpdateModule.NO_PERMISSION(response.statusText); },
-    404: () => { throw ApiErrors.UpdateModule.MODULE_NOT_FOUND(response.statusText); },
-  });
+  return validateStatusCode(response, ApiErrors.UpdateModule);
 };
 
 export const deleteModule = async (
@@ -90,18 +77,11 @@ export const deleteModule = async (
 ): Promise<undefined> => {
   const response = await axios.delete<undefined>(MODULE_ID_URL(moduleId));
 
-  return validateStatusCode(response, {
-    200: () => undefined,
-    400: () => { throw ApiErrors.DeleteModule.MALFORMED_MODULE_ID(response.statusText); },
-    403: () => { throw ApiErrors.DeleteModule.NO_PERMISSION(response.statusText); },
-    404: () => { throw ApiErrors.DeleteModule.MODULE_NOT_FOUND(response.statusText); },
-  });
+  return validateStatusCode(response, ApiErrors.DeleteModule);
 };
 
 export const getTags = async (): Promise<string[]> => {
   const response = await axios.get<string[]>(TAGS_URL);
 
-  return validateStatusCode(response, {
-    200: () => response.data,
-  });
+  return validateStatusCode(response);
 };
