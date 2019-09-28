@@ -16,6 +16,8 @@ import {
   ExitToApp as LoginIcon,
   Settings as SettingsIcon,
 } from '@material-ui/icons';
+import { withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
 import { githubIcon, slate } from '~assets';
 import { authStore, observer } from '~store';
 
@@ -26,8 +28,16 @@ const useStyles = makeStyles({
   },
 });
 
-export default observer(() => {
+export default withRouter(observer(({ history }: RouteComponentProps<{}>) => {
   const classes = useStyles();
+
+  const onClickLogin = (): void => {
+    history.push('/login');
+  };
+
+  const onClickCreateAccount = (): void => {
+    history.push('/create-account');
+  };
 
   return (
     <>
@@ -92,7 +102,7 @@ export default observer(() => {
           </ListItem>
         ) : (
           <>
-            <ListItem button>
+            <ListItem button onClick={onClickLogin}>
               <ListItemIcon>
                 <LoginIcon />
               </ListItemIcon>
@@ -100,7 +110,7 @@ export default observer(() => {
                   Login
               </ListItemText>
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={onClickCreateAccount}>
               <ListItemIcon>
                 <CreateIcon />
               </ListItemIcon>
@@ -113,4 +123,4 @@ export default observer(() => {
       </List>
     </>
   );
-});
+}));

@@ -87,7 +87,7 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
 
   const classes = useStyles({ searchValue: searchFocused || search !== '' });
 
-  const onClick = (): void => {
+  const onBackButtonClick = (): void => {
     history.push('/modules');
   };
 
@@ -130,7 +130,7 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
   const button = (
     <IconButton
       edge="start"
-      onClick={onClick}
+      onClick={onBackButtonClick}
     >
       <KeyboardArrowLeftIcon />
     </IconButton>
