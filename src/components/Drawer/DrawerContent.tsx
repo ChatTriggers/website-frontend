@@ -26,6 +26,10 @@ import { authStore, observer } from '~store';
 import { logout } from '~api';
 
 const useStyles = makeStyles((theme: Theme) => ({
+  logo: {
+    maxHeight: theme.mixins.toolbar.minHeight,
+    objectFit: 'contain',
+  },
   img: {
     maxWidth: 24,
     maxHeight: 24,

@@ -10,6 +10,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon } from '@material-ui/icons';
 import clsx from 'clsx';
+import { logoLong } from '~assets';
 import DrawerContent from './DrawerContent';
 
 const drawerWidth = 240;
@@ -42,13 +43,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-  },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
@@ -64,6 +58,16 @@ const useStyles = makeStyles((theme: Theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  },
+  logo: {
+    width: drawerWidth - 2,
   },
 }));
 
@@ -116,6 +120,7 @@ export default (props: IMobileDrawerProps): JSX.Element => {
         }}
       >
         <div className={classes.drawerHeader}>
+          <img className={classes.logo} src={logoLong} alt="ChatTriggers logo" />
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeftIcon />
           </IconButton>
