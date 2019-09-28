@@ -40,7 +40,7 @@ export default ({ releases }: IReleasesTableProps): JSX.Element => {
       component="nav"
     >
       <Divider />
-      {releases.map(release => (
+      {releases.sort((a, b) => b.createdAt - a.createdAt).map(release => (
         <div key={release.id}>
           <ListItem
             button

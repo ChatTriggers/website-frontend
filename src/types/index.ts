@@ -37,6 +37,7 @@ export interface IRelease {
   changelog: string;
   downloads: number;
   scripts: File | undefined;
+  createdAt: number;
 }
 
 export type ModuleSearchFilter = 'all' | 'trusted' | 'user' | 'flagged';
