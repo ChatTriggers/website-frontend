@@ -67,7 +67,7 @@ export default withRouter(({ module, history }: IModuleProps) => {
   const classes = useStyles();
 
   const onClickModule = (): void => {
-    history.push(`/modules/${module.name}`);
+    history.push(`/modules/search/${module.name}`);
   };
 
   return (
@@ -81,8 +81,8 @@ export default withRouter(({ module, history }: IModuleProps) => {
             <Typography className={classes.title} variant="h5"><strong>{module.name}</strong></Typography>
           </div>
           <Typography variant="h6">
-By
-            <strong>{module.owner.name}</strong>
+            By
+            <strong>{` ${module.owner.name}`}</strong>
           </Typography>
         </div>
         <Button

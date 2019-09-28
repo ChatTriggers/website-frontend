@@ -87,6 +87,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
 
   public async componentWillMount(): Promise<void> {
     const moduleName = this.props.match.params.module;
+
     action(() => {
       this.module = modulesStore.modules.find(m => m.name.toString().toLowerCase() === moduleName.toLowerCase());
     })();
@@ -139,8 +140,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                   </div>
                   <Typography variant="h6">
                     By
-                    {' '}
-                    <strong>{this.module.owner.name}</strong>
+                    <strong>{` ${this.module.owner.name}`}</strong>
                   </Typography>
                 </div>
               </div>

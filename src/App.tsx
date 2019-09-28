@@ -13,7 +13,7 @@ const App: React.FunctionComponent = () => (
       <Route path="/passwordreset" component={PasswordResetPage} />
       <Route path="/modules" exact component={ModulesListPage} />
       <Route path="/modules/filter" component={MobileFilterPage} />
-      <Route path="/modules/:module([\w ]+)" component={ModulePage} />
+      <Route path="/modules/search/:module([\w ]+)" component={ModulePage} />
     </Router>
   </ThemeProvider>
 );
