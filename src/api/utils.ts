@@ -1,4 +1,4 @@
-import { default as Axios } from 'axios';
+import Axios from 'axios';
 
 export const BASE_URL = process.env.NODE_ENV === 'production'
   ? `http://${window.location.host}/api`
@@ -7,5 +7,5 @@ export const BASE_URL = process.env.NODE_ENV === 'production'
 export const axios = Axios.create({
   validateStatus: status => status >= 200 && status < 500,
   withCredentials: true,
-  timeout: 5000
+  timeout: 5000,
 });

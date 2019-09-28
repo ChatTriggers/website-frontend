@@ -2,7 +2,7 @@ export { };
 
 // import React from 'react';
 // import { animated, useSpring } from 'react-spring';
-// import { Box, Heading, Text } from 'grommet'; 
+// import { Box, Heading, Text } from 'grommet';
 
 // interface IInfoCardProps {
 //   image: string;
@@ -12,12 +12,12 @@ export { };
 
 // export default (props: IInfoCardProps) => {
 //   const AnimatedBox = animated(Box);
-//   const [animatedProps, set] = useSpring(() => ({ 
+//   const [animatedProps, set] = useSpring(() => ({
 //     scale: 1,
 //     config: {
 //       mass: 1,
 //       tension: 300,
-//       friction: 34  
+//       friction: 34
 //     }
 //    }));
 
@@ -30,7 +30,7 @@ export { };
 //       onMouseEnter={mouseEnter}
 //       onMouseLeave={mouseLeave}
 //       style={{ transform: animatedProps.scale.interpolate(trans) }}
-//       background={{ 
+//       background={{
 //         color: 'light-3',
 //         opacity: 0.8
 //       }}

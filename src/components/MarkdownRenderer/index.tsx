@@ -8,14 +8,14 @@ interface IMarkdownRendererProps {
   source: string;
 }
 
-export default (props: IMarkdownRendererProps) => (
+export default ({ source }: IMarkdownRendererProps): JSX.Element => (
   <ReactMarkdown
-    source={props.source}
-    escapeHtml={true}
+    source={source}
+    escapeHtml
     renderers={{
       code: CodeBlock,
       paragraph: ParagraphBlock,
-      heading: HeadingBlock
+      heading: HeadingBlock,
     }}
   />
 );

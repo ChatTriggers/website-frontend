@@ -3,49 +3,49 @@ import { AxiosResponse } from 'axios';
 const ApiErrorsDesc = {
   GetModule: {
     MALFORMED_MODULE_ID: 'moduleId is not an integer',
-    MODULE_NOT_FOUND: 'No module with moduleId found'
+    MODULE_NOT_FOUND: 'No module with moduleId found',
   },
   UpdateModule: {
     MALFORMED_DATA: 'One of: moduleId is not an integer, image is not an imgur link, hidden is not a boolean',
     NO_PERMISSION: 'User does not have permission to edit this module',
-    MODULE_NOT_FOUND: 'No module with moduleId found'
+    MODULE_NOT_FOUND: 'No module with moduleId found',
   },
   DeleteModule: {
     MALFORMED_MODULE_ID: 'moduleId is not an integer',
     NO_PERMISSION: 'User does not have permission',
-    MODULE_NOT_FOUND: 'No module with moduleId found'
+    MODULE_NOT_FOUND: 'No module with moduleId found',
   },
   Login: {
-    AUTH_FAILED: 'Authentication failed'
+    AUTH_FAILED: 'Authentication failed',
   },
   CreateAccount: {
     USER_ALREADY_AUTHED: 'The user is already logged in',
     NAME_IN_USE: 'The specified name is already in use',
-    EMAIL_IN_USE: 'The specified email is already in use'
+    EMAIL_IN_USE: 'The specified email is already in use',
   },
   CurrentAccount: {
-    NO_ACTIVE_ACCOUNT: 'There is no currently active account'
+    NO_ACTIVE_ACCOUNT: 'There is no currently active account',
   },
   PasswordResetRequest: {
-    ALREADY_LOGGED_IN: 'The account in question is already logged in'
+    ALREADY_LOGGED_IN: 'The account in question is already logged in',
   },
   PasswordResetComplete: {
     REQUEST_ISSUE: 'The was an issue with the request',
-    ALREADY_LOGGED_IN: 'The account in question is already logged in'
+    ALREADY_LOGGED_IN: 'The account in question is already logged in',
   },
   CreateRelease: {
-    MALFORMED_DATA: 'One of the request parameters is malformed'
+    MALFORMED_DATA: 'One of the request parameters is malformed',
   },
   UpdateRelease: {
     MALFORMED_DATA: 'Part of the data is not the correct type',
     NO_PERMISSION: 'User does not have permission to edit this module',
-    MODULE_NOT_FOUND: 'No module with the given moduleId found'
+    MODULE_NOT_FOUND: 'No module with the given moduleId found',
   },
   DeleteRelease: {
     MALFORMED_DATA: 'Part of the data is not the correct type',
     NO_PERMISSION: 'User does not have permission to edit this module',
-    MODULE_NOT_FOUND: 'No module with the given moduleId found'
-  }
+    MODULE_NOT_FOUND: 'No module with the given moduleId found',
+  },
 };
 
 type ApiErrorsFunc = {
@@ -67,15 +67,15 @@ export const ApiErrors = Object.keys(ApiErrorsDesc).reduce((prev, curr) => ({
     [key]: (responseText: string) => ({
       type: key,
       description: desc,
-      responseText
-    })
-  }), {} as unknown as ApiErrorsFunc)
+      responseText,
+    }),
+  }), {} as unknown as ApiErrorsFunc),
 }), {
-  UNKNOWN_RESPONSE_CODE: (statusCode: number) => `Received unrecognized status code from api endpoint: ${statusCode}`
+  UNKNOWN_RESPONSE_CODE: (statusCode: number) => `Received unrecognized status code from api endpoint: ${statusCode}`,
 }) as unknown as ApiErrorsFunc;
 
 export const validateStatusCode = <T>(response: AxiosResponse, validator: {
-  [code: number]: () => T
+  [code: number]: () => T;
 }): T => {
   if (!Object.keys(validator).includes(response.status.toString())) {
     throw ApiErrors.UNKNOWN_RESPONSE_CODE(response.status);

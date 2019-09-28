@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import { IUser } from '~api';
+import { IUser } from '~types';
 
 interface IAuthStore {
   user: IUser | undefined;
@@ -11,31 +11,31 @@ class AuthStore {
   public user: IUser | undefined;
 
   @computed
-  get isAuthed() {
+  get isAuthed(): boolean {
     return !!this.user;
   }
-  
+
   @computed
-  get isDefault() {
-    return this.user && this.user.rank === 'default';
+  get isDefault(): boolean {
+    return (this.user && this.user.rank === 'default') || false;
   }
-  
+
   @computed
-  get isTrusted() {
-    return this.user && this.user.rank === 'trusted';
+  get isTrusted(): boolean {
+    return (this.user && this.user.rank === 'trusted') || false;
   }
-  
+
   @computed
-  get isAdmin() {
-    return this.user && this.user.rank === 'admin';
+  get isAdmin(): boolean {
+    return (this.user && this.user.rank === 'admin') || false;
   }
 
   @action
-  public setUser = (user?: IUser) => {
+  public setUser = (user?: IUser): this => {
     this.user = user;
 
     return this;
   }
 }
 
-export const authStore = new AuthStore();
+export default new AuthStore();

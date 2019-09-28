@@ -4,8 +4,8 @@ interface IParagraphBlockProps {
   children: React.ReactChild;
 }
 
-export default (props: IParagraphBlockProps) => (
+export default ({ children }: IParagraphBlockProps): JSX.Element => (
   <p style={{ marginTop: 0, paddingTop: 0 }}>
-    {props.children}
+    {children}
   </p>
 );

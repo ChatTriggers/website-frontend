@@ -35,7 +35,7 @@ export {};
 //               alignContent="center"
 //               justify="center"
 //               className="logo"
-//               margin={{ 
+//               margin={{
 //                 top: size === 'small' && !this.landscape ? '60vh' : '30vh'
 //               }}
 //             >
@@ -83,20 +83,20 @@ export {};
 //                 direction="row"
 //                 alignSelf="center"
 //               >
-//                 <InfoCard 
+//                 <InfoCard
 //                   image={js}
 //                   title="JavaScript"
-//                   description="If you've never used JavaScript, or need some brushing up, this is the best place to do so."
+//       description="If you've never used JavaScript, or need some brushing up, this is the best place to do so."
 //                 />
-//                 <InfoCard 
+//                 <InfoCard
 //                   image={slate}
 //                   title="Slate"
 //                   description="Learn how to get started using ChatTriggers with the Slate tutorial."
 //                 />
-//                 <InfoCard 
+//                 <InfoCard
 //                   image={javadocs}
 //                   title="Javadocs"
-//                   description="Get a complete in-depth look at every method, object, and library provided by ChatTriggers."
+//      description="Get a complete in-depth look at every method, object, and library provided by ChatTriggers."
 //                 />
 //               </Box>
 //             </Box>

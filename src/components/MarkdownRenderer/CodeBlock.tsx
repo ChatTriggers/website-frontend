@@ -11,28 +11,35 @@ interface ICodeBlockProps {
 export default class CodeBlock extends React.Component<ICodeBlockProps> {
   private el: HTMLElement | undefined;
 
-  private readonly setRef = (ref: HTMLElement) => {
+  private readonly setRef = (ref: HTMLElement): void => {
     this.el = ref;
   }
 
-  public componentDidMount = () => {
+  public componentDidMount = (): void => {
     this.highlightCode();
   }
 
-  public componentDidUpdate = () => {
+  public componentDidUpdate = (): void => {
     this.highlightCode();
   }
 
-  private readonly highlightCode = () => {
-    if (this.el)
-      hljs.highlightBlock(this.el);
+  private readonly highlightCode = (): void => {
+    if (this.el) hljs.highlightBlock(this.el);
   }
 
-  public render() {
+  public render(): JSX.Element {
+    const { value, language } = this.props;
+
     return (
       <pre>
-        <code style={{ backgroundColor: '#333', borderRadius: 3 }} ref={this.setRef} className={`language-${this.props.language}`}>
-          {this.props.value}
+        <code
+          style={{
+            backgroundColor: '#333', width: '100%', borderRadius: 3,
+          }}
+          ref={this.setRef}
+          className={`language-${language}`}
+        >
+          {value}
         </code>
       </pre>
     );

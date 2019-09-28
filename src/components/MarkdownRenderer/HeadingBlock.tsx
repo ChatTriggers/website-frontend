@@ -7,15 +7,34 @@ interface IHeadingBlockProps {
 
 const styles = {
   marginTop: 0,
-  paddingTop: 0
+  paddingTop: 0,
 };
 
-export default (props: IHeadingBlockProps) => {
-  return props.level === 1 ? <h1 style={styles}>{props.children}</h1> :
-    props.level === 2 ? <h2 style={styles}>{props.children}</h2> :
-      props.level === 3 ? <h3 style={styles}>{props.children}</h3> :
-        props.level === 4 ? <h4 style={styles}>{props.children}</h4> :
-          props.level === 5 ? <h5 style={styles}>{props.children}</h5> :
-            // tslint:disable-next-line:no-null-keyword
-            props.level === 6 ? <h6 style={styles}>{props.children}</h6> : null;
+export default ({ level, children }: IHeadingBlockProps): JSX.Element | null => {
+  let el: JSX.Element | undefined | null;
+
+  switch (level) {
+    case 1:
+      el = <h1 style={styles}>{children}</h1>;
+      break;
+    case 2:
+      el = <h2 style={styles}>{children}</h2>;
+      break;
+    case 3:
+      el = <h3 style={styles}>{children}</h3>;
+      break;
+    case 4:
+      el = <h4 style={styles}>{children}</h4>;
+      break;
+    case 5:
+      el = <h5 style={styles}>{children}</h5>;
+      break;
+    case 6:
+      el = <h6 style={styles}>{children}</h6>;
+      break;
+    default:
+      el = null;
+  }
+
+  return el;
 };

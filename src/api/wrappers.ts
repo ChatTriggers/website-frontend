@@ -1,10 +1,10 @@
-import { raw } from '.';
-import { IUser } from './raw';
+import * as raw from './raw';
+import { IUser } from '~types';
 import { modulesStore, authStore } from '~store';
 
 export const login = async (
   username: string,
-  password: string
+  password: string,
 ): Promise<IUser> => {
   try {
     const user = await raw.getCurrentAccount();
@@ -14,15 +14,11 @@ export const login = async (
   } catch (e) {
     // No account
 
-    try {
-      const user = await raw.login(username, password);
-      authStore.setUser(user);
+    const user = await raw.login(username, password);
+    authStore.setUser(user);
 
-      return user;
-    } catch (ee) {
-      // TODO: Handle error
-      throw ee;
-    }
+    return user;
+    // TODO: Handle error
   }
 };
 
@@ -30,49 +26,44 @@ export const login = async (
 export const createUser = async (
   username: string,
   password: string,
-  email: string
+  email: string,
 ): Promise<IUser> => {
-  try {
-    const newUser = await raw.createAccount(username, password, email);
-    await raw.login(username, password);
-    authStore.setUser(newUser);
+  const newUser = await raw.createAccount(username, password, email);
+  await raw.login(username, password);
+  authStore.setUser(newUser);
 
-    return newUser;
-  } catch (e) {
-    // TODO: Handle error
-    throw e;
-  }
+  return newUser;
+  // TODO: Handle error
 };
 
-export const logout = async () => {
+export const logout = async (): Promise<void> => {
   await raw.logout();
   authStore.setUser(undefined);
 };
 
-export const getModules = async () => {
+export const getModules = async (): Promise<void> => {
   modulesStore.setModules([]);
 
   try {
     const response = await raw.getModules(
       modulesStore.modulesPerPage,
       modulesStore.offset,
-      (modulesStore.onlyUserModules && authStore.user && authStore.user.id) || undefined,
-      modulesStore.onlyTrusted,
-      modulesStore.onlyFlagged,
+      (modulesStore.searchFilter === 'user' && authStore.user && authStore.user.id) || undefined,
+      modulesStore.searchFilter === 'trusted',
+      modulesStore.searchFilter === 'flagged',
       undefined, // TODO:
-      modulesStore.search
+      modulesStore.search,
     );
 
     modulesStore.setError(false)
       .setModules(response.modules)
       .setMeta(response.meta);
   } catch (e) {
-    console.error(e);
     modulesStore.setError(true);
   }
 };
 
-export const getCurrentAccount = async () => {
+export const getCurrentAccount = async (): Promise<void> => {
   try {
     authStore.setUser(await raw.getCurrentAccount());
   } catch (_) {
@@ -80,12 +71,12 @@ export const getCurrentAccount = async () => {
   }
 };
 
-export const loadTags = async () => {
+export const loadTags = async (): Promise<void> => {
   // TODO: Handle error
   modulesStore.setAllowedTags(await raw.getTags());
 };
 
-export const deleteModule = async (moduleId: number) => {
+export const deleteModule = async (moduleId: number): Promise<void> => {
   await raw.deleteModule(moduleId);
   await getModules();
 };
@@ -95,12 +86,12 @@ export const updateModule = async (
   description: string,
   image?: string,
   flagged = false,
-  tags: string[] = []
-) => {
+  tags: string[] = [],
+): Promise<void> => {
   await raw.updateModule(moduleId, description, image, flagged, tags);
   await getModules();
 };
 
-export const createModule = raw.createModule;
-export const createRelease = raw.createRelease;
-export const requestPasswordComplete = raw.requestPasswordComplete;
+export const { createModule } = raw;
+export const { createRelease } = raw;
+export const { requestPasswordComplete } = raw;

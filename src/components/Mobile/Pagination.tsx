@@ -1,16 +1,15 @@
 import React from 'react';
 import {
   Paper,
-  Typography,
   IconButton,
   TextField,
-  Theme
+  Theme,
 } from '@material-ui/core';
 import {
   SkipPrevious as FirstPageIcon,
   SkipNext as LastPageIcon,
   KeyboardArrowLeft as PreviousPageIcon,
-  KeyboardArrowRight as NextPageIcon
+  KeyboardArrowRight as NextPageIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 import { getModules } from '~api';
@@ -21,38 +20,37 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     margin: theme.spacing(2),
     padding: theme.spacing(1, 2),
-    alignItems: 'center'
+    alignItems: 'center',
   },
   pageSelector: {
     width: '40%',
-    margin: theme.spacing(0, 1)
+    margin: theme.spacing(0, 1),
   },
   button: {
-    width: '15%'
-  }
+    width: '15%',
+  },
 }));
 
 export default observer(() => {
   const classes = useStyles();
 
-  const onFirstPage = () => onChangePage(0);
-
-  const onLastPage = () => onChangePage(modulesStore.totalPages);
-
-  const onPreviousPage = () => onChangePage(modulesStore.page - 1);
-
-  const onNextPage = () => onChangePage(modulesStore.page + 1);
-
-  const onChangePageEvent = (e: unknown) => {
-    // tslint:disable-next-line:no-any
-    onChangePage(parseInt((e as any).target.value));
-  };
-
-  const onChangePage = (page: number) => {
+  const onChangePage = (page: number): void => {
     if (page === modulesStore.page) return;
 
     modulesStore.setPage(page);
     getModules();
+  };
+
+  const onFirstPage = (): void => onChangePage(0);
+
+  const onLastPage = (): void => onChangePage(modulesStore.totalPages);
+
+  const onPreviousPage = (): void => onChangePage(modulesStore.page - 1);
+
+  const onNextPage = (): void => onChangePage(modulesStore.page + 1);
+
+  const onChangePageEvent = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    onChangePage(parseInt(e.target.value, 10));
   };
 
   return (
@@ -81,7 +79,7 @@ export default observer(() => {
         value={modulesStore.page}
         onChange={onChangePageEvent}
         SelectProps={{
-          native: true
+          native: true,
         }}
         margin="normal"
       >

@@ -3,7 +3,7 @@ import {
   Paper,
   Typography,
   ButtonBase,
-  Theme
+  Theme,
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { KeyboardArrowRight } from '@material-ui/icons';
@@ -12,7 +12,7 @@ import { History } from 'history';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
   },
   button: {
     padding: theme.spacing(2),
@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '100%',
     display: 'flex',
     justifyContent: 'space-between',
-    alignContent: 'center'
-  }
+    alignContent: 'center',
+  },
 }));
 
 interface IFilterButtonProps {
@@ -31,7 +31,7 @@ interface IFilterButtonProps {
 export default withRouter((props: IFilterButtonProps) => {
   const classes = useStyles({});
 
-  const onClick = () => {
+  const onClick = (): void => {
     props.history.push('/modules/filter');
   };
 

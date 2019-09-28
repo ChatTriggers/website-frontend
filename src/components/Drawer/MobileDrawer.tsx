@@ -5,20 +5,21 @@ import {
   IconButton,
   Typography,
   Theme,
-  SwipeableDrawer
+  SwipeableDrawer,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import DrawerContent from './DrawerContent';
-import { drawerWidth } from '.';
+
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -26,27 +27,27 @@ const useStyles = makeStyles((theme: Theme) => ({
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
-    })
+    }),
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   hide: {
-    display: 'none'
+    display: 'none',
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0
+    flexShrink: 0,
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
   },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   content: {
     flexGrow: 1,
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
-  }
+  },
 }));
 
 interface IMobileDrawerProps {
@@ -71,16 +72,16 @@ interface IMobileDrawerProps {
   button?: React.ReactChild;
 }
 
-export default (props: IMobileDrawerProps) => {
+export default (props: IMobileDrawerProps): JSX.Element => {
   const classes = useStyles();
   const iOS = !!navigator.platform && /iPhone|iPad/.test(navigator.platform);
   const [open, setOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => setOpen(true);
-  const handleDrawerClose = () => setOpen(false);
+  const handleDrawerOpen = (): void => setOpen(true);
+  const handleDrawerClose = (): void => setOpen(false);
 
-  const title = props.title;
-  const button = props.button || (
+  const { title, button: b } = props;
+  const button = b || (
     <IconButton
       onClick={handleDrawerOpen}
       edge="start"
@@ -111,7 +112,7 @@ export default (props: IMobileDrawerProps) => {
         onOpen={handleDrawerOpen}
         onClose={handleDrawerClose}
         classes={{
-          paper: classes.drawerPaper
+          paper: classes.drawerPaper,
         }}
       >
         <div className={classes.drawerHeader}>

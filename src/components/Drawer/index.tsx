@@ -1,35 +1,32 @@
 import React from 'react';
-import {
-  Hidden,
-  Theme
-} from '@material-ui/core';
+import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import MobileDrawer from './MobileDrawer';
 import TabletDrawer from './TabletDrawer';
 import DesktopDrawer from './DesktopDrawer';
-import { Mobile, Tablet, Desktop } from '~components';
+import { Mobile, Tablet, Desktop } from '~components/utils/DeviceUtils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    display: 'flex'
+    display: 'flex',
   },
   toolbar: {
-    minHeight: 56
+    minHeight: 56,
   },
   content: {
     flexGrow: 1,
-    background: theme.palette.background.default
+    background: theme.palette.background.default,
     // padding: theme.spacing(3)
-  }
+  },
 }));
 
 interface IDrawerProps {
   title: string;
   button?: React.ReactChild;
-  children: React.ReactChild;
+  children: React.ReactChild | React.ReactChild[];
 }
 
-export default (props: IDrawerProps) => {
+export default (props: IDrawerProps): JSX.Element => {
   const classes = useStyles();
 
   const { title, button, children } = props;
@@ -54,5 +51,3 @@ export default (props: IDrawerProps) => {
     </div>
   );
 };
-
-export const drawerWidth = 240;

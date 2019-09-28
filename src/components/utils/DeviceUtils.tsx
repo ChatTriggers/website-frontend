@@ -17,7 +17,7 @@ interface IProps {
 </Hidden>
 */
 
-export const Mobile = ({ children }: IProps) => <Hidden smUp>{children}</Hidden>;
-export const Tablet = ({ children }: IProps) => <Hidden xsDown lgUp>{children}</Hidden>;
-export const Desktop = ({ children }: IProps) => <Hidden mdDown>{children}</Hidden>;
-export const NotDesktop = ({ children }: IProps) => <Hidden lgUp>{children}</Hidden>;
+export const Mobile = ({ children }: IProps): JSX.Element => <Hidden smUp>{children}</Hidden>;
+export const Tablet = ({ children }: IProps): JSX.Element => <Hidden xsDown lgUp>{children}</Hidden>;
+export const Desktop = ({ children }: IProps): JSX.Element => <Hidden mdDown>{children}</Hidden>;
+export const NotDesktop = ({ children }: IProps): JSX.Element => <Hidden lgUp>{children}</Hidden>;

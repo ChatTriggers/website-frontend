@@ -5,48 +5,39 @@ import {
   IconButton,
   Drawer,
   Typography,
-  Theme
+  Theme,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import DrawerContent from './DrawerContent';
-import { drawerWidth } from '.';
+
+const drawerWidth = 240;
 
 const useStyles = makeStyles<Theme, { open: boolean }>(theme => ({
-  appBar: {
-    // transition: theme.transitions.create(['margin', 'width'], {
-    //   easing: theme.transitions.easing.sharp,
-    //   duration: theme.transitions.duration.leavingScreen
-    // })
-  },
   appBarShift: {
     width: props => `calc(100% - ${props.open ? drawerWidth : 0}px)`,
-    marginLeft: props => props.open ? drawerWidth : 0,
-    // transition: theme.transitions.create(['margin', 'width'], {
-    //   easing: theme.transitions.easing.easeOut,
-    //   duration: theme.transitions.duration.enteringScreen,
-    // })
+    marginLeft: props => (props.open ? drawerWidth : 0),
   },
   menuButton: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(2),
   },
   hide: {
-    display: 'none'
+    display: 'none',
   },
   drawer: {
-    width: props => props.open ? drawerWidth : 0,
-    flexShrink: 0
+    width: props => (props.open ? drawerWidth : 0),
+    flexShrink: 0,
   },
   drawerPaper: {
-    width: props => props.open ? drawerWidth : 0
+    width: props => (props.open ? drawerWidth : 0),
   },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   content: {
     flexGrow: 1,
@@ -55,7 +46,7 @@ const useStyles = makeStyles<Theme, { open: boolean }>(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: props => props.open ? -drawerWidth : 0,
+    marginLeft: props => (props.open ? -drawerWidth : 0),
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -63,15 +54,15 @@ const useStyles = makeStyles<Theme, { open: boolean }>(theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
-  }
+  },
 }));
 
-export default () => {
+export default (): JSX.Element => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles({ open });
 
-  const handleDrawerOpen = () => setOpen(true);
-  const handleDrawerClose = () => setOpen(false);
+  const handleDrawerOpen = (): void => setOpen(true);
+  const handleDrawerClose = (): void => setOpen(false);
 
   return (
     <>
@@ -99,7 +90,7 @@ export default () => {
         anchor="left"
         open={open}
         classes={{
-          paper: classes.drawerPaper
+          paper: classes.drawerPaper,
         }}
       >
         <div className={classes.drawerHeader}>

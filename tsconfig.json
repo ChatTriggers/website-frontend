@@ -20,7 +20,7 @@
     "jsx": "preserve",
     "experimentalDecorators": true,
     "typeRoots": [
-      "./src/types"
+      "./src/definitions"
     ],
     "baseUrl": "src",
     "paths": {
@@ -42,23 +42,23 @@
       "~api": [
         "./api/index"
       ],
-      "~modules/*": [
-        "./pages/ModulesPage/*"
-      ],
-      "~modules": [
-        "./pages/ModulesPage/index"
-      ],
       "~assets/*": [
         "./assets/*"
       ],
       "~assets": [
-        "./assets"
+        "./assets/index"
       ],
       "~src/*": [
         "./*"
       ],
       "~src": [
         "./index"
+      ],
+      "~types/*": [
+        "./types/*"
+      ],
+      "~types": [
+        "./types/index"
       ]
     }
   },

@@ -5,30 +5,25 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  IconButton
+  IconButton,
 } from '@material-ui/core';
-import { ListItemProps } from '@material-ui/core/ListItem';
-import { makeStyles, createStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 import {
   Description as DescriptionIcon,
   AccountCircle as AccountCircleIcon,
   Home as HomeIcon,
   Create as CreateIcon,
   ExitToApp as LoginIcon,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
 } from '@material-ui/icons';
 import { githubIcon, slate } from '~assets';
 import { authStore, observer } from '~store';
 
-const ListItemLink = (props: ListItemProps<'a', { button?: true }>) => (
-  <ListItem button component="a" {...props} />
-);
-
 const useStyles = makeStyles({
   img: {
     maxWidth: 24,
-    maxHeight: 24
-  }
+    maxHeight: 24,
+  },
 });
 
 export default observer(() => {
@@ -38,7 +33,7 @@ export default observer(() => {
     <>
       <Divider />
       <List>
-        <ListItemLink href="https://www.chattriggers.com/slate/">
+        <ListItem button component="a" href="https://www.chattriggers.com/slate/">
           <ListItemIcon>
             <img
               className={classes.img}
@@ -48,17 +43,17 @@ export default observer(() => {
           </ListItemIcon>
           <ListItemText>
             Slate
-            </ListItemText>
-        </ListItemLink>
-        <ListItemLink href="https://www.chattriggers.com/javadocs/">
+          </ListItemText>
+        </ListItem>
+        <ListItem button component="a" href="https://www.chattriggers.com/javadocs/">
           <ListItemIcon>
             <DescriptionIcon />
           </ListItemIcon>
           <ListItemText>
             Javadocs
-            </ListItemText>
-        </ListItemLink>
-        <ListItemLink href="https://github.com/ChatTriggers/ct.js">
+          </ListItemText>
+        </ListItem>
+        <ListItem button component="a" href="https://github.com/ChatTriggers/ct.js">
           <ListItemIcon>
             <img
               className={classes.img}
@@ -68,20 +63,20 @@ export default observer(() => {
           </ListItemIcon>
           <ListItemText>
             GitHub
-            </ListItemText>
-        </ListItemLink>
-        <ListItemLink href="#">
+          </ListItemText>
+        </ListItem>
+        <ListItem button component="a" href="#">
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
           <ListItemText>
             Home
-            </ListItemText>
-        </ListItemLink>
+          </ListItemText>
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {!!authStore.user ? (
+        {authStore.user ? (
           <ListItem>
             <ListItemIcon>
               <AccountCircleIcon />
@@ -96,25 +91,25 @@ export default observer(() => {
             </ListItemText>
           </ListItem>
         ) : (
-            <>
-              <ListItem button>
-                <ListItemIcon>
-                  <LoginIcon />
-                </ListItemIcon>
-                <ListItemText>
+          <>
+            <ListItem button>
+              <ListItemIcon>
+                <LoginIcon />
+              </ListItemIcon>
+              <ListItemText>
                   Login
-                </ListItemText>
-              </ListItem>
-              <ListItem button>
-                <ListItemIcon>
-                  <CreateIcon />
-                </ListItemIcon>
-                <ListItemText>
+              </ListItemText>
+            </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <CreateIcon />
+              </ListItemIcon>
+              <ListItemText>
                   Create Account
-                </ListItemText>
-              </ListItem>
-            </>
-          )}
+              </ListItemText>
+            </ListItem>
+          </>
+        )}
       </List>
     </>
   );
