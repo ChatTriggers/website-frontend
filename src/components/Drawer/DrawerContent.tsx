@@ -2,10 +2,13 @@ import React from 'react';
 import {
   Divider,
   List,
+  Menu,
+  MenuItem,
   ListItem,
   ListItemText,
   ListItemIcon,
   IconButton,
+  Theme,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -20,23 +23,41 @@ import { withRouter } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
 import { githubIcon, slate } from '~assets';
 import { authStore, observer } from '~store';
+import { logout } from '~api';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   img: {
     maxWidth: 24,
     maxHeight: 24,
   },
-});
+  paper: {
+    padding: theme.spacing(2),
+  },
+}));
 
 export default withRouter(observer(({ history }: RouteComponentProps<{}>) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(undefined as HTMLButtonElement | undefined);
+
+  const onClickCreateAccount = (): void => {
+    history.push('/create-account');
+  };
+
+  const onClickUserSettings = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const onMenuClose = (): void => {
+    setAnchorEl(undefined);
+  };
 
   const onClickLogin = (): void => {
     history.push('/login');
   };
 
-  const onClickCreateAccount = (): void => {
-    history.push('/create-account');
+  const onClickLogout = async (): Promise<void> => {
+    await logout();
+    onMenuClose();
   };
 
   return (
@@ -94,7 +115,7 @@ export default withRouter(observer(({ history }: RouteComponentProps<{}>) => {
             <ListItemText>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignContent: 'center' }}>
                 {authStore.user.name}
-                <IconButton size="small">
+                <IconButton size="small" onClick={onClickUserSettings}>
                   <SettingsIcon />
                 </IconButton>
               </div>
@@ -121,6 +142,15 @@ export default withRouter(observer(({ history }: RouteComponentProps<{}>) => {
           </>
         )}
       </List>
+      <Menu
+        id="account-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={!!anchorEl}
+        onClose={onMenuClose}
+      >
+        <MenuItem onClick={onClickLogout}>Logout</MenuItem>
+      </Menu>
     </>
   );
 }));
