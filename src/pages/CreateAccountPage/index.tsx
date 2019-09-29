@@ -91,14 +91,14 @@ export default ({ history }: ICreateAccountPageProps): JSX.Element => {
       await createUser(username, password, email);
       setLoading(false);
       setError(false);
-      onBackButtonClick(); // TODO: Provide feedback that login actually worked
+      onBackButtonClick(); // TODO: Provide feedback that account creation actually worked
     } catch (e) {
       setError(true);
     }
   };
 
   return (
-    <Drawer title="Login" button={button}>
+    <Drawer title="Create Account" button={button}>
       <div className={classes.root}>
         <div className={classes.paperContainer}>
           <Paper
@@ -108,7 +108,7 @@ export default ({ history }: ICreateAccountPageProps): JSX.Element => {
             <TextField
               className={classes.username}
               required
-              id="login-username-field"
+              id="create-account-username-field"
               label="Username"
               type="text"
               value={username}
@@ -118,7 +118,7 @@ export default ({ history }: ICreateAccountPageProps): JSX.Element => {
             <TextField
               className={classes.password}
               required
-              id="login-email-field"
+              id="create-account-email-field"
               label="Email"
               type="text"
               value={email}
@@ -128,7 +128,7 @@ export default ({ history }: ICreateAccountPageProps): JSX.Element => {
             <TextField
               className={classes.password}
               required
-              id="login-password-field"
+              id="create-account-password-field"
               label="Password"
               type="password"
               value={password}
