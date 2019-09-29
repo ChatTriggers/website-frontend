@@ -45,6 +45,7 @@ export const getModules = async (): Promise<void> => {
   modulesStore.setModules([]);
 
   try {
+    console.log(`search: ${modulesStore.search}`);
     const response = await raw.getModules(
       modulesStore.modulesPerPage,
       modulesStore.offset,

@@ -11,6 +11,7 @@ import {
   RadioGroup,
   Radio,
   IconButton,
+  CircularProgress,
   Theme,
 } from '@material-ui/core';
 import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
@@ -79,11 +80,16 @@ const useStyles = makeStyles<Theme, IStyleProps>((theme: Theme) => ({
   select: {
     marginLeft: theme.spacing(2),
   },
+  searchProgress: {
+    marginRight: theme.spacing(2),
+  },
 }));
 
 export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
   const [search, setSearch] = React.useState('');
+  const [searching, setSearching] = React.useState(false);
   const [searchFocused, setSearchFocused] = React.useState(false);
+  const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout | undefined);
 
   const classes = useStyles({ searchValue: searchFocused || search !== '' });
 
@@ -91,9 +97,19 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
     history.push('/modules');
   };
 
-  const onSearchChange = action((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    modulesStore.setSearch(e.target.value);
+  const onSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(() => {
+      modulesStore.setSearch(target.value);
+      return target.value;
+    });
+
+    if (searchTimeout) clearTimeout(searchTimeout);
+
+    setSearchTimeout(setTimeout(async () => {
+      setSearching(true);
+      await getModules();
+      setSearching(false);
+    }, 1500));
   });
 
   const onSearchFocus = (): void => {
@@ -153,6 +169,11 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
               onChange={onSearchChange}
               onFocus={onSearchFocus}
               onBlur={onSearchBlur}
+              InputProps={{
+                startAdornment: (searching && (
+                  <CircularProgress className={classes.searchProgress} size={20} />
+                )) || undefined,
+              }}
               multiline
             />
           </Paper>
