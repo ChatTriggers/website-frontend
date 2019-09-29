@@ -21,10 +21,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
   },
   titleContainer: {
-    padding: theme.spacing(2, 2, 0, 2),
+    padding: theme.spacing(2, 0, 0, 2),
+    width: `calc(100% - 64px - ${theme.spacing(2) * 3}px)`,
   },
   title: {
-    marginRight: theme.spacing(2),
+    display: 'inline-block',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   titleChip: {
     display: 'flex',
@@ -55,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2, 0),
   },
   viewButton: {
-    margin: theme.spacing(4, 2, 2, 2),
+    margin: theme.spacing(4, 2, 2, 0),
   },
 }));
 
@@ -78,11 +82,14 @@ export default withRouter(({ module, history }: IModuleProps) => {
       <div className={classes.header}>
         <div className={classes.titleContainer}>
           <div className={classes.titleChip}>
-            <Typography className={classes.title} variant="h5"><strong>{module.name}</strong></Typography>
+            <Typography className={classes.title} variant="h5">
+              {module.name}
+            </Typography>
           </div>
-          <Typography variant="h6">
+          <Typography className={classes.title} variant="h6">
             By
-            <strong>{` ${module.owner.name}`}</strong>
+            {' '}
+            {module.owner.name}
           </Typography>
         </div>
         <Button

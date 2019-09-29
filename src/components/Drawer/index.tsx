@@ -33,7 +33,7 @@ export default (props: IDrawerProps): JSX.Element => {
 
   return (
     <div className={classes.root}>
-      <nav style={{ zIndex: 0 }}>
+      <nav style={{ zIndex: 2 }}>
         <Mobile>
           <MobileDrawer title={title} button={button} />
         </Mobile>

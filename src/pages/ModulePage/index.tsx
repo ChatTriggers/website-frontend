@@ -38,16 +38,12 @@ const styles: Styles = (theme: Theme) => ({
     margin: theme.spacing(2),
     padding: theme.spacing(2),
   },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  titleContainer: {
-    padding: theme.spacing(0, 2),
-  },
   title: {
-    marginRight: theme.spacing(2),
+    width: '100%',
+    display: 'inline-block',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   titleChip: {
     display: 'flex',
@@ -112,6 +108,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
       onClick={this.onBackButtonClick}
       edge="start"
       className={this.classes.backButton}
+      size="medium"
     >
       <LeftIcon />
     </IconButton>
@@ -129,22 +126,20 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
               className={this.classes.paper}
               elevation={4}
             >
-              <div className={this.classes.header}>
-                <div className={this.classes.titleContainer}>
-                  <div className={this.classes.titleChip}>
-                    <Typography
-                      className={this.classes.title}
-                      variant="h5"
-                    >
-                      <strong>{this.module.name}</strong>
-                    </Typography>
-                  </div>
-                  <Typography variant="h6">
-                    By
-                    <strong>{` ${this.module.owner.name}`}</strong>
-                  </Typography>
-                </div>
-              </div>
+              <Typography
+                className={this.classes.title}
+                variant="h5"
+              >
+                {this.module.name}
+              </Typography>
+              <Typography
+                className={this.classes.title}
+                variant="h6"
+              >
+                By
+                {' '}
+                {this.module.owner.name}
+              </Typography>
               <div className={this.classes.body}>
                 <div className={this.classes.imageOuter}>
                   <img
