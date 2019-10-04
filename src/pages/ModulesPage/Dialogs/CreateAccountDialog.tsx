@@ -48,6 +48,13 @@ export default class CreateAccountDialog extends React.Component<ICreateAccountD
   @action
   public onSubmit = async () => {
     this.loading = true;
+    
+    // Do some quick validation before we hit the server
+    if(!this.username || !this.email || !this.password) {
+      this.loading = false;
+      alert('All three fields must be filled to create an account!')
+      return null;
+    }
 
     try {
       await createUser(this.username, this.email, this.password);

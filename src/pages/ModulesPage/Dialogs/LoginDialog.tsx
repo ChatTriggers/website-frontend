@@ -39,6 +39,13 @@ export default class LoginDialog extends React.Component<ICreateAccountDialogPro
 
   @action
   public onSubmit = async () => {
+    // Do some quick validation before we hit the server
+    if(!this.username || !this.password) {
+      alert('You must provide a username and password to login!')
+      this.loading = false;
+      return null;
+    }
+
     try {
       action(() => { this.loading = true; })();
       await login(this.username, this.password);
