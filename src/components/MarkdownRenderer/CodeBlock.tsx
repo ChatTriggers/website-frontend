@@ -1,6 +1,8 @@
 import React from 'react';
-import { Theme } from '@material-ui/core';
+import { Theme, withStyles } from '@material-ui/core';
 import hljs from 'highlight.js';
+import clsx from 'clsx';
+import { StyledComponent, Styles } from '~components';
 
 interface ICodeBlockProps {
   value: string;
@@ -8,7 +10,18 @@ interface ICodeBlockProps {
   theme: Theme;
 }
 
-export default class CodeBlock extends React.Component<ICodeBlockProps> {
+const styles: Styles = (theme: Theme) => ({
+  code: {
+    backgroundColor: '#333',
+    width: `calc(100% - ${theme.spacing(2) * 2})`,
+    borderRadius: 3,
+    whiteSpace: 'pre-wrap',
+    paddingLeft: theme.spacing(5),
+    textIndent: -theme.spacing(4),
+  },
+});
+
+class CodeBlock extends StyledComponent<typeof styles, ICodeBlockProps> {
   private el: HTMLElement | undefined;
 
   private readonly setRef = (ref: HTMLElement): void => {
@@ -27,21 +40,32 @@ export default class CodeBlock extends React.Component<ICodeBlockProps> {
     if (this.el) hljs.highlightBlock(this.el);
   }
 
+  private addIndent = (source: string): JSX.Element => (
+    <>
+      {source.split(/(\(|\)|,)/g).reduce((prev, curr) => (
+        <>
+          {prev}
+          <wbr />
+          {curr}
+        </>
+      ), <></>)}
+    </>
+  )
+
   public render(): JSX.Element {
     const { value, language } = this.props;
 
     return (
       <pre>
         <code
-          style={{
-            backgroundColor: '#333', width: '100%', borderRadius: 3,
-          }}
           ref={this.setRef}
-          className={`language-${language}`}
+          className={clsx(`language-${language}`, this.classes.code)}
         >
-          {value}
+          {this.addIndent(value)}
         </code>
       </pre>
     );
   }
 }
+
+export default withStyles(styles)(CodeBlock);
