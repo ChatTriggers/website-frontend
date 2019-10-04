@@ -44,16 +44,26 @@ export const logout = async (): Promise<void> => {
 export const getModules = async (): Promise<void> => {
   modulesStore.setModules([]);
 
+  let searchTags: string | undefined;
+  let search: string | undefined;
+
+  if (modulesStore.search) {
+    const matches = modulesStore.search.match(/tag:\w+ /g) || [];
+    searchTags = matches.map(match => match.replace('tag:', '').trim()).join(',');
+    search = matches.reduce((prev, curr) => prev.replace(curr, ''), modulesStore.search).trim();
+  } else {
+    search = modulesStore.search;
+  }
+
   try {
-    console.log(`search: ${modulesStore.search}`);
     const response = await raw.getModules(
       modulesStore.modulesPerPage,
       modulesStore.offset,
       (modulesStore.searchFilter === 'user' && authStore.user && authStore.user.id) || undefined,
       modulesStore.searchFilter === 'trusted',
       modulesStore.searchFilter === 'flagged',
-      undefined, // TODO:
-      modulesStore.search,
+      searchTags,
+      search,
     );
 
     modulesStore.setError(false)

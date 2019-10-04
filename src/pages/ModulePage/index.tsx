@@ -82,7 +82,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
     this.props.history.push('/modules');
   }
 
-  public async componentWillMount(): Promise<void> {
+  public async componentDidMount(): Promise<void> {
     const moduleName = this.props.match.params.module;
 
     action(() => {

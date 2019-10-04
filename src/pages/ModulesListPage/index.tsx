@@ -25,7 +25,7 @@ const styles: Styles = () => ({
 
 @observer
 class ModulesListPage extends StyledComponent<typeof styles> {
-  public componentWillMount = async (): Promise<void> => {
+  public componentDidMount = async (): Promise<void> => {
     if (modulesStore.modules.length === 0) {
       getModules();
       getCurrentAccount();

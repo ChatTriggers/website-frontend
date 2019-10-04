@@ -49,7 +49,7 @@ export default ({ releases }: IReleasesTableProps): JSX.Element => {
   return (
     <List component="nav">
       <Divider />
-      {releases.sort((a, b) => b.createdAt - a.createdAt).map(release => {
+      {releases.slice().sort((a, b) => b.createdAt - a.createdAt).map(release => {
         const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
         const modChip = <Chip label={`v${release.modVersion}`} size="small" />;
 

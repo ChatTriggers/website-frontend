@@ -6,13 +6,18 @@ import {
   Fade,
   Typography,
   ClickAwayListener,
+  ButtonBase,
   Theme,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { observer, observable, action } from '~store';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import {
+  observer, observable, action, modulesStore,
+} from '~store';
 import { StyledComponent, Styles } from '~components';
+import { getModules } from '~api';
 
-interface ITagListProps {
+interface ITagListProps extends RouteComponentProps<{}> {
   tags?: string[];
   maxTags: number;
 }
@@ -48,17 +53,25 @@ class TagList extends StyledComponent<typeof styles, ITagListProps> {
     this.tagExpand = false;
   }
 
+  @action
+  private onClickTag = (tag: string) => () => {
+    modulesStore.setSearch(`tag:${tag}`);
+    getModules();
+    this.props.history.push('/modules');
+  }
+
   public render(): JSX.Element {
     return (
       <>
         {this.props.tags && (
           <Container style={{ margin: 0, padding: 0 }}>
             {this.props.tags.slice(0, this.props.maxTags).map(tag => (
-              <Chip
-                key={tag}
-                label={tag}
-                className={this.classes.chip}
-              />
+              <ButtonBase key={tag} onClick={this.onClickTag(tag)}>
+                <Chip
+                  label={tag}
+                  className={this.classes.chip}
+                />
+              </ButtonBase>
             ))}
             {this.props.tags.length > this.props.maxTags && (
               <>
@@ -101,4 +114,4 @@ class TagList extends StyledComponent<typeof styles, ITagListProps> {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(TagList);
+export default withStyles(styles)(withRouter(TagList));

@@ -13,6 +13,7 @@ import {
   IconButton,
   CircularProgress,
   Theme,
+  Chip,
 } from '@material-ui/core';
 import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
@@ -46,7 +47,7 @@ const useStyles = makeStyles<Theme, IStyleProps>((theme: Theme) => ({
   paperContainer: {
     margin: 'auto',
     width: '100%',
-    maxWidth: 320,
+    maxWidth: 360,
   },
   paper: {
     margin: theme.spacing(2),
@@ -81,27 +82,49 @@ const useStyles = makeStyles<Theme, IStyleProps>((theme: Theme) => ({
     marginLeft: theme.spacing(2),
   },
   searchProgress: {
-    marginRight: theme.spacing(2),
+    margin: theme.spacing(2),
+    width: '100%',
+    height: '100%',
+    // margin: theme.spacing(2),
+    // padding: 0,
+  },
+  tagChip: {
+    marginRight: theme.spacing(1),
   },
 }));
 
 export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
-  const [search, setSearch] = React.useState('');
   const [searching, setSearching] = React.useState(false);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout | undefined);
 
-  const classes = useStyles({ searchValue: searchFocused || search !== '' });
+  const classes = useStyles({ searchValue: searchFocused || !!modulesStore.search });
 
-  const onBackButtonClick = (): void => {
-    history.push('/modules');
-  };
+  let { search } = modulesStore;
+  const tags = search && search.match(/tag:\w+ /g);
+  const tagAdornments = tags && tags.map(tag => (
+    <Chip
+      className={classes.tagChip}
+      key={tag}
+      size="small"
+      color="primary"
+      label={tag.replace('tag:', '')}
+    />
+  ));
+
+  if (tags) {
+    tags.forEach(tag => {
+      search = search && search.replace(tag, '');
+    });
+    search = search && search.trim();
+  }
 
   const onSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(() => {
+    if (tags) {
+      modulesStore.setSearch(tags.join(' ') + target.value);
+    } else {
       modulesStore.setSearch(target.value);
-      return target.value;
-    });
+    }
 
     if (searchTimeout) clearTimeout(searchTimeout);
 
@@ -111,6 +134,17 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
       setSearching(false);
     }, 1500));
   });
+
+  const onSearchKeyDown = action(({ key }: React.KeyboardEvent<HTMLInputElement>) => {
+    // Handle pressing backspace on an empty input to delete tags
+    if (key === 'Backspace' && !search && tags && tags.length > 0) {
+      modulesStore.setSearch(modulesStore.search && modulesStore.search.slice(0, modulesStore.search.length - 1));
+    }
+  });
+
+  const onBackButtonClick = (): void => {
+    history.push('/modules');
+  };
 
   const onSearchFocus = (): void => {
     setSearchFocused(true);
@@ -160,18 +194,26 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
             elevation={4}
             className={classes.paper}
           >
+
             <TextField
               className={classes.search}
               label="Search"
               margin="normal"
               placeholder="Search module names"
               value={search}
+              onKeyDownCapture={onSearchKeyDown}
               onChange={onSearchChange}
               onFocus={onSearchFocus}
               onBlur={onSearchBlur}
               InputProps={{
-                startAdornment: (searching && (
-                  <CircularProgress className={classes.searchProgress} size={20} />
+                startAdornment: tagAdornments,
+                endAdornment: (searching && (
+                  <div>
+                    <CircularProgress
+                      size={20}
+                      thickness={7}
+                    />
+                  </div>
                 )) || undefined,
               }}
               multiline
