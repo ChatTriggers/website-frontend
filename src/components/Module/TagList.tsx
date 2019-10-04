@@ -6,24 +6,29 @@ import {
   Fade,
   Typography,
   ClickAwayListener,
-  Theme
+  ButtonBase,
+  Theme,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { observer, observable, action } from '~store';
-import { StyledComponent } from '~components';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import {
+  observer, observable, action, modulesStore,
+} from '~store';
+import { StyledComponent, Styles } from '~components';
+import { getModules } from '~api';
 
-interface ITagListProps {
+interface ITagListProps extends RouteComponentProps<{}> {
   tags?: string[];
   maxTags: number;
 }
 
-const styles = (theme: Theme) => ({
+const styles: Styles = (theme: Theme) => ({
   chip: {
-    margin: '0 4px'
+    margin: 4,
   },
   popper: {
-    padding: theme.spacing(1)
-  }
+    padding: theme.spacing(1),
+  },
 });
 
 @observer
@@ -35,7 +40,7 @@ class TagList extends StyledComponent<typeof styles, ITagListProps> {
   private anchor: HTMLElement | undefined;
 
   @action
-  private readonly handleClick = (e: React.MouseEvent<HTMLElement>) => {
+  private readonly handleClick = (e: React.MouseEvent<HTMLElement>): void => {
     this.tagExpand = !this.tagExpand;
 
     if (!this.anchor) {
@@ -44,28 +49,36 @@ class TagList extends StyledComponent<typeof styles, ITagListProps> {
   }
 
   @action
-  private readonly handleClickAway = () => {
+  private readonly handleClickAway = (): void => {
     this.tagExpand = false;
   }
 
-  public render() {
+  @action
+  private onClickTag = (tag: string) => () => {
+    modulesStore.setSearch(`tag:${tag}`);
+    getModules();
+    this.props.history.push('/modules');
+  }
+
+  public render(): JSX.Element {
     return (
       <>
         {this.props.tags && (
           <Container style={{ margin: 0, padding: 0 }}>
             {this.props.tags.slice(0, this.props.maxTags).map(tag => (
-              <Chip
-                key={tag}
-                label={tag}
-                className={this.classes.chip}
-              />
+              <ButtonBase key={tag} onClick={this.onClickTag(tag)}>
+                <Chip
+                  label={tag}
+                  className={this.classes.chip}
+                />
+              </ButtonBase>
             ))}
             {this.props.tags.length > this.props.maxTags && (
               <>
                 <Chip
                   label="..."
                   className={this.classes.chip}
-                  clickable={true}
+                  clickable
                   onClick={this.handleClick}
                 />
                 <Popper
@@ -75,6 +88,7 @@ class TagList extends StyledComponent<typeof styles, ITagListProps> {
                 >
                   {({ TransitionProps }) => (
                     <ClickAwayListener onClickAway={this.handleClickAway}>
+                      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                       <Fade {...TransitionProps} timeout={350}>
                         <div className={this.classes.popper}>
                           <Typography>
@@ -100,4 +114,4 @@ class TagList extends StyledComponent<typeof styles, ITagListProps> {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(TagList);
+export default withStyles(styles)(withRouter(TagList));

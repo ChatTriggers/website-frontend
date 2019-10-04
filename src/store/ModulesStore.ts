@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import { IModule, IModuleMetadata } from '~api';
+import { IModule, IModuleMetadata, ModuleSearchFilter } from '~types';
 
 export const MODULES_PER_PAGE_OPTIONS = [10, 25, 50];
 
@@ -20,13 +20,7 @@ class ModulesStore {
   public search: string | undefined;
 
   @observable
-  public onlyFlagged = false;
-
-  @observable
-  public onlyTrusted = false;
-
-  @observable
-  public onlyUserModules = false;
+  public searchFilter: ModuleSearchFilter = 'all';
 
   @observable
   public modules: IModule[] = [];
@@ -38,98 +32,84 @@ class ModulesStore {
   public allowedTags: string[] = [];
 
   @computed
-  get totalPages() {
+  get totalPages(): number {
     return this.meta ? Math.ceil(this.meta.total / this.modulesPerPage) : 0;
   }
 
   @computed
-  get offset() {
+  get offset(): number {
     return this.meta ? this.page * this.modulesPerPage : 0;
   }
 
   @action
-  public clearModules = () => {
+  public clearModules = (): this => {
     this.modules = [];
 
     return this;
   }
 
   @action
-  public setError = (error = true) => {
+  public setError = (error = true): this => {
     this.error = error;
 
     return this;
   }
 
   @action
-  public clearError = () => {
+  public clearError = (): this => {
     this.error = false;
 
     return this;
   }
 
   @action
-  public setModules = (modules: IModule[]) => {
+  public setModules = (modules: IModule[]): this => {
     this.modules = modules;
 
     return this;
   }
 
   @action
-  public setMeta = (meta: IModuleMetadata) => {
+  public setMeta = (meta: IModuleMetadata): this => {
     this.meta = meta;
 
     return this;
   }
 
   @action
-  public setPage = (page: number) => {
+  public setPage = (page: number): this => {
     this.page = page;
 
     return this;
   }
 
   @action
-  public setModulesPerPage = (modulesPerPage: number) => {
+  public setModulesPerPage = (modulesPerPage: number): this => {
     this.modulesPerPage = modulesPerPage;
 
     return this;
   }
 
   @action
-  public setSearch = (search?: string) => {
+  public setSearch = (search?: string): this => {
     this.search = search;
 
     return this;
   }
 
   @action
-  public setOnlyFlagged = (onlyFlagged = true) => {
-    this.onlyFlagged = onlyFlagged;
+  public setSearchFilter = (filter: ModuleSearchFilter): this => {
+    this.searchFilter = filter;
 
     return this;
   }
 
   @action
-  public setOnlyTrusted = (onlyTrusted = true) => {
-    this.onlyTrusted = onlyTrusted;
-
-    return this;
-  }
-
-  @action
-  public setOnlyUserModules = (onlyUserModules = true) => {
-    this.onlyUserModules = onlyUserModules;
-
-    return this;
-  }
-
-  @action
-  public setAllowedTags = (tags: string[]) => {
+  public setAllowedTags = (tags: string[]): this => {
     this.allowedTags = tags;
 
     return this;
   }
 }
 
-export const modulesStore = new ModulesStore();
+export default new ModulesStore();

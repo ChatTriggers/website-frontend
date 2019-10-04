@@ -1,7 +1,11 @@
 @import '../node_modules/include-media/dist/_include-media.scss';
 
-body {
+html,
+body,
+nav {
   margin: 0;
+  padding: 0;
+  border: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;

@@ -1,17 +1,7 @@
 import qs from 'querystring';
-import { axios } from '..';
-import { ApiErrors, validateStatusCode } from '.';
-import { BASE_URL } from '../utils';
-
-export interface IUser {
-  id: number;
-  name: string;
-  rank: 'default' | 'trusted' | 'admin';
-}
-
-export interface IPersonalUser extends IUser {
-  email: string;
-}
+import { IUser, IPersonalUser } from '~types';
+import { ApiErrors, validateStatusCode } from './ApiErrors';
+import { axios, BASE_URL } from '../utils';
 
 const ACCOUNT_LOGIN_URL = `${BASE_URL}/account/login`;
 const ACCOUNT_LOGOUT_URL = `${BASE_URL}/account/logout`;
@@ -22,49 +12,43 @@ const ACCOUNT_RESET_COMPLETE = `${BASE_URL}/account/resets/complete`;
 
 export const login = async (
   username: string,
-  password: string
+  password: string,
 ): Promise<IUser> => {
   const response = await axios.post<IUser>(ACCOUNT_LOGIN_URL, qs.stringify({
     username,
-    password
+    password,
   }));
 
-  return validateStatusCode(response, {
-    200: () => response.data,
-    401: () => { throw ApiErrors.Login.AUTH_FAILED(response.statusText); }
-  });
+  return validateStatusCode(response, ApiErrors.Login);
 };
 
-export const logout = async () => {
+export const logout = async (): Promise<undefined> => {
   const response = await axios.get<undefined>(ACCOUNT_LOGOUT_URL);
 
-  return validateStatusCode(response, {
-    200: () => response.data
-  });
+  return validateStatusCode(response);
 };
 
 export const createAccount = async (
   username: string,
   password: string,
-  email: string
+  email: string,
 ): Promise<IUser> => {
   const response = await axios.post<IUser>(ACCOUNT_NEW_URL, qs.stringify({
     username,
     password,
-    email
+    email,
   }));
 
-  return validateStatusCode(response, {
-    201: () => response.data,
-    409: () => {
-      switch (response.statusText as '1' | '2' | '3') {
-        case '1':
-          throw ApiErrors.CreateAccount.USER_ALREADY_AUTHED(response.statusText);
-        case '2':
-          throw ApiErrors.CreateAccount.NAME_IN_USE(response.statusText);
-        case '3':
-          throw ApiErrors.CreateAccount.EMAIL_IN_USE(response.statusText);
-      }
+  return validateStatusCode(response, (): string | undefined => {
+    switch (response.statusText as '1' | '2' | '3') {
+      case '1':
+        return 'The user is already logged in';
+      case '2':
+        return 'The specified name is already in use';
+      case '3':
+        return 'The specified email is already in use';
+      default:
+        return undefined;
     }
   });
 };
@@ -72,39 +56,27 @@ export const createAccount = async (
 export const getCurrentAccount = async (): Promise<IPersonalUser> => {
   const response = await axios.get<IPersonalUser>(ACCOUNT_CURRENT_URL);
 
-  return validateStatusCode(response, {
-    200: () => response.data,
-    404: () => { throw ApiErrors.CurrentAccount.NO_ACTIVE_ACCOUNT(response.statusText); }
-  });
+  return validateStatusCode(response, ApiErrors.CurrentAccount);
 };
 
-export const requestPasswordReset = async (
-  email: string
-) => {
+export const requestPasswordReset = async (email: string): Promise<undefined> => {
   const response = await axios.get(ACCOUNT_RESET_REQUEST, {
     params: {
-      email
-    }
+      email,
+    },
   });
 
-  return validateStatusCode(response, {
-    200: () => undefined,
-    401: () => { throw ApiErrors.PasswordResetRequest.ALREADY_LOGGED_IN(response.statusText); }
-  });
+  return validateStatusCode(response, ApiErrors.PasswordResetRequest);
 };
 
 export const requestPasswordComplete = async (
   password: string,
-  token: string
-) => {
+  token: string,
+): Promise<unknown> => {
   const response = await axios.post(ACCOUNT_RESET_COMPLETE, qs.stringify({
     password,
-    token
+    token,
   }));
 
-  return validateStatusCode(response, {
-    200: () => response.data,
-    400: () => { throw ApiErrors.PasswordResetComplete.REQUEST_ISSUE(response.statusText); },
-    401: () => { throw ApiErrors.PasswordResetComplete.ALREADY_LOGGED_IN(response.statusText); }
-  });
+  return validateStatusCode(response, ApiErrors.PasswordResetComplete);
 };

@@ -9,20 +9,22 @@ interface IMarkdownEditorProps {
 }
 
 class MarkdownEditor extends React.Component<IMarkdownEditorProps> {
-  private get theme() {
+  private get theme(): Theme {
     return (this.props as unknown as { theme: Theme }).theme;
   }
 
-  public render() {
+  public render(): JSX.Element {
+    const { value, handleChange } = this.props;
+
     return (
       <>
         <Editor
-          value={this.props.value}
-          onChange={this.props.handleChange}
+          value={value}
+          onChange={handleChange}
           height="300px"
           language="en"
           style={{
-            margin: this.theme.spacing(2)
+            margin: this.theme.spacing(2),
           }}
           placeholder="Module Description"
         />

@@ -17,5 +17,5 @@ export {
   slate,
   javadocs,
   logoLong,
-  githubIcon
+  githubIcon,
 };

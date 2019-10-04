@@ -125,8 +125,8 @@ module.exports = function (webpackEnv) {
     bail: isEnvProduction,
     devtool: isEnvProduction ?
       shouldUseSourceMap ?
-      'source-map' :
-      false :
+        'source-map' :
+        false :
       isEnvDevelopment && 'cheap-module-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
@@ -171,9 +171,9 @@ module.exports = function (webpackEnv) {
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction ?
         info =>
-        path
-        .relative(paths.appSrc, info.absoluteResourcePath)
-        .replace(/\\/g, '/') :
+          path
+            .relative(paths.appSrc, info.absoluteResourcePath)
+            .replace(/\\/g, '/') :
         isEnvDevelopment &&
         (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
     },
@@ -279,7 +279,8 @@ module.exports = function (webpackEnv) {
         '~api': path.resolve(__dirname, '..', 'src', 'api'),
         '~modules': path.resolve(__dirname, '..', 'src', 'pages', 'ModulesPage'),
         '~assets': path.resolve(__dirname, '..', 'src', 'assets'),
-        '~src': path.resolve(__dirname, '..', 'src')
+        '~src': path.resolve(__dirname, '..', 'src'),
+        '~types': path.resolve(__dirname, '..', 'src', 'types')
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -322,7 +323,7 @@ module.exports = function (webpackEnv) {
 
             },
             loader: require.resolve('eslint-loader'),
-          }, ],
+          },],
           include: paths.appSrc,
         },
         {
@@ -438,9 +439,9 @@ module.exports = function (webpackEnv) {
               test: sassRegex,
               exclude: sassModuleRegex,
               use: getStyleLoaders({
-                  importLoaders: 2,
-                  sourceMap: isEnvProduction && shouldUseSourceMap,
-                },
+                importLoaders: 2,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+              },
                 'sass-loader'
               ),
               // Don't consider CSS imports dead code even if the
@@ -454,11 +455,11 @@ module.exports = function (webpackEnv) {
             {
               test: sassModuleRegex,
               use: getStyleLoaders({
-                  importLoaders: 2,
-                  sourceMap: isEnvProduction && shouldUseSourceMap,
-                  modules: true,
-                  getLocalIdent: getCSSModuleLocalIdent,
-                },
+                importLoaders: 2,
+                sourceMap: isEnvProduction && shouldUseSourceMap,
+                modules: true,
+                getLocalIdent: getCSSModuleLocalIdent,
+              },
                 'sass-loader'
               ),
             },
@@ -488,25 +489,25 @@ module.exports = function (webpackEnv) {
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign({}, {
-            inject: true,
-            template: paths.appHtml,
-          },
+          inject: true,
+          template: paths.appHtml,
+        },
           isEnvProduction ?
-          {
-            minify: {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            },
-          } :
-          undefined
+            {
+              minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true,
+              },
+            } :
+            undefined
         )
       ),
       // Inlines the webpack runtime script. This script is too small to warrant

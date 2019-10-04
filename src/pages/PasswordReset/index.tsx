@@ -1,47 +1,55 @@
 import qs from 'querystring';
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { Paper, Typography, TextField, ButtonGroup, Button, Theme, CircularProgress } from '@material-ui/core';
+import {
+  Paper,
+  Typography,
+  TextField,
+  ButtonGroup,
+  Button,
+  Theme,
+  CircularProgress,
+} from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { StyleRulesCallback } from '@material-ui/styles/withStyles';
-import { observer, observable, action, computed } from '~store';
-import { StaticContext } from 'react-router';
+import {
+  observer,
+  observable,
+  action,
+  computed,
+} from '~store';
 import { requestPasswordComplete } from '~api';
 import { StyledComponent } from '~components';
 
-// tslint:disable-next-line:no-any
-const styles: StyleRulesCallback<any, any> = (theme: Theme) => ({
+const styles: StyleRulesCallback<Theme, object> = (theme: Theme) => ({
   rootOuter: {
     display: 'flex',
     minHeight: '100vh',
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.palette.background.default
+    backgroundColor: theme.palette.background.default,
   },
   rootInner: {
     // flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
     alignContent: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   content: {
     padding: theme.spacing(3),
   },
   buttons: {
-    marginTop: theme.spacing(4)
+    marginTop: theme.spacing(4),
   },
   buttonError: {
-    backgroundColor: theme.palette.error.main
-  }
+    backgroundColor: theme.palette.error.main,
+  },
 });
 
-// tslint:disable-next-line:no-any
-interface IPasswordResetPage extends RouteComponentProps<any, StaticContext, any> { }
-
 @observer
-class PasswordResetPage extends StyledComponent<typeof styles, IPasswordResetPage> {
+class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentProps> {
   @observable
   private password = '';
 
@@ -52,39 +60,39 @@ class PasswordResetPage extends StyledComponent<typeof styles, IPasswordResetPag
   private loading = false;
 
   @computed
-  get isEqual() {
+  get isEqual(): boolean {
     return this.password === this.passwordConfirmation;
   }
 
   @computed
-  get isValid() {
+  get isValid(): boolean {
     return this.password.length >= 8;
   }
 
   @action
-  private readonly onChangePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private readonly onChangePassword = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.password = e.target.value;
   }
 
   @action
-  private readonly onChangePasswordConfirmation = (e: React.ChangeEvent<HTMLInputElement>) => {
+  private readonly onChangePasswordConfirmation = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.passwordConfirmation = e.target.value;
   }
 
-  private readonly onCancel = () => {
+  private readonly onCancel = (): void => {
     this.props.history.push('/');
   }
 
-  private readonly onReset = async () => {
+  private readonly onReset = async (): Promise<void> => {
     action(() => { this.loading = true; })();
     const query = qs.parse(this.props.location.search) as {
-      token: string
+      token: string;
     };
     await requestPasswordComplete(this.password, query.token);
     action(() => { this.loading = false; })();
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <div className={this.classes.rootOuter}>
         <div className={this.classes.rootInner}>
