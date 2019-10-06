@@ -141,7 +141,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                 {this.module.owner.name}
               </Typography>
               <div className={this.classes.body}>
-                {this.module && this.module.image && (
+                {this.module.image && (
                   <div className={this.classes.imageOuter}>
                     <img
                       className={this.classes.image}
