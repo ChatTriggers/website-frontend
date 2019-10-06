@@ -1,23 +1,40 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { IconButton } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
+import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
+import Drawer from '~components/Drawer';
 import theme from './styles/theme';
-import PasswordResetPage from './pages/PasswordReset';
-import LoginPage from './pages/LoginPage';
-import CreateAccountPage from './pages/CreateAccountPage';
-import ModulesListPage from './pages/ModulesListPage';
-import MobileFilterPage from './pages/MobileFilterPage';
-import ModulePage from './pages/ModulePage';
+import routes from './routes';
 
 const App: React.FunctionComponent = () => (
   <ThemeProvider theme={theme}>
     <Router>
-      <Route path="/passwordreset" component={PasswordResetPage} />
-      <Route path="/login" component={LoginPage} />
-      <Route path="/create-account" component={CreateAccountPage} />
-      <Route path="/modules" exact component={ModulesListPage} />
-      <Route path="/modules/filter" component={MobileFilterPage} />
-      <Route path="/modules/search/:module([\w ]+)" component={ModulePage} />
+      {routes.map(({ route, component, name }) => (
+        <Route
+          key={route}
+          path={route}
+          exact
+          render={({ location, history, match }) => {
+            const title = name || match.params.module;
+
+            const backButton = (
+              <IconButton
+                edge="start"
+                onClick={history.goBack}
+              >
+                <KeyboardArrowLeftIcon />
+              </IconButton>
+            );
+
+            return (
+              <Drawer title={title} button={location.pathname === '/modules' ? undefined : backButton}>
+                {component}
+              </Drawer>
+            );
+          }}
+        />
+      ))}
     </Router>
   </ThemeProvider>
 );

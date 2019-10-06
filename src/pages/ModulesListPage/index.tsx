@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/styles';
 import { getModules, getCurrentAccount, loadTags } from '~api';
 import { modulesStore, observer } from '~store';
 import {
-  Drawer,
   StyledComponent,
   Mobile,
   Styles,
@@ -34,7 +33,7 @@ class ModulesListPage extends StyledComponent<typeof styles> {
     const modules = modulesStore.modules.map(module => <Module key={module.id} module={module} />);
 
     return (
-      <Drawer title="Modules">
+      <>
         <FloatingActionButton />
         <Mobile>
           <MobilePagination />
@@ -43,7 +42,7 @@ class ModulesListPage extends StyledComponent<typeof styles> {
         <div className={this.classes.modules}>
           {modulesStore.modules.length > 0 ? modules : Array(3).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />)}
         </div>
-      </Drawer>
+      </>
     );
   }
 }

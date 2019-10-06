@@ -10,17 +10,13 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-  IconButton,
   CircularProgress,
   Theme,
   Chip,
 } from '@material-ui/core';
-import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import { withRouter } from 'react-router-dom';
 import { History } from 'history';
 import clsx from 'clsx';
-import Drawer from '~components/Drawer';
 import {
   modulesStore,
   authStore,
@@ -85,15 +81,13 @@ const useStyles = makeStyles<Theme, IStyleProps>((theme: Theme) => ({
     margin: theme.spacing(2),
     width: '100%',
     height: '100%',
-    // margin: theme.spacing(2),
-    // padding: 0,
   },
   tagChip: {
     marginRight: theme.spacing(1),
   },
 }));
 
-export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
+export default observer(() => {
   const [searching, setSearching] = React.useState(false);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout | undefined);
@@ -142,10 +136,6 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
     }
   });
 
-  const onBackButtonClick = (): void => {
-    history.push('/modules');
-  };
-
   const onSearchFocus = (): void => {
     setSearchFocused(true);
   };
@@ -177,106 +167,95 @@ export default withRouter(observer(({ history }: IMobileFilterPageProps) => {
     }
   };
 
-  const button = (
-    <IconButton
-      edge="start"
-      onClick={onBackButtonClick}
-    >
-      <KeyboardArrowLeftIcon />
-    </IconButton>
-  );
-
   return (
-    <Drawer title="Module Filters" button={button}>
-      <div className={classes.root}>
-        <div className={classes.paperContainer}>
-          <Paper
-            elevation={4}
-            className={classes.paper}
-          >
+    <div className={classes.root}>
+      <div className={classes.paperContainer}>
+        <Paper
+          elevation={4}
+          className={classes.paper}
+        >
 
-            <TextField
-              className={classes.search}
-              label="Search"
-              margin="normal"
-              placeholder="Search module names"
-              value={search}
-              onKeyDownCapture={onSearchKeyDown}
-              onChange={onSearchChange}
-              onFocus={onSearchFocus}
-              onBlur={onSearchBlur}
-              InputProps={{
-                startAdornment: tagAdornments,
-                endAdornment: (searching && (
-                  <div>
-                    <CircularProgress
-                      size={20}
-                      thickness={7}
-                    />
-                  </div>
-                )) || undefined,
-              }}
-              multiline
-            />
-          </Paper>
-          <Paper
-            elevation={4}
-            className={classes.paper}
-          >
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Module Search Filters</FormLabel>
-              <RadioGroup
-                className={classes.radio}
-                value={modulesStore.searchFilter}
-                onChange={onFilterChange}
-              >
-                <FormControlLabel
-                  control={<Radio />}
-                  label="All Modules"
-                  value="all"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label="Trusted Modules"
-                  value="trusted"
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label="My Modules"
-                  value="user"
-                  disabled
-                />
-                <FormControlLabel
-                  className={clsx(!authStore.isAdmin && classes.hidden)}
-                  control={<Radio />}
-                  label="Flagged Modules"
-                  value="flagged"
-                  hidden
-                />
-              </RadioGroup>
-            </FormControl>
-          </Paper>
-          <Paper
-            className={classes.paper}
-            elevation={4}
-          >
-            <div className={classes.modulesPerPage}>
-              <Typography>
+          <TextField
+            className={classes.search}
+            label="Search"
+            margin="normal"
+            placeholder="Search module names"
+            value={search}
+            onKeyDownCapture={onSearchKeyDown}
+            onChange={onSearchChange}
+            onFocus={onSearchFocus}
+            onBlur={onSearchBlur}
+            InputProps={{
+              startAdornment: tagAdornments,
+              endAdornment: (searching && (
+                <div>
+                  <CircularProgress
+                    size={20}
+                    thickness={7}
+                  />
+                </div>
+              )) || undefined,
+            }}
+            multiline
+          />
+        </Paper>
+        <Paper
+          elevation={4}
+          className={classes.paper}
+        >
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Module Search Filters</FormLabel>
+            <RadioGroup
+              className={classes.radio}
+              value={modulesStore.searchFilter}
+              onChange={onFilterChange}
+            >
+              <FormControlLabel
+                control={<Radio />}
+                label="All Modules"
+                value="all"
+              />
+              <FormControlLabel
+                control={<Radio />}
+                label="Trusted Modules"
+                value="trusted"
+              />
+              <FormControlLabel
+                control={<Radio />}
+                label="My Modules"
+                value="user"
+                disabled
+              />
+              <FormControlLabel
+                className={clsx(!authStore.isAdmin && classes.hidden)}
+                control={<Radio />}
+                label="Flagged Modules"
+                value="flagged"
+                hidden
+              />
+            </RadioGroup>
+          </FormControl>
+        </Paper>
+        <Paper
+          className={classes.paper}
+          elevation={4}
+        >
+          <div className={classes.modulesPerPage}>
+            <Typography>
                 Modules per page:
-              </Typography>
-              <Select
-                className={classes.select}
-                value={modulesStore.modulesPerPage}
-                onChange={onChangeModulesPerPage}
-              >
-                {MODULES_PER_PAGE_OPTIONS.map(n => (
-                  <MenuItem key={n} value={n}>{n}</MenuItem>
-                ))}
-              </Select>
-            </div>
-          </Paper>
-        </div>
+            </Typography>
+            <Select
+              className={classes.select}
+              value={modulesStore.modulesPerPage}
+              onChange={onChangeModulesPerPage}
+            >
+              {MODULES_PER_PAGE_OPTIONS.map(n => (
+                <MenuItem key={n} value={n}>{n}</MenuItem>
+              ))}
+            </Select>
+          </div>
+        </Paper>
       </div>
-    </Drawer>
+    </div>
   );
-}));
+});
