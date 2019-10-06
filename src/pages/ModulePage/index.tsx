@@ -7,7 +7,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { KeyboardArrowLeft as LeftIcon } from '@material-ui/icons';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {
   observer,
   observable,
@@ -16,7 +16,6 @@ import {
 } from '~store';
 import MarkdownRenderer from '~components/MarkdownRenderer';
 import TagList from '~components/Module/TagList';
-import Drawer from '~components/Drawer';
 import { getModules } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
 import ReleasesTable from '~components/Module/ReleasesTable';
@@ -115,76 +114,69 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   );
 
   public render(): JSX.Element {
-    return (
-      <Drawer
-        title={(this.module && this.module.name) || 'Loading...'}
-        button={this.DrawerButton}
-      >
-        {(this.module && (
-          <div className={this.classes.root}>
-            <Paper
-              className={this.classes.paper}
-              elevation={4}
-            >
-              <Typography
-                className={this.classes.title}
-                variant="h5"
-              >
-                {this.module.name}
-              </Typography>
-              <Typography
-                className={this.classes.title}
-                variant="h6"
-              >
+    return (this.module && (
+      <div className={this.classes.root}>
+        <Paper
+          className={this.classes.paper}
+          elevation={4}
+        >
+          <Typography
+            className={this.classes.title}
+            variant="h5"
+          >
+            {this.module.name}
+          </Typography>
+          <Typography
+            className={this.classes.title}
+            variant="h6"
+          >
                 By
-                {' '}
-                {this.module.owner.name}
-              </Typography>
-              <div className={this.classes.body}>
-                {this.module.image && (
-                  <div className={this.classes.imageOuter}>
-                    <img
-                      className={this.classes.image}
-                      src={this.module.image}
-                      alt="Module"
-                    />
-                  </div>
-                )}
+            {' '}
+            {this.module.owner.name}
+          </Typography>
+          <div className={this.classes.body}>
+            {this.module.image && (
+              <div className={this.classes.imageOuter}>
+                <img
+                  className={this.classes.image}
+                  src={this.module.image}
+                  alt="Module"
+                />
               </div>
-            </Paper>
-            <Paper
-              className={this.classes.paper}
-              elevation={4}
-            >
-              <MarkdownRenderer source={this.module.description} />
-            </Paper>
-            {this.module.tags.length > 0 && (
-              <Paper
-                className={this.classes.paper}
-                elevation={4}
-              >
-                <Typography variant="subtitle1">
-                  Tags
-                </Typography>
-                <TagList tags={this.module.tags} maxTags={99} />
-              </Paper>
-            )}
-            {this.module.releases.length > 0 && (
-              <Paper
-                className={this.classes.paper}
-                elevation={4}
-              >
-                <Typography variant="subtitle1">
-                  Releases
-                </Typography>
-                <ReleasesTable releases={this.module.releases} />
-              </Paper>
             )}
           </div>
-        )) || <div />}
-      </Drawer>
-    );
+        </Paper>
+        <Paper
+          className={this.classes.paper}
+          elevation={4}
+        >
+          <MarkdownRenderer source={this.module.description} />
+        </Paper>
+        {this.module.tags.length > 0 && (
+          <Paper
+            className={this.classes.paper}
+            elevation={4}
+          >
+            <Typography variant="subtitle1">
+                  Tags
+            </Typography>
+            <TagList tags={this.module.tags} maxTags={99} />
+          </Paper>
+        )}
+        {this.module.releases.length > 0 && (
+          <Paper
+            className={this.classes.paper}
+            elevation={4}
+          >
+            <Typography variant="subtitle1">
+                  Releases
+            </Typography>
+            <ReleasesTable releases={this.module.releases} />
+          </Paper>
+        )}
+      </div>
+    )) || <div />;
   }
 }
 
-export default withStyles(styles)(ModulePage);
+export default withStyles(styles)(withRouter(ModulePage));
