@@ -141,13 +141,15 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                 {this.module.owner.name}
               </Typography>
               <div className={this.classes.body}>
-                <div className={this.classes.imageOuter}>
-                  <img
-                    className={this.classes.image}
-                    src={this.module.image || 'https://www.chattriggers.com/default.png'}
-                    alt="Module"
-                  />
-                </div>
+                {this.module.image && (
+                  <div className={this.classes.imageOuter}>
+                    <img
+                      className={this.classes.image}
+                      src={this.module.image}
+                      alt="Module"
+                    />
+                  </div>
+                )}
               </div>
             </Paper>
             <Paper

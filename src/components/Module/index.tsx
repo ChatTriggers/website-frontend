@@ -102,13 +102,15 @@ export default withRouter(({ module, history }: IModuleProps) => {
         </Button>
       </div>
       <div className={classes.body}>
-        <div className={classes.imageOuter}>
-          <img
-            className={classes.image}
-            src={module.image || 'https://www.chattriggers.com/default.png'}
-            alt="Module"
-          />
-        </div>
+        {module.image && (
+          <div className={classes.imageOuter}>
+            <img
+              className={classes.image}
+              src={module.image}
+              alt="Module"
+            />
+          </div>
+        )}
         <div className={classes.markdownViewer}>
           <MarkdownRenderer source={module.description} />
         </div>
