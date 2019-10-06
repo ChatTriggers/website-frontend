@@ -15,10 +15,6 @@ import MobilePagination from '~components/Mobile/Pagination';
 import MobileFilterButton from '~components/Mobile/FilterButton';
 
 const styles: Styles = () => ({
-  // noModules: {
-  //   width: '100vw',
-  //   height: '100vh',
-  // },
   modules: {
     width: '100vw',
   },
@@ -44,15 +40,9 @@ class ModulesListPage extends StyledComponent<typeof styles> {
           <MobilePagination />
           <MobileFilterButton />
         </Mobile>
-        {modulesStore.modules.length > 0 ? (
-          <div className={this.classes.modules}>
-            {modules}
-          </div>
-        ) : (
-          <div className={this.classes.modules}>
-            {Array(3).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />)}
-          </div>
-        )}
+        <div className={this.classes.modules}>
+          {modulesStore.modules.length > 0 ? modules : Array(3).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />)}
+        </div>
       </Drawer>
     );
   }
