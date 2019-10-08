@@ -46,19 +46,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   body: {
     display: 'flex',
-    flexDirection: 'column',
     padding: theme.spacing(2, 2, 0, 2),
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
   imageOuter: {
     alignSelf: 'center',
     justifySelf: 'center',
-    flexGrow: 1,
-    paddingLeft: 0,
+    [theme.breakpoints.up('md')]: {
+      maxWidth: 320,
+      padding: theme.spacing(0, 2, 0, 0),
+    },
+    [theme.breakpoints.down('sm')]: {
+      flexGrow: 1,
+      paddingLeft: 0,
+    },
   },
   image: {
-    maxWidth: `calc(100vw - ${theme.spacing(2) * 4}px)`,
     maxHeight: '180px',
     objectFit: 'contain',
+    maxWidth: 320,
   },
   actions: {
     width: '300px',
@@ -116,7 +127,9 @@ export default withRouter(({ module, history }: IModuleProps) => {
             />
           </div>
         )}
-        <MarkdownRenderer source={module.description} />
+        <div>
+          <MarkdownRenderer source={module.description} />
+        </div>
       </div>
     </Paper>
   );
