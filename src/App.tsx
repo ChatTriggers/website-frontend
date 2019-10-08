@@ -44,7 +44,7 @@ const App: React.FunctionComponent = observer(() => (
         render={({ location }) => (
           <PoseGroup>
             <RouteContainer
-              key={location.key}
+              key={location.pathname}
               currLocation={location.pathname}
               firstLoad={modulesStore.firstLoad}
             >
