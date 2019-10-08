@@ -73,10 +73,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface IMobileDrawerProps {
   title: string;
-  button?: React.ReactChild;
+  button?: React.ReactNode;
 }
 
-export default (props: IMobileDrawerProps): JSX.Element => {
+export default ({ title, button }: IMobileDrawerProps): JSX.Element => {
   const classes = useStyles();
   const iOS = !!navigator.platform && /iPhone|iPad/.test(navigator.platform);
   const [open, setOpen] = React.useState(false);
@@ -84,8 +84,7 @@ export default (props: IMobileDrawerProps): JSX.Element => {
   const handleDrawerOpen = (): void => setOpen(true);
   const handleDrawerClose = (): void => setOpen(false);
 
-  const { title, button: b } = props;
-  const button = b || (
+  const b = button || (
     <IconButton
       onClick={handleDrawerOpen}
       edge="start"
@@ -102,7 +101,7 @@ export default (props: IMobileDrawerProps): JSX.Element => {
         className={clsx(classes.appBar, open && classes.appBarShift)}
       >
         <Toolbar>
-          {button}
+          {b}
           <Typography variant="h6" noWrap>
             {title}
           </Typography>

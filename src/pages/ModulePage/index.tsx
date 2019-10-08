@@ -130,12 +130,12 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             className={this.classes.title}
             variant="h6"
           >
-                By
+            By
             {' '}
             {this.module.owner.name}
           </Typography>
-          <div className={this.classes.body}>
-            {this.module.image && (
+          {this.module.image && (
+            <div className={this.classes.body}>
               <div className={this.classes.imageOuter}>
                 <img
                   className={this.classes.image}
@@ -143,8 +143,8 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                   alt="Module"
                 />
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </Paper>
         <Paper
           className={this.classes.paper}

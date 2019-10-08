@@ -88,7 +88,6 @@
     "react-router": "^5.1.1",
     "react-router-dom": "^5.0.1",
     "react-scroll": "^1.7.14",
-    "react-transition-group": "^4.3.0",
     "resolve": "1.10.0",
     "sass-loader": "7.1.0",
     "semver": "6.0.0",

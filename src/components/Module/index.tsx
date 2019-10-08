@@ -61,9 +61,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   actions: {
     width: '300px',
   },
-  markdownViewer: {
-    padding: theme.spacing(2, 0),
-  },
   viewButton: {
     margin: theme.spacing(4, 2, 2, 0),
   },
@@ -117,9 +114,7 @@ export default withRouter(({ module, history }: IModuleProps) => {
             />
           </div>
         )}
-        <div className={classes.markdownViewer}>
-          <MarkdownRenderer source={module.description} />
-        </div>
+        <MarkdownRenderer source={module.description} />
       </div>
     </Paper>
   );

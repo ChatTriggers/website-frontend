@@ -40,7 +40,7 @@ export default (props: IDrawerProps): JSX.Element => {
           <MobileDrawer title={title} button={button} />
         </Mobile>
         <Tablet>
-          <TabletDrawer />
+          <TabletDrawer title={title} button={button} />
         </Tablet>
         <Desktop>
           <DesktopDrawer />
