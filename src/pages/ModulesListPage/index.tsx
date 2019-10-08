@@ -1,4 +1,5 @@
 import React from 'react';
+import { Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { getModules, getCurrentAccount, loadTags } from '~api';
 import { modulesStore, observer } from '~store';
@@ -13,9 +14,14 @@ import ModuleSkeleton from '~components/Module/ModuleSkeleton';
 import MobilePagination from '~components/Mobile/Pagination';
 import MobileFilterButton from '~components/Mobile/FilterButton';
 
-const styles: Styles = () => ({
+const styles: Styles = (theme: Theme) => ({
   modules: {
-    width: '100vw',
+    [theme.breakpoints.down('md')]: {
+      width: '100vw',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: 'calc(100vw - 240px)',
+    },
   },
 });
 

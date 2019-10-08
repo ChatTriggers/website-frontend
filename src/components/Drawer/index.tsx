@@ -16,6 +16,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.between('sm', 'md')]: {
       marginTop: 64,
     },
+    [theme.breakpoints.up('lg')]: {
+      marginTop: 64,
+      width: 'calc(100vw - 240px)',
+    },
     flexGrow: 1,
     background: theme.palette.background.default,
   },

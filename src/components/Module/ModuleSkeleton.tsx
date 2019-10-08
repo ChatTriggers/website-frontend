@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: theme.spacing(3),
       width: `calc(100vw - ${theme.spacing(3) * 2}px)`,
     },
+    [theme.breakpoints.up('lg')]: {
+      margin: theme.spacing(4),
+      width: `calc(100vw - ${theme.spacing(4) * 2}px)`,
+    },
   },
   header: {
     display: 'flex',
