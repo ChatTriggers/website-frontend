@@ -2,9 +2,8 @@ import React from 'react';
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import MobileDrawer from './MobileDrawer';
-import TabletDrawer from './TabletDrawer';
 import DesktopDrawer from './DesktopDrawer';
-import { Mobile, Tablet, Desktop } from '~components/utils/DeviceUtils';
+import { NotDesktop, Desktop } from '~components/utils/DeviceUtils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -36,12 +35,9 @@ export default (props: IDrawerProps): JSX.Element => {
   return (
     <div className={classes.root}>
       <nav style={{ zIndex: 2 }}>
-        <Mobile>
+        <NotDesktop>
           <MobileDrawer title={title} button={button} />
-        </Mobile>
-        <Tablet>
-          <TabletDrawer title={title} button={button} />
-        </Tablet>
+        </NotDesktop>
         <Desktop>
           <DesktopDrawer />
         </Desktop>
