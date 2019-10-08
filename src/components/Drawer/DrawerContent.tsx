@@ -36,12 +36,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default withRouter(observer(({ history }: RouteComponentProps<{}>) => {
+interface IDrawerContentProps extends RouteComponentProps<{}> {
+  closeDrawer?(): void;
+}
+
+export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProps) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(undefined as HTMLButtonElement | undefined);
 
   const onClickCreateAccount = (): void => {
-    history.push('/create-account');
+    if (closeDrawer) closeDrawer();
+
+    setTimeout(() => {
+      history.push('/create-account');
+    }, 300);
   };
 
   const onClickUserSettings = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
@@ -53,7 +61,11 @@ export default withRouter(observer(({ history }: RouteComponentProps<{}>) => {
   };
 
   const onClickLogin = (): void => {
-    history.push('/login');
+    if (closeDrawer) closeDrawer();
+
+    setTimeout(() => {
+      history.push('/login');
+    }, 300);
   };
 
   const onClickLogout = async (): Promise<void> => {

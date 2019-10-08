@@ -124,7 +124,7 @@ export default ({ title, button }: IMobileDrawerProps): JSX.Element => {
             <ChevronLeftIcon />
           </IconButton>
         </div>
-        <DrawerContent />
+        <DrawerContent closeDrawer={handleDrawerClose} />
       </SwipeableDrawer>
     </>
   );
