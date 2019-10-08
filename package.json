@@ -84,6 +84,7 @@
     "react-dom": "^16.8.6",
     "react-flexview": "^4.0.3",
     "react-markdown": "^4.1.0",
+    "react-pose": "^4.0.8",
     "react-router": "^5.1.1",
     "react-router-dom": "^5.0.1",
     "react-scroll": "^1.7.14",
