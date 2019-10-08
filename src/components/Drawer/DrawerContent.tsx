@@ -34,9 +34,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxWidth: 24,
     maxHeight: 24,
   },
-  paper: {
-    padding: theme.spacing(2),
-  },
 }));
 
 export default withRouter(observer(({ history }: RouteComponentProps<{}>) => {

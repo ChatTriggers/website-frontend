@@ -10,13 +10,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
   },
-  toolbar: {
-    minHeight: 56,
-  },
   content: {
+    [theme.breakpoints.only('xs')]: {
+      marginTop: 56,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      marginTop: 64,
+    },
     flexGrow: 1,
     background: theme.palette.background.default,
-    // padding: theme.spacing(3)
   },
 }));
 
@@ -45,7 +47,6 @@ export default (props: IDrawerProps): JSX.Element => {
         </Desktop>
       </nav>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
         {children}
       </main>
     </div>
