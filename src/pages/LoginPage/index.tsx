@@ -15,12 +15,20 @@ import { login } from '~api';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: '100vw',
-    height: `calc(100vh - 56px - ${theme.spacing(2)}px)`,
+    height: 'calc(100vh - 56px)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   paperContainer: {
     margin: 'auto',
     width: '100%',
-    maxWidth: 320,
+    [theme.breakpoints.only('xs')]: {
+      maxWidth: 320,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      maxWidth: 600,
+    },
   },
   paper: {
     margin: theme.spacing(2),
