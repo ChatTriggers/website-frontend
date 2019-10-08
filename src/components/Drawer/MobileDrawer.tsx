@@ -13,7 +13,7 @@ import clsx from 'clsx';
 import { logoLong } from '~assets';
 import DrawerContent from './DrawerContent';
 
-const drawerWidth = 240;
+const drawerWidth = 239;
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {

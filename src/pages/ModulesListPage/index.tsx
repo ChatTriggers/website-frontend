@@ -20,7 +20,7 @@ const styles: Styles = (theme: Theme) => ({
       width: '100vw',
     },
     [theme.breakpoints.up('lg')]: {
-      width: 'calc(100vw - 240px)',
+      width: '100%',
     },
   },
 });

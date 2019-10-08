@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     [theme.breakpoints.up('lg')]: {
       margin: theme.spacing(4),
+      padding: theme.spacing(1),
     },
   },
   header: {

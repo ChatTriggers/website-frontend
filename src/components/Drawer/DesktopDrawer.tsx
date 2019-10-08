@@ -10,7 +10,7 @@ import { makeStyles, createStyles } from '@material-ui/styles';
 import DrawerContent from './DrawerContent';
 import { logoLong } from '~assets';
 
-const drawerWidth = 240;
+const drawerWidth = 239;
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {

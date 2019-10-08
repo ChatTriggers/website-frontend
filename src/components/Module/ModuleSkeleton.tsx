@@ -12,15 +12,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     [theme.breakpoints.only('xs')]: {
       margin: theme.spacing(2),
-      width: `calc(100vw - ${theme.spacing(2) * 2}px)`,
     },
     [theme.breakpoints.between('sm', 'md')]: {
       margin: theme.spacing(3),
-      width: `calc(100vw - ${theme.spacing(3) * 2}px)`,
     },
     [theme.breakpoints.up('lg')]: {
       margin: theme.spacing(4),
-      width: `calc(100vw - ${theme.spacing(4) * 2}px)`,
+      padding: theme.spacing(1),
     },
   },
   header: {
@@ -115,10 +113,12 @@ export default withTheme(withWidth()(({ theme, width: deviceWidth }: IModuleSkel
               const minLine = deviceWidth === 'sm' ? 0 : 2;
 
               if (!short && Math.random() <= prob && n > minLine) {
-                width = `calc(100vw - ${theme.spacing(2) * 2}px - ${Math.random() * 20 + 60}vw)`;
+                width = `calc(100vw - ${theme.spacing(2) * 2}px - ${Math.random() * 20 + 60}vw - 
+                         ${deviceWidth === 'lg' || deviceWidth === 'xl' ? '241' : 0}px)`;
                 short = true;
               } else {
-                width = `calc(100vw - ${theme.spacing(2) * 2}px - ${Math.random() * 10 + 10}vw)`;
+                width = `calc(100vw - ${theme.spacing(2) * 2}px - ${Math.random() * 10 + 10}vw - 
+                         ${deviceWidth === 'lg' || deviceWidth === 'xl' ? '241' : 0}px)`;
               }
 
               return <Skeleton key={n} style={{ width }} />;
