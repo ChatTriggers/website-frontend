@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, createStyles } from '@material-ui/styles';
 import DrawerContent from './DrawerContent';
+import { logoLong } from '~assets';
 
 const drawerWidth = 240;
 
@@ -32,6 +33,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(3),
   },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  },
+  logo: {
+    width: drawerWidth - 2,
+  },
 }));
 
 export default (): JSX.Element => {
@@ -54,7 +65,9 @@ export default (): JSX.Element => {
         }}
         anchor="left"
       >
-        <div className={classes.toolbar} />
+        <div className={classes.drawerHeader}>
+          <img className={classes.logo} src={logoLong} alt="ChatTriggers logo" />
+        </div>
         <DrawerContent />
       </Drawer>
     </div>
