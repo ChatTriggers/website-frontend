@@ -14,8 +14,14 @@ import { createUser } from '~api';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    width: '100vw',
-    height: 'calc(100vh - 56px)',
+    [theme.breakpoints.down('md')]: {
+      width: '100vw',
+      height: 'calc(100vh - 56px)',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '100%',
+      height: 'calc(100vh - 64px)',
+    },
     display: 'flex',
     justifyContent: 'center',
     alignContent: 'center',
@@ -26,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.only('xs')]: {
       maxWidth: 320,
     },
-    [theme.breakpoints.between('sm', 'md')]: {
+    [theme.breakpoints.up('sm')]: {
       maxWidth: 600,
     },
   },

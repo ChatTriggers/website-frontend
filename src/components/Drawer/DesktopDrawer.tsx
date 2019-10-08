@@ -45,7 +45,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
-export default (): JSX.Element => {
+interface IDesktopDrawerProps {
+  title: string;
+}
+
+export default ({ title }: IDesktopDrawerProps): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -53,7 +57,7 @@ export default (): JSX.Element => {
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
-            Desktop Drawer
+            {title}
           </Typography>
         </Toolbar>
       </AppBar>
