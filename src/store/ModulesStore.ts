@@ -5,6 +5,9 @@ export const MODULES_PER_PAGE_OPTIONS = [10, 25, 50];
 
 class ModulesStore {
   @observable
+  public firstLoad = true;
+
+  @observable
   public meta: IModuleMetadata | undefined;
 
   @observable

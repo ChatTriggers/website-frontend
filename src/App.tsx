@@ -9,33 +9,45 @@ import posed, { PoseGroup } from 'react-pose';
 import Drawer from '~components/Drawer';
 import theme from './styles/theme';
 import routes from './routes';
+import { modulesStore, action, observer } from '~store';
 
 interface IRouteContainerProps {
   currLocation: string;
+  firstLoad: boolean;
 }
 
-const RouteContainer = posed.div(({ currLocation }: IRouteContainerProps) => ({
-  enter: {
-    transform: 'translate(0%)',
-    transition: {
-      transform: { type: 'tween', ease: 'easeInOut' },
-    },
-  },
-  exit: {
-    transform: currLocation === '/modules' ? 'translate(-100%)' : 'translate(100%)',
-    transition: {
-      transform: { type: 'tween', ease: 'easeInOut' },
-    },
-  },
-}));
+const RouteContainer = posed.div(({ firstLoad, currLocation }: IRouteContainerProps) => {
+  if (firstLoad) {
+    setTimeout(action(() => { modulesStore.firstLoad = false; }), 500);
+  }
 
-const App: React.FunctionComponent = () => (
+  return {
+    enter: {
+      transform: 'translate(0%)',
+      transition: {
+        transform: { type: 'tween', ease: 'easeInOut', duration: firstLoad ? 0 : undefined },
+      },
+    },
+    exit: {
+      transform: `translate(${currLocation === '/modules' ? '-100' : '100'}%)`,
+      transition: {
+        transform: { type: 'tween', ease: 'easeInOut' },
+      },
+    },
+  };
+});
+
+const App: React.FunctionComponent = observer(() => (
   <ThemeProvider theme={theme}>
     <Router>
       <Route
         render={({ location }) => (
           <PoseGroup>
-            <RouteContainer key={location.key} currLocation={location.pathname}>
+            <RouteContainer
+              key={location.key}
+              currLocation={location.pathname}
+              firstLoad={modulesStore.firstLoad}
+            >
               <Switch location={location}>
                 {routes.map(({ route, component, name }) => (
                   <Route
@@ -43,8 +55,6 @@ const App: React.FunctionComponent = () => (
                     path={route}
                     exact
                     render={({ history, match }) => {
-                      const title = name || match.params.module;
-
                       const backButton = (
                         <IconButton
                           edge="start"
@@ -55,7 +65,10 @@ const App: React.FunctionComponent = () => (
                       );
 
                       return (
-                        <Drawer title={title} button={location.pathname === '/modules' ? undefined : backButton}>
+                        <Drawer
+                          title={name || match.params.module}
+                          button={location.pathname === '/modules' ? undefined : backButton}
+                        >
                           {component}
                         </Drawer>
                       );
@@ -70,6 +83,6 @@ const App: React.FunctionComponent = () => (
       <Redirect from="/" to="/modules" />
     </Router>
   </ThemeProvider>
-);
+));
 
 export default App;
