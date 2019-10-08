@@ -31,6 +31,7 @@ class ModulesListPage extends StyledComponent<typeof styles> {
 
   public render(): JSX.Element {
     const modules = modulesStore.modules.map(module => <Module key={module.id} module={module} />);
+    const skeletons = Array(4).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />);
 
     return (
       <>
@@ -40,7 +41,7 @@ class ModulesListPage extends StyledComponent<typeof styles> {
           <MobileFilterButton />
         </Mobile>
         <div className={this.classes.modules}>
-          {modulesStore.modules.length > 0 ? modules : Array(4).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />)}
+          {modules.length > 0 ? modules : skeletons}
         </div>
       </>
     );

@@ -3,6 +3,7 @@ import {
   Paper,
   Theme,
   withTheme,
+  withWidth,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
@@ -28,11 +29,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: `calc(100% - 64px - ${theme.spacing(2) * 3}px)`,
   },
   title: {
-    width: '100%',
+    [theme.breakpoints.only('xs')]: {
+      width: '100%',
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: '40%',
+    },
   },
   author: {
     marginTop: 0,
-    width: '70%',
+    [theme.breakpoints.only('xs')]: {
+      width: '70%',
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: '20%',
+    },
   },
   titleChip: {
     display: 'flex',
@@ -66,7 +77,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default withTheme(({ theme }: { theme: Theme }): JSX.Element => {
+interface IModuleSkeletonProps {
+  theme: Theme;
+  width: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+}
+
+export default withTheme(withWidth()(({ theme, width: deviceWidth }: IModuleSkeletonProps): JSX.Element => {
   const classes = useStyles();
 
   return (
@@ -91,7 +107,10 @@ export default withTheme(({ theme }: { theme: Theme }): JSX.Element => {
             return Array(Math.floor(Math.random() * 4 + 3)).fill(undefined).map((_, i) => i).map(n => {
               let width: string;
 
-              if (!short && Math.random() <= 0.2 && n > 2) {
+              const prob = deviceWidth === 'sm' ? 0.6 : 0.2;
+              const minLine = deviceWidth === 'sm' ? 0 : 2;
+
+              if (!short && Math.random() <= prob && n > minLine) {
                 width = `calc(100vw - ${theme.spacing(2) * 2}px - ${Math.random() * 20 + 60}vw)`;
                 short = true;
               } else {
@@ -105,4 +124,4 @@ export default withTheme(({ theme }: { theme: Theme }): JSX.Element => {
       </div>
     </Paper>
   );
-});
+}));
