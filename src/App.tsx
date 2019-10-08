@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
@@ -35,6 +35,7 @@ const App: React.FunctionComponent = () => (
           }}
         />
       ))}
+      <Redirect from="/" to="/modules" />
     </Router>
   </ThemeProvider>
 );
