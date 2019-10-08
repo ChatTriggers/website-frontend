@@ -40,7 +40,7 @@ class ModulesListPage extends StyledComponent<typeof styles> {
           <MobileFilterButton />
         </Mobile>
         <div className={this.classes.modules}>
-          {modulesStore.modules.length > 0 ? modules : Array(3).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />)}
+          {modulesStore.modules.length > 0 ? modules : Array(4).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />)}
         </div>
       </>
     );
