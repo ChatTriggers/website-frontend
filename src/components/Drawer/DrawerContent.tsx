@@ -18,8 +18,9 @@ import {
   Create as CreateIcon,
   ExitToApp as LoginIcon,
   Settings as SettingsIcon,
+  Folder as FolderIcon,
 } from '@material-ui/icons';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
 import { githubIcon, slate } from '~assets';
 import { authStore, observer } from '~store';
@@ -77,6 +78,14 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
     <>
       <Divider />
       <List>
+        <ListItem button component={Link} to="/">
+          <ListItemIcon>
+            <FolderIcon />
+          </ListItemIcon>
+          <ListItemText>
+            All Modules
+          </ListItemText>
+        </ListItem>
         <ListItem button component="a" href="https://www.chattriggers.com/slate/">
           <ListItemIcon>
             <img
