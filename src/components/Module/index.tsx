@@ -11,15 +11,6 @@ import { IModule } from '~types';
 import MarkdownRenderer from '~components/MarkdownRenderer';
 
 const useStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    margin: 0,
-    padding: 0,
-    [theme.breakpoints.up('lg')]: {
-      width: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-  },
   root: {
     [theme.breakpoints.only('xs')]: {
       margin: theme.spacing(2),
@@ -31,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: theme.spacing(2, 4),
       padding: theme.spacing(1),
       width: '100%',
-      maxWidth: 1000,
+      maxWidth: `calc(1000px - ${theme.spacing(1) * 2}px)`,
     },
   },
   header: {
@@ -102,48 +93,46 @@ export default withRouter(({ module, history }: IModuleProps) => {
   };
 
   return (
-    <div className={classes.wrapper}>
-      <Paper
-        className={classes.root}
-        elevation={4}
-      >
-        <div className={classes.header}>
-          <div className={classes.titleContainer}>
-            <div className={classes.titleChip}>
-              <Typography className={classes.title} variant="h5">
-                {module.name}
-              </Typography>
-            </div>
-            <Typography className={classes.title} variant="h6">
-              By
-              {' '}
-              {module.owner.name}
+    <Paper
+      className={classes.root}
+      elevation={4}
+    >
+      <div className={classes.header}>
+        <div className={classes.titleContainer}>
+          <div className={classes.titleChip}>
+            <Typography className={classes.title} variant="h5">
+              {module.name}
             </Typography>
           </div>
-          <Button
-            className={classes.viewButton}
-            color="primary"
-            variant="contained"
-            onClick={onClickModule}
-          >
+          <Typography className={classes.title} variant="h6">
+              By
+            {' '}
+            {module.owner.name}
+          </Typography>
+        </div>
+        <Button
+          className={classes.viewButton}
+          color="primary"
+          variant="contained"
+          onClick={onClickModule}
+        >
             View
-          </Button>
-        </div>
-        <div className={classes.body}>
-          {module.image && (
-            <div className={classes.imageOuter}>
-              <img
-                className={classes.image}
-                src={module.image}
-                alt="Module"
-              />
-            </div>
-          )}
-          <div>
-            <MarkdownRenderer source={module.description} />
+        </Button>
+      </div>
+      <div className={classes.body}>
+        {module.image && (
+          <div className={classes.imageOuter}>
+            <img
+              className={classes.image}
+              src={module.image}
+              alt="Module"
+            />
           </div>
+        )}
+        <div>
+          <MarkdownRenderer source={module.description} />
         </div>
-      </Paper>
-    </div>
+      </div>
+    </Paper>
   );
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import PasswordResetPage from './pages/PasswordReset';
+import PasswordResetPage from './pages/PasswordResetPage';
 import LoginPage from './pages/LoginPage';
 import CreateAccountPage from './pages/CreateAccountPage';
 import ModulesListPage from './pages/ModulesListPage';

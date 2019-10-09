@@ -1,5 +1,5 @@
 import React from 'react';
-import { Theme } from '@material-ui/core';
+import { Container, Theme } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { getModules, getCurrentAccount, loadTags } from '~api';
 import { modulesStore, observer } from '~store';
@@ -7,12 +7,14 @@ import {
   StyledComponent,
   Mobile,
   Styles,
+  Desktop,
 } from '~components';
 import Module from '~components/Module';
 import FloatingActionButton from '~components/Module/FloatingActionButton';
 import ModuleSkeleton from '~components/Module/ModuleSkeleton';
 import MobilePagination from '~components/Mobile/Pagination';
 import MobileFilterButton from '~components/Mobile/FilterButton';
+import ModuleFilter from '~components/Desktop/ModuleFilter';
 
 const styles: Styles = (theme: Theme) => ({
   modules: {
@@ -46,9 +48,12 @@ class ModulesListPage extends StyledComponent<typeof styles> {
           <MobilePagination />
           <MobileFilterButton />
         </Mobile>
-        <div className={this.classes.modules}>
+        <Container className={this.classes.modules}>
+          <Desktop>
+            <ModuleFilter />
+          </Desktop>
           {modules.length > 0 ? modules : skeletons}
-        </div>
+        </Container>
       </>
     );
   }
