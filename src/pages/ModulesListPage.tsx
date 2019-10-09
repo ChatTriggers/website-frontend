@@ -18,15 +18,19 @@ import ModuleFilter from '~components/Desktop/ModuleFilter';
 
 const styles: Styles = (theme: Theme) => ({
   modules: {
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.only('xs')]: {
       width: '100vw',
+      margin: 0,
+      padding: 0,
     },
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('sm')]: {
       width: '100%',
     },
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
+    [theme.breakpoints.up('lg')]: {
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+    },
   },
 });
 
