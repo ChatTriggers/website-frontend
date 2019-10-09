@@ -1,9 +1,12 @@
 import React from 'react';
-import { Theme } from '@material-ui/core';
+import { IconButton, Theme } from '@material-ui/core';
+import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import MobileDrawer from './MobileDrawer';
 import DesktopDrawer from './DesktopDrawer';
 import { NotDesktop, Desktop } from '~components/utils/DeviceUtils';
+import { globalStore, observer } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -25,25 +28,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface IDrawerProps {
-  title: string;
-  button?: React.ReactChild;
+interface IDrawerProps extends RouteComponentProps<{}> {
   children: React.ReactChild | React.ReactChild[];
 }
 
-export default (props: IDrawerProps): JSX.Element => {
+export default withRouter(observer(({ children, history }: IDrawerProps): JSX.Element => {
   const classes = useStyles();
 
-  const { title, button, children } = props;
+  const backButton = (
+    <IconButton
+      edge="start"
+      onClick={history.goBack}
+    >
+      <KeyboardArrowLeftIcon />
+    </IconButton>
+  );
 
   return (
     <div className={classes.root}>
       <nav style={{ zIndex: 2 }}>
         <NotDesktop>
-          <MobileDrawer title={title} button={button} />
+          <MobileDrawer title={globalStore.drawerTitle} button={backButton} />
         </NotDesktop>
         <Desktop>
-          <DesktopDrawer title={title} />
+          <DesktopDrawer title={globalStore.drawerTitle} />
         </Desktop>
       </nav>
       <main className={classes.content}>
@@ -51,4 +59,4 @@ export default (props: IDrawerProps): JSX.Element => {
       </main>
     </div>
   );
-};
+}));

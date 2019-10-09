@@ -2,14 +2,14 @@ import React from 'react';
 import {
   BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom';
-import { IconButton } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
 import posed, { PoseGroup } from 'react-pose';
 import Drawer from '~components/Drawer';
 import theme from './styles/theme';
 import routes from './routes';
-import { modulesStore, action, observer } from '~store';
+import {
+  modulesStore, globalStore, action, observer,
+} from '~store';
 
 interface IRouteContainerProps {
   currLocation: string;
@@ -42,42 +42,30 @@ const App: React.FunctionComponent = observer(() => (
     <Router>
       <Route
         render={({ location }) => (
-          <PoseGroup>
-            <RouteContainer
-              key={location.pathname}
-              currLocation={location.pathname}
-              firstLoad={modulesStore.firstLoad}
-            >
-              <Switch location={location}>
-                {routes.map(({ route, component, name }) => (
-                  <Route
-                    key={route}
-                    path={route}
-                    exact
-                    render={({ history, match }) => {
-                      const backButton = (
-                        <IconButton
-                          edge="start"
-                          onClick={history.goBack}
-                        >
-                          <KeyboardArrowLeftIcon />
-                        </IconButton>
-                      );
+          <Drawer>
+            <PoseGroup>
+              <RouteContainer
+                key={location.pathname}
+                currLocation={location.pathname}
+                firstLoad={modulesStore.firstLoad}
+              >
+                <Switch location={location}>
+                  {routes.map(({ route, component, name }) => (
+                    <Route
+                      key={route}
+                      path={route}
+                      exact
+                      render={({ match }) => {
+                        globalStore.setDrawerTitle(name || match.params.module);
 
-                      return (
-                        <Drawer
-                          title={name || match.params.module}
-                          button={location.pathname === '/modules' ? undefined : backButton}
-                        >
-                          {component}
-                        </Drawer>
-                      );
-                    }}
-                  />
-                ))}
-              </Switch>
-            </RouteContainer>
-          </PoseGroup>
+                        return component;
+                      }}
+                    />
+                  ))}
+                </Switch>
+              </RouteContainer>
+            </PoseGroup>
+          </Drawer>
         )}
       />
     </Router>
