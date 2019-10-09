@@ -25,7 +25,12 @@ type ModuleProps = RouteComponentProps<{ module: string }>
 
 const styles: Styles = (theme: Theme) => ({
   root: {
-    width: '100vw',
+    [theme.breakpoints.down('md')]: {
+      width: '100vw',
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '100%',
+    },
     minHeight: 'calc(100vh - 72px)',
   },
   paperContainer: {
@@ -34,8 +39,19 @@ const styles: Styles = (theme: Theme) => ({
     maxWidth: 320,
   },
   paper: {
-    margin: theme.spacing(2),
     padding: theme.spacing(2),
+    [theme.breakpoints.only('xs')]: {
+      margin: theme.spacing(2),
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      margin: theme.spacing(3),
+    },
+    [theme.breakpoints.up('lg')]: {
+      margin: theme.spacing(2, 4),
+      padding: theme.spacing(3),
+      width: '100%',
+      maxWidth: `calc(1000px - ${theme.spacing(1) * 2}px)`,
+    },
   },
   title: {
     width: '100%',

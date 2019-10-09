@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.up('lg')]: {
       margin: theme.spacing(4),
       padding: theme.spacing(1),
+      maxWidth: `calc(1000px - ${theme.spacing(1) * 2}px)`,
     },
   },
   header: {

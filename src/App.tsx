@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrowserRouter as Router, Route, Redirect, Switch,
+  BrowserRouter as Router, Route, Switch,
 } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
@@ -80,7 +80,6 @@ const App: React.FunctionComponent = observer(() => (
           </PoseGroup>
         )}
       />
-      <Redirect from="/" to="/modules" />
     </Router>
   </ThemeProvider>
 ));
