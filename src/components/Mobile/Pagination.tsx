@@ -78,10 +78,11 @@ export default observer(() => {
         label="Page"
         value={modulesStore.page}
         onChange={onChangePageEvent}
+        margin="normal"
         SelectProps={{
           native: true,
         }}
-        margin="normal"
+        InputLabelProps={{ shrink: true }}
       >
         {Array.from(Array(modulesStore.totalPages).keys()).map(n => (
           <option key={n} value={n}>{n + 1}</option>

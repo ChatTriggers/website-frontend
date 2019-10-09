@@ -155,6 +155,7 @@ class TablePagination extends StyledComponent<typeof stylesPagination, ITablePag
               },
               native: true,
             }}
+            InputLabelProps={{ shrink: true }}
           >
             {Array(modulesStore.totalPages).fill(-1).map((_, i) => i).map(i => (
               <option key={i} value={i}>{i + 1}</option>
