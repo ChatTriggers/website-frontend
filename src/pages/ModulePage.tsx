@@ -25,13 +25,20 @@ type ModuleProps = RouteComponentProps<{ module: string }>
 
 const styles: Styles = (theme: Theme) => ({
   root: {
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.only('xs')]: {
       width: '100vw',
+      margin: 0,
+      padding: 0,
     },
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('sm')]: {
       width: '100%',
     },
-    minHeight: 'calc(100vh - 72px)',
+    [theme.breakpoints.up('lg')]: {
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+    },
+    minHeight: 'calc(100vh - 64px)',
   },
   paperContainer: {
     margin: 'auto',
