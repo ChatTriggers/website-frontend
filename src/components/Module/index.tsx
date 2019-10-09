@@ -89,7 +89,7 @@ export default withRouter(({ module, history }: IModuleProps) => {
   const classes = useStyles();
 
   const onClickModule = (): void => {
-    history.push(`/modules/search/${module.name}`);
+    history.push(`/modules/v/${module.name}`);
   };
 
   return (

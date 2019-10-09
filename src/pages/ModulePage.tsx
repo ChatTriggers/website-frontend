@@ -2,11 +2,9 @@ import React from 'react';
 import {
   Paper,
   Typography,
-  IconButton,
   Theme,
   withStyles,
 } from '@material-ui/core';
-import { KeyboardArrowLeft as LeftIcon } from '@material-ui/icons';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {
   observer,
@@ -19,6 +17,7 @@ import TagList from '~components/Module/TagList';
 import { getModules } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
 import ReleasesTable from '~components/Module/ReleasesTable';
+import ModuleActions from '~components/Module/ModuleActions';
 import { IModule } from '~types';
 
 type ModuleProps = RouteComponentProps<{ module: string }>
@@ -46,7 +45,7 @@ const styles: Styles = (theme: Theme) => ({
     maxWidth: 320,
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2, 2, 1, 2),
     [theme.breakpoints.only('xs')]: {
       margin: theme.spacing(2),
     },
@@ -55,10 +54,14 @@ const styles: Styles = (theme: Theme) => ({
     },
     [theme.breakpoints.up('lg')]: {
       margin: theme.spacing(2, 4),
-      padding: theme.spacing(3),
+      padding: theme.spacing(3, 3, 2, 3),
       width: '100%',
       maxWidth: `calc(1000px - ${theme.spacing(1) * 2}px)`,
     },
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   title: {
     width: '100%',
@@ -93,12 +96,28 @@ const styles: Styles = (theme: Theme) => ({
   backButton: {
     marginRight: theme.spacing(2),
   },
+  actions: {
+    width: 180,
+  },
 });
 
 @observer
 class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   @observable
   private module: IModule | undefined;
+
+  @observable
+  private deleteDialogOpen = false;
+
+  @action
+  private closeDeleteDialog = (): void => {
+    this.deleteDialogOpen = false;
+  }
+
+  @action
+  private openDeleteDialog = (): void => {
+    this.deleteDialogOpen = true;
+  }
 
   private onBackButtonClick = (): void => {
     this.props.history.push('/modules');
@@ -125,17 +144,6 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
     }
   }
 
-  private DrawerButton = (
-    <IconButton
-      onClick={this.onBackButtonClick}
-      edge="start"
-      className={this.classes.backButton}
-      size="medium"
-    >
-      <LeftIcon />
-    </IconButton>
-  );
-
   public render(): JSX.Element {
     return (this.module && (
       <div className={this.classes.root}>
@@ -143,20 +151,28 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
           className={this.classes.paper}
           elevation={4}
         >
-          <Typography
-            className={this.classes.title}
-            variant="h5"
-          >
-            {this.module.name}
-          </Typography>
-          <Typography
-            className={this.classes.title}
-            variant="h6"
-          >
-            By
-            {' '}
-            {this.module.owner.name}
-          </Typography>
+          <div className={this.classes.header}>
+            <div>
+              <Typography
+                className={this.classes.title}
+                variant="h5"
+              >
+                {this.module.name}
+              </Typography>
+              <Typography
+                className={this.classes.title}
+                variant="h6"
+              >
+                By
+                {' '}
+                {this.module.owner.name}
+              </Typography>
+            </div>
+            <ModuleActions
+              className={this.classes.actions}
+              module={this.module}
+            />
+          </div>
           {this.module.image && (
             <div className={this.classes.body}>
               <div className={this.classes.imageOuter}>

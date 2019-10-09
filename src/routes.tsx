@@ -17,7 +17,7 @@ const routes: IRoute[] = [
   { route: '/passwordreset', component: <PasswordResetPage />, name: 'Password Reset' },
   { route: '/login', component: <LoginPage />, name: 'Login' },
   { route: '/create-account', component: <CreateAccountPage />, name: 'Create Account' },
-  { route: '/modules/search/:module([\\w]+)', component: <ModulePage /> },
+  { route: '/modules/v/:module([\\w]+)', component: <ModulePage /> },
   { route: '/modules/filter', component: <MobileFilterPage />, name: 'Module Filters' },
   { route: '/modules', component: <ModulesListPage />, name: 'Modules' },
   { route: '/', component: <HomePage /> },
