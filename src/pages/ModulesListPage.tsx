@@ -24,6 +24,9 @@ const styles: Styles = (theme: Theme) => ({
     [theme.breakpoints.up('lg')]: {
       width: '100%',
     },
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
 });
 
