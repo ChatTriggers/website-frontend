@@ -16,6 +16,7 @@ import {
   observer,
   observable,
   action,
+  runInAction,
   computed,
 } from '~store';
 import { requestPasswordComplete } from '~api';
@@ -84,12 +85,12 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
   }
 
   private readonly onReset = async (): Promise<void> => {
-    action(() => { this.loading = true; })();
+    runInAction(() => { this.loading = true; });
     const query = qs.parse(this.props.location.search) as {
       token: string;
     };
     await requestPasswordComplete(this.password, query.token);
-    action(() => { this.loading = false; })();
+    runInAction(() => { this.loading = false; });
   }
 
   public render(): JSX.Element {

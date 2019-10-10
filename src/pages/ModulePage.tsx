@@ -2,23 +2,37 @@ import React from 'react';
 import {
   Paper,
   Typography,
+  FormControl,
+  Select,
+  Chip,
+  MenuItem,
+  List,
+  ListItem,
+  ListItemText,
+  Input,
+  InputAdornment,
+  Collapse,
+  Divider,
   Theme,
   withStyles,
 } from '@material-ui/core';
+import { ExpandLess as ExpandLessIcon, ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {
   observer,
   observable,
   action,
   modulesStore,
+  runInAction,
 } from '~store';
 import MarkdownRenderer from '~components/MarkdownRenderer';
+import MarkdownEditor from '~components/MarkdownEditor';
 import TagList from '~components/Module/TagList';
-import { getModules } from '~api/raw';
+import { getModules, updateRelease } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
-import ReleasesTable from '~components/Module/ReleasesTable';
 import ModuleActions from '~components/Module/ModuleActions';
-import { IModule } from '~types';
+import { IModule, IRelease } from '~types';
+import { updateModule } from '~api';
 
 type ModuleProps = RouteComponentProps<{ module: string }>
 
@@ -99,6 +113,22 @@ const styles: Styles = (theme: Theme) => ({
   actions: {
     width: 180,
   },
+  tagSelect: {
+    width: '100%',
+  },
+  releaseTitle: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  releaseTypography: {
+    padding: theme.spacing(0, 1),
+  },
+  descDivider: {
+    margin: theme.spacing(0, 4, 1, 4),
+  },
+  releaseBody: {
+    padding: theme.spacing(0, 4),
+  },
 });
 
 @observer
@@ -107,30 +137,115 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   private module: IModule | undefined;
 
   @observable
-  private deleteDialogOpen = false;
+  private changedDescription = false;
+
+  @observable
+  private changedTags = false;
+
+  @observable
+  private changedReleases: string[] = [];
+
+  @observable
+  private editing = false;
+
+  @observable
+  private openRelease = '';
+
+  private onReleaseClick = (id: string): (() => void) => action(() => {
+    if (this.openRelease === id) {
+      this.openRelease = '';
+    } else {
+      this.openRelease = id;
+    }
+  });
 
   @action
-  private closeDeleteDialog = (): void => {
-    this.deleteDialogOpen = false;
+  private setEditing = async (editing: boolean): Promise<void> => {
+    this.editing = editing;
+
+    if (!editing && this.module) {
+      await updateModule(
+        this.module.id,
+        this.changedDescription ? this.module.description : undefined,
+        undefined,
+        undefined,
+        this.changedTags ? this.module.tags : undefined,
+      );
+
+      this.changedReleases
+        .map(releaseId => this.module && this.module.releases.find(r => r.id === releaseId))
+        .filter(n => !!n)
+        .map(n => n as IRelease)
+        .forEach(release => {
+          if (!this.module) return;
+
+          updateRelease(this.module.id, release.id, release.modVersion, release.changelog);
+        });
+
+      runInAction(() => {
+        this.changedDescription = false;
+        this.changedTags = false;
+        this.changedReleases = [];
+      });
+    }
   }
 
   @action
-  private openDeleteDialog = (): void => {
-    this.deleteDialogOpen = true;
+  private onChangeDescription = (description: string): void => {
+    this.changedDescription = true;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.module!.description = description;
   }
 
-  private onBackButtonClick = (): void => {
-    this.props.history.push('/modules');
+  @action
+  private onChangeTags = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+    this.changedTags = true;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    this.module!.tags = e.target.value as string[];
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  private onChangeReleaseChangelog = (releaseId: string) => action((changelog: string): void => {
+    if (!this.module) return;
+    if (!this.changedReleases.includes(releaseId)) this.changedReleases.push(releaseId);
+
+    this.module.releases = this.module.releases.reduce((prev, curr) => {
+      if (curr.id !== releaseId) prev.push(curr);
+      else prev.push({ ...curr, changelog });
+
+      return prev;
+    }, [] as IRelease[]);
+  })
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  private onChangeReleaseModVersion = (releaseId: string) => action(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+      if (!this.module) return;
+      if (!this.changedReleases.includes(releaseId)) this.changedReleases.push(releaseId);
+
+      const modVersion = e.target.value;
+
+      this.module.releases = this.module.releases.reduce((prev, curr) => {
+        if (curr.id !== releaseId) prev.push(curr);
+        else prev.push({ ...curr, modVersion });
+
+        return prev;
+      }, [] as IRelease[]);
+    },
+  )
+
+  @action
   public async componentDidMount(): Promise<void> {
     const moduleName = this.props.match.params.module;
 
-    action(() => {
-      this.module = modulesStore.modules.find(m => m.name.toString().toLowerCase() === moduleName.toLowerCase());
-    })();
+    // Attempt to first find module in the modulesStore
+    let temp = modulesStore.modules.find(m => m.name.toString().toLowerCase() === moduleName.toLowerCase());
+
+    // TODO: Handle error
+    if (temp) this.module = { ...temp };
 
     if (!this.module) {
+      // If the module isn't already loaded in the store, get it from the backend
       const response = await getModules(1, 0, undefined, undefined, undefined, undefined, moduleName);
 
       if (response.modules.length !== 1) {
@@ -138,9 +253,14 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
         throw new Error(`No module with name ${moduleName} found`);
       }
 
-      action(() => {
-        [this.module] = response.modules;
-      })();
+      runInAction(() => {
+        [temp] = response.modules;
+
+        // TODO: Handle error
+        if (!temp) return;
+
+        this.module = { ...temp };
+      });
     }
   }
 
@@ -171,6 +291,8 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             <ModuleActions
               className={this.classes.actions}
               module={this.module}
+              editing={this.editing}
+              setEditing={this.setEditing}
             />
           </div>
           {this.module.image && (
@@ -189,7 +311,12 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
           className={this.classes.paper}
           elevation={4}
         >
-          <MarkdownRenderer source={this.module.description} />
+          {this.editing ? (
+            <MarkdownEditor
+              value={this.module.description}
+              handleChange={this.onChangeDescription}
+            />
+          ) : <MarkdownRenderer source={this.module.description} />}
         </Paper>
         {this.module.tags.length > 0 && (
           <Paper
@@ -197,9 +324,28 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             elevation={4}
           >
             <Typography variant="subtitle1">
-                  Tags
+              Tags
             </Typography>
-            <TagList tags={this.module.tags} maxTags={99} />
+            {this.editing ? (
+              <FormControl className={this.classes.tagSelect}>
+                <Select
+                  multiple
+                  value={this.module.tags}
+                  onChange={this.onChangeTags}
+                  renderValue={(tags: unknown) => (
+                    <div>
+                      {(tags as string[]).map(tag => <Chip key={tag} label={tag} />)}
+                    </div>
+                  )}
+                >
+                  {modulesStore.allowedTags.map(tag => (
+                    <MenuItem key={tag} value={tag}>
+                      {tag}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : <TagList tags={this.module.tags} maxTags={99} />}
           </Paper>
         )}
         {this.module.releases.length > 0 && (
@@ -208,9 +354,62 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             elevation={4}
           >
             <Typography variant="subtitle1">
-                  Releases
+              Releases
             </Typography>
-            <ReleasesTable releases={this.module.releases} />
+            <List component="nav">
+              <Divider />
+              {this.module.releases.slice().sort((a, b) => b.createdAt - a.createdAt).map(release => {
+                const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
+                const modChip = this.editing ? (
+                  <FormControl margin="none">
+                    <Input
+                      value={release.modVersion}
+                      onChange={this.onChangeReleaseModVersion(release.id)}
+                      startAdornment={<InputAdornment style={{ marginRight: 0 }} position="start">v</InputAdornment>}
+                    />
+                  </FormControl>
+                ) : <Chip label={`v${release.modVersion}`} size="small" />;
+
+                const label = (
+                  <div className={this.classes.releaseTitle}>
+                    {releaseChip}
+                    <Typography className={this.classes.releaseTypography}>for ct</Typography>
+                    {modChip}
+                  </div>
+                );
+
+                return (
+                  <div key={release.id}>
+                    <ListItem button onClick={this.onReleaseClick(release.id)}>
+                      <ListItemText primary={label} />
+                      {this.openRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </ListItem>
+                    <Collapse
+                      in={this.openRelease === release.id}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <Divider className={this.classes.descDivider} />
+                      <div className={this.classes.releaseBody}>
+                        <Typography>
+                          Downloads:
+                          {` ${release.downloads}`}
+                        </Typography>
+                        <br />
+                        <Typography>Changelog:</Typography>
+                        {this.editing ? (
+                          <MarkdownEditor
+                            value={release.changelog}
+                            handleChange={this.onChangeReleaseChangelog(release.id)}
+                          />
+                        ) : this.module && <MarkdownRenderer source={release.changelog} />}
+                      </div>
+                    </Collapse>
+                    <Divider />
+                  </div>
+                );
+              })}
+            </List>
           </Paper>
         )}
       </div>

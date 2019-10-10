@@ -62,12 +62,14 @@ export const updateModule = async (
   flagged?: boolean,
   tags?: string[],
 ): Promise<IModule> => {
-  const response = await axios.patch<IModule>(MODULE_ID_URL(moduleId), qs.stringify({
-    description,
-    image,
-    flagged,
-    tags,
-  }));
+  const query: Partial<IModule> & { flagged?: boolean } = {};
+
+  if (description) query.description = description;
+  if (image) query.image = image;
+  if (flagged !== undefined) query.flagged = flagged;
+  if (tags) query.tags = tags;
+
+  const response = await axios.patch<IModule>(MODULE_ID_URL(moduleId), qs.stringify(query));
 
   return validateStatusCode(response, ApiErrors.UpdateModule);
 };

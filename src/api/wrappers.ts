@@ -94,10 +94,10 @@ export const deleteModule = async (moduleId: number): Promise<void> => {
 
 export const updateModule = async (
   moduleId: number,
-  description: string,
+  description?: string,
   image?: string,
-  flagged = false,
-  tags: string[] = [],
+  flagged?: boolean,
+  tags?: string[],
 ): Promise<void> => {
   await raw.updateModule(moduleId, description, image, flagged, tags);
   await getModules();

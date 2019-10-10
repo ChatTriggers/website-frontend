@@ -25,9 +25,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface IModuleActionsProps {
   className?: string;
   module: IModule;
+  editing: boolean;
+  setEditing(editing: boolean): void;
 }
 
-export default observer(({ className, module }: IModuleActionsProps): JSX.Element => {
+export default observer(({
+  className, module, editing, setEditing,
+}: IModuleActionsProps): JSX.Element => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -37,6 +41,10 @@ export default observer(({ className, module }: IModuleActionsProps): JSX.Elemen
 
   const closeDialog = (): void => {
     setOpen(false);
+  };
+
+  const clickEditButton = (): void => {
+    setEditing(!editing);
   };
 
   const authed = authStore.isAdmin || (authStore.user && authStore.user.id === module.owner.id);
@@ -56,8 +64,9 @@ export default observer(({ className, module }: IModuleActionsProps): JSX.Elemen
               fullWidth
               size="small"
               variant="contained"
+              onClick={clickEditButton}
             >
-                Edit Module
+              {editing ? 'Done Editing Module' : 'Edit Module'}
             </Button>
             <Button
               className={clsx(classes.button, classes.buttonDelete)}
@@ -66,7 +75,7 @@ export default observer(({ className, module }: IModuleActionsProps): JSX.Elemen
               variant="contained"
               onClick={openDialog}
             >
-                Delete Module
+              Delete Module
             </Button>
           </>
         )}
