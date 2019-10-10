@@ -11,13 +11,19 @@ import {
   ListItemText,
   Input,
   InputAdornment,
+  IconButton,
   Collapse,
   Divider,
   Button,
   Theme,
+  colors,
   withStyles,
 } from '@material-ui/core';
-import { ExpandLess as ExpandLessIcon, ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import {
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
+  Delete as DeleteIcon,
+} from '@material-ui/icons';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {
   observer,
@@ -29,6 +35,7 @@ import {
 import MarkdownRenderer from '~components/MarkdownRenderer';
 import MarkdownEditor from '~components/MarkdownEditor';
 import TagList from '~components/Module/TagList';
+import DeleteReleaseDialog from '~components/Desktop/DeleteReleaseDialog';
 import { getModules, updateRelease } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
 import ModuleActions from '~components/Module/ModuleActions';
@@ -137,6 +144,10 @@ const styles: Styles = (theme: Theme) => ({
       justifyContent: 'space-between',
     },
   },
+  deleteReleaseButton: {
+    backgroundColor: colors.red[300],
+    marginRight: theme.spacing(2),
+  },
 });
 
 @observer
@@ -162,19 +173,41 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   @observable
   private addReleaseDialogOpen = false;
 
+  @observable
+  private deleteReleaseDialogOpen = false;
+
+  @observable
+  private deletingReleaseId = '';
+
   @action
-  private onOpenReleaseDialog = (): void => {
+  private onOpenAddReleaseDialog = (): void => {
     this.addReleaseDialogOpen = true;
   }
 
   @action
-  private onCloseReleaseDialog = (): void => {
+  private onCloseAddReleaseDialog = (): void => {
     this.addReleaseDialogOpen = false;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  private onOpenDeleteReleaseDialog = (releaseId: string) => action((): void => {
+    this.deletingReleaseId = releaseId;
+    this.deleteReleaseDialogOpen = true;
+  })
+
+  @action
+  private onCloseDeleteReleaseDialog = (): void => {
+    this.deleteReleaseDialogOpen = false;
   }
 
   @action
   private addRelease = (release: IRelease): void => {
     if (this.module) this.module.releases.push(release);
+  }
+
+  @action
+  private removeRelease = (releaseId: string): void => {
+    if (this.module) this.module.releases = this.module.releases.filter(r => r.id !== releaseId);
   }
 
   private onReleaseClick = (id: string): (() => void) => action(() => {
@@ -299,9 +332,16 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             moduleName={this.module.name}
             open={this.addReleaseDialogOpen}
             addRelease={this.addRelease}
-            onClose={this.onCloseReleaseDialog}
+            onClose={this.onCloseAddReleaseDialog}
           />
         )}
+        <DeleteReleaseDialog
+          open={this.deleteReleaseDialogOpen}
+          close={this.onCloseDeleteReleaseDialog}
+          moduleId={this.module.id}
+          releaseId={this.deletingReleaseId}
+          removeRelease={this.removeRelease}
+        />
         <Paper
           className={this.classes.paper}
           elevation={4}
@@ -393,7 +433,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                 Releases
               </Typography>
               {this.editing && (
-                <Button variant="contained" color="primary" onClick={this.onOpenReleaseDialog}>
+                <Button variant="contained" color="primary" onClick={this.onOpenAddReleaseDialog}>
                   Create Release
                 </Button>
               )}
@@ -414,6 +454,15 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
 
                 const label = (
                   <div className={this.classes.releaseTitle}>
+                    {this.editing && (
+                      <IconButton
+                        className={this.classes.deleteReleaseButton}
+                        onClick={this.onOpenDeleteReleaseDialog(release.id)}
+                        size="small"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
                     {releaseChip}
                     <Typography className={this.classes.releaseTypography}>for ct</Typography>
                     {modChip}
