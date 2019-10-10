@@ -23,9 +23,6 @@ class MarkdownEditor extends React.Component<IMarkdownEditorProps> {
           onChange={handleChange}
           height="300px"
           language="en"
-          style={{
-            margin: this.theme.spacing(2),
-          }}
           placeholder="Module Description"
         />
       </>

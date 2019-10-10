@@ -21,7 +21,16 @@ export const createRelease = async (
 
   if (changelog) formData.append('changelog', changelog);
 
-  const response = await axios.post<IRelease>(RELEASES_URL(moduleId), formData);
+  const response = await axios({
+    method: 'post',
+    url: RELEASES_URL(moduleId),
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  // const response = await axios.post<IRelease>(RELEASES_URL(moduleId), formData);
 
   return validateStatusCode(response, ApiErrors.CreateRelease);
 };

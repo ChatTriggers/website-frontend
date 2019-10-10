@@ -13,6 +13,7 @@ import {
   InputAdornment,
   Collapse,
   Divider,
+  Button,
   Theme,
   withStyles,
 } from '@material-ui/core';
@@ -31,6 +32,7 @@ import TagList from '~components/Module/TagList';
 import { getModules, updateRelease } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
 import ModuleActions from '~components/Module/ModuleActions';
+import CreateReleaseDialog from '~components/Desktop/CreateReleaseDialog';
 import { IModule, IRelease } from '~types';
 import { updateModule } from '~api';
 
@@ -129,6 +131,12 @@ const styles: Styles = (theme: Theme) => ({
   releaseBody: {
     padding: theme.spacing(0, 4),
   },
+  releasesTitle: {
+    [theme.breakpoints.up('lg')]: {
+      display: 'flex',
+      justifyContent: 'space-between',
+    },
+  },
 });
 
 @observer
@@ -150,6 +158,24 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
 
   @observable
   private openRelease = '';
+
+  @observable
+  private addReleaseDialogOpen = false;
+
+  @action
+  private onOpenReleaseDialog = (): void => {
+    this.addReleaseDialogOpen = true;
+  }
+
+  @action
+  private onCloseReleaseDialog = (): void => {
+    this.addReleaseDialogOpen = false;
+  }
+
+  @action
+  private addRelease = (release: IRelease): void => {
+    if (this.module) this.module.releases.push(release);
+  }
 
   private onReleaseClick = (id: string): (() => void) => action(() => {
     if (this.openRelease === id) {
@@ -267,6 +293,15 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   public render(): JSX.Element {
     return (this.module && (
       <div className={this.classes.root}>
+        {this.module && (
+          <CreateReleaseDialog
+            moduleId={this.module.id}
+            moduleName={this.module.name}
+            open={this.addReleaseDialogOpen}
+            addRelease={this.addRelease}
+            onClose={this.onCloseReleaseDialog}
+          />
+        )}
         <Paper
           className={this.classes.paper}
           elevation={4}
@@ -353,9 +388,16 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             className={this.classes.paper}
             elevation={4}
           >
-            <Typography variant="subtitle1">
-              Releases
-            </Typography>
+            <div className={this.classes.releasesTitle}>
+              <Typography variant="subtitle1">
+                Releases
+              </Typography>
+              {this.editing && (
+                <Button variant="contained" color="primary" onClick={this.onOpenReleaseDialog}>
+                  Create Release
+                </Button>
+              )}
+            </div>
             <List component="nav">
               <Divider />
               {this.module.releases.slice().sort((a, b) => b.createdAt - a.createdAt).map(release => {
