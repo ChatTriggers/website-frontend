@@ -4,7 +4,7 @@ import LoginPage from './pages/LoginPage';
 import CreateAccountPage from './pages/CreateAccountPage';
 import ModulesListPage from './pages/ModulesListPage';
 import MobileFilterPage from './pages/MobileFilterPage';
-import ModulePage from './pages/ModulePage';
+import ModulePage from './pages/ModulePage/ModulePage';
 import HomePage from './pages/HomePage';
 
 interface IRoute {
