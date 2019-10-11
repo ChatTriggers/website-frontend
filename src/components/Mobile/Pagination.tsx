@@ -54,10 +54,7 @@ export default observer(() => {
   };
 
   return (
-    <Paper
-      className={classes.root}
-      elevation={4}
-    >
+    <Paper className={classes.root}>
       <IconButton
         className={classes.button}
         onClick={onFirstPage}

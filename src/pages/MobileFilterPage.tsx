@@ -170,11 +170,7 @@ export default observer(() => {
   return (
     <div className={classes.root}>
       <div className={classes.paperContainer}>
-        <Paper
-          elevation={4}
-          className={classes.paper}
-        >
-
+        <Paper className={classes.paper}>
           <TextField
             className={classes.search}
             label="Search"
@@ -199,10 +195,7 @@ export default observer(() => {
             multiline
           />
         </Paper>
-        <Paper
-          elevation={4}
-          className={classes.paper}
-        >
+        <Paper className={classes.paper}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Module Search Filters</FormLabel>
             <RadioGroup
@@ -236,10 +229,7 @@ export default observer(() => {
             </RadioGroup>
           </FormControl>
         </Paper>
-        <Paper
-          className={classes.paper}
-          elevation={4}
-        >
+        <Paper className={classes.paper}>
           <div className={classes.modulesPerPage}>
             <Typography>
                 Modules per page:

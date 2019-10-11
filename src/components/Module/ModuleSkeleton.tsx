@@ -89,10 +89,7 @@ export default withTheme(withWidth()(({ theme, width: deviceWidth }: IModuleSkel
   const classes = useStyles();
 
   return (
-    <Paper
-      className={classes.root}
-      elevation={4}
-    >
+    <Paper className={classes.root}>
       <div className={classes.header}>
         <div className={classes.titleContainer}>
           <div className={classes.titleChip}>

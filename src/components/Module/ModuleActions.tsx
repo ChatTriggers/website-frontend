@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Button, Theme } from '@material-ui/core';
+import { Button, colors, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { IModule } from '~types';
 import DeleteDialog from '~components/Module/DeleteDialog';
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: 10,
   },
   buttonEdit: {
-    backgroundColor: '#ffeb3b',
+    backgroundColor: colors.orange[200],
   },
   buttonDelete: {
     backgroundColor: theme.palette.error.main,

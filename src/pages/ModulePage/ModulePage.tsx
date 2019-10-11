@@ -251,10 +251,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
           releaseId={this.deletingReleaseId}
           removeRelease={this.removeRelease}
         />
-        <Paper
-          className={this.classes.paper}
-          elevation={4}
-        >
+        <Paper className={this.classes.paper}>
           {this.module && (
             <ModulePageHeader
               editing={this.editing}
@@ -263,10 +260,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             />
           )}
         </Paper>
-        <Paper
-          className={this.classes.paper}
-          elevation={4}
-        >
+        <Paper className={this.classes.paper}>
           {this.editing ? (
             <MarkdownEditor
               value={this.module.description}
@@ -275,10 +269,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
           ) : <MarkdownRenderer source={this.module.description} />}
         </Paper>
         {this.module.tags.length > 0 && (
-          <Paper
-            className={this.classes.paper}
-            elevation={4}
-          >
+          <Paper className={this.classes.paper}>
             <Typography variant="subtitle1">
               Tags
             </Typography>
@@ -305,10 +296,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
           </Paper>
         )}
         {this.module.releases.length > 0 && (
-          <Paper
-            className={this.classes.paper}
-            elevation={4}
-          >
+          <Paper className={this.classes.paper}>
             <ModulePageReleases
               editing={this.editing}
               module={this.module}

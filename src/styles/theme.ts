@@ -1,14 +1,17 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme, colors } from '@material-ui/core';
 
 export default createMuiTheme({
   palette: {
     primary: {
       light: '#df78ef',
-      main: '#ab47bc',
+      main: colors.deepPurple[400],
     },
     secondary: {
       light: '#6ff9ff',
       main: '#26c6da',
+    },
+    error: {
+      main: colors.red[400],
     },
     type: 'dark',
   },
@@ -17,6 +20,11 @@ export default createMuiTheme({
       tooltip: {
         fontSize: '1em',
       },
+    },
+  },
+  props: {
+    MuiPaper: {
+      elevation: 4,
     },
   },
 });

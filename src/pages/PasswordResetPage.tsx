@@ -97,11 +97,7 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
     return (
       <div className={this.classes.rootOuter}>
         <div className={this.classes.rootInner}>
-          <Paper
-            className={this.classes.content}
-            elevation={4}
-            square
-          >
+          <Paper className={this.classes.content}>
             <Typography variant="h5">
               Reset Password
             </Typography>

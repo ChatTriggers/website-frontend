@@ -74,10 +74,7 @@ export default observer((): JSX.Element => {
   };
 
   return (
-    <Paper
-      className={classes.root}
-      elevation={4}
-    >
+    <Paper className={classes.root}>
       <FormGroup className={classes.searchContainer} row>
         <TextField
           className={classes.search}

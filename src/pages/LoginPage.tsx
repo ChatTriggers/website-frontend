@@ -94,10 +94,7 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
   return (
     <div className={classes.root}>
       <div className={classes.paperContainer}>
-        <Paper
-          className={classes.paper}
-          elevation={4}
-        >
+        <Paper className={classes.paper}>
           <TextField
             className={classes.username}
             required

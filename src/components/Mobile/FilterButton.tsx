@@ -36,10 +36,7 @@ export default withRouter((props: IFilterButtonProps) => {
   };
 
   return (
-    <Paper
-      className={classes.root}
-      elevation={4}
-    >
+    <Paper className={classes.root}>
       <ButtonBase
         className={classes.button}
         focusRipple
