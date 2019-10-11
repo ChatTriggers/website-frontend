@@ -37,11 +37,11 @@ import MarkdownEditor from '~components/MarkdownEditor';
 import TagList from '~components/Module/TagList';
 import DeleteReleaseDialog from '~components/Desktop/DeleteReleaseDialog';
 import { getModules, updateRelease } from '~api/raw';
-import { StyledComponent, Styles } from '~components';
+import { StyledComponent, Styles, Desktop } from '~components';
 import ModuleActions from '~components/Module/ModuleActions';
 import CreateReleaseDialog from '~components/Desktop/CreateReleaseDialog';
 import { IModule, IRelease } from '~types';
-import { updateModule } from '~api';
+import { updateModule, BASE_URL } from '~api';
 
 type ModuleProps = RouteComponentProps<{ module: string }>
 
@@ -148,6 +148,9 @@ const styles: Styles = (theme: Theme) => ({
     backgroundColor: colors.red[300],
     marginRight: theme.spacing(2),
   },
+  releasesDownloadButton: {
+    marginRight: theme.spacing(2),
+  },
 });
 
 @observer
@@ -217,6 +220,13 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
       this.openRelease = id;
     }
   });
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  private onDownloadScripts = (releaseId: string) => action((): void => {
+    if (!this.module) return;
+
+    window.open(`${BASE_URL}/modules/${this.module.id}/releases/${releaseId}?file=scripts`, 'scripts.zip');
+  })
 
   @action
   private setEditing = async (editing: boolean): Promise<void> => {
@@ -471,9 +481,24 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
 
                 return (
                   <div key={release.id}>
-                    <ListItem button onClick={this.onReleaseClick(release.id)}>
+                    <ListItem style={{ padding: 0 }}>
                       <ListItemText primary={label} />
-                      {this.openRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                      <Desktop>
+                        <Button
+                          className={this.classes.releasesDownloadButton}
+                          variant="contained"
+                          size="small"
+                          onClick={this.onDownloadScripts(release.id)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                          </svg>
+                          Download
+                        </Button>
+                      </Desktop>
+                      <IconButton onClick={this.onReleaseClick(release.id)}>
+                        {this.openRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                      </IconButton>
                     </ListItem>
                     <Collapse
                       in={this.openRelease === release.id}
