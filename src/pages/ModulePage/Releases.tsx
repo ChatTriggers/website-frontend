@@ -26,6 +26,7 @@ import MarkdownEditor from '~components/MarkdownEditor';
 import MarkdownRenderer from '~components/MarkdownRenderer';
 import { BASE_URL } from '~api';
 import { action, modulesStore } from '~store';
+import SemvarSorter from '~components/utils/SemvarSorter';
 
 export type OpenDialog = 'add' | 'delete' | 'none';
 
@@ -90,7 +91,7 @@ export default ({
       </div>
       <List component="nav">
         <Divider />
-        {modulesStore.activeModule.releases.slice().sort((a, b) => b.createdAt - a.createdAt).map(release => {
+        {modulesStore.activeModule.releases.slice().sort((a, b) => SemvarSorter(a.modVersion, b.modVersion)).map(release => {
           const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
           const modChip = editing ? (
             <FormControl margin="none">
