@@ -1,33 +1,40 @@
 import React from 'react';
-import { withTheme } from '@material-ui/styles';
-import { Theme } from '@material-ui/core';
-import Editor from 'for-editor-dark';
+import Editor, { IToolbar } from 'for-editor-dark';
 
 interface IMarkdownEditorProps {
-  value?: string;
+  value: string;
   handleChange(value?: string): void;
 }
 
-class MarkdownEditor extends React.Component<IMarkdownEditorProps> {
-  private get theme(): Theme {
-    return (this.props as unknown as { theme: Theme }).theme;
-  }
+const toolbar: IToolbar = {
+  h1: true,
+  h2: true,
+  h3: true,
+  h4: true,
+  h5: true,
+  h6: true,
+  bold: true,
+  italic: true,
+  underline: true,
+  strikethrough: true,
+  img: true,
+  link: true,
+  code: true,
+  preview: true,
+  expand: true,
+  undo: true,
+  redo: true,
+  save: false,
+  subfield: true,
+};
 
-  public render(): JSX.Element {
-    const { value, handleChange } = this.props;
-
-    return (
-      <>
-        <Editor
-          value={value}
-          onChange={handleChange}
-          height="300px"
-          language="en"
-          placeholder="Module Description"
-        />
-      </>
-    );
-  }
-}
-
-export default withTheme(MarkdownEditor);
+export default ({ value, handleChange }: IMarkdownEditorProps): JSX.Element => (
+  <Editor
+    value={value}
+    onChange={handleChange}
+    height="300px"
+    language="en"
+    placeholder="Module Description"
+    toolbar={toolbar}
+  />
+);

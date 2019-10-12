@@ -26,7 +26,7 @@ import { StyledComponent, Styles } from '~components';
 import CreateReleaseDialog from '~components/Desktop/CreateReleaseDialog';
 import ModulePageHeader from './Header';
 import ModulePageReleases, { OpenDialog } from './Releases';
-import { IModule, IRelease } from '~types';
+import { IRelease } from '~types';
 import { updateModule } from '~api';
 
 type ModuleProps = RouteComponentProps<{ module: string }>
@@ -85,9 +85,6 @@ const styles: Styles = (theme: Theme) => ({
 @observer
 class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   @observable
-  private module: IModule | undefined;
-
-  @observable
   private editing = false;
 
   @observable
@@ -111,16 +108,6 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
     this.deletingReleaseId = deletingRelease || '';
   });
 
-  @action
-  private addRelease = (release: IRelease): void => {
-    if (this.module) this.module.releases.push(release);
-  }
-
-  @action
-  private removeRelease = (releaseId: string): void => {
-    if (this.module) this.module.releases = this.module.releases.filter(r => r.id !== releaseId);
-  }
-
   private setOpenRelease = (id: string): (() => void) => action(() => {
     this.openRelease = this.openRelease === id ? '' : id;
   });
@@ -129,23 +116,21 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   private setEditing = async (editing: boolean): Promise<void> => {
     this.editing = editing;
 
-    if (!editing && this.module) {
+    if (!editing && modulesStore.activeModule) {
       await updateModule(
-        this.module.id,
-        this.editedFields.description ? this.module.description : undefined,
+        modulesStore.activeModule.id,
+        this.editedFields.description ? modulesStore.activeModule.description : undefined,
         undefined,
         undefined,
-        this.editedFields.tags ? this.module.tags : undefined,
+        this.editedFields.tags ? modulesStore.activeModule.tags : undefined,
       );
 
       this.editedFields.releases
-        .map(releaseId => this.module && this.module.releases.find(r => r.id === releaseId))
+        .map(releaseId => modulesStore.activeModule && modulesStore.activeModule.releases.find(r => r.id === releaseId))
         .filter(n => !!n)
         .map(n => n as IRelease)
         .forEach(release => {
-          if (!this.module) return;
-
-          updateRelease(this.module.id, release.id, release.modVersion, release.changelog);
+          updateRelease(modulesStore.activeModule.id, release.id, release.modVersion, release.changelog);
         });
 
       runInAction(() => {
@@ -161,23 +146,20 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   @action
   private onChangeDescription = (description: string): void => {
     this.editedFields.description = true;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.module!.description = description;
+    modulesStore.activeModule.description = description;
   }
 
   @action
   private onChangeTags = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     this.editedFields.tags = true;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.module!.tags = e.target.value as string[];
+    modulesStore.activeModule.tags = e.target.value as string[];
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private onChangeReleaseChangelog = (releaseId: string) => action((changelog: string): void => {
-    if (!this.module) return;
     if (!this.editedFields.releases.includes(releaseId)) this.editedFields.releases.push(releaseId);
 
-    this.module.releases = this.module.releases.reduce((prev, curr) => {
+    modulesStore.activeModule.releases = modulesStore.activeModule.releases.reduce((prev, curr) => {
       if (curr.id !== releaseId) prev.push(curr);
       else prev.push({ ...curr, changelog });
 
@@ -188,12 +170,11 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private onChangeReleaseModVersion = (releaseId: string) => action(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-      if (!this.module) return;
       if (!this.editedFields.releases.includes(releaseId)) this.editedFields.releases.push(releaseId);
 
       const modVersion = e.target.value;
 
-      this.module.releases = this.module.releases.reduce((prev, curr) => {
+      modulesStore.activeModule.releases = modulesStore.activeModule.releases.reduce((prev, curr) => {
         if (curr.id !== releaseId) prev.push(curr);
         else prev.push({ ...curr, modVersion });
 
@@ -209,10 +190,9 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
     // Attempt to first find module in the modulesStore
     let temp = modulesStore.modules.find(m => m.name.toString().toLowerCase() === moduleName.toLowerCase());
 
-    // TODO: Handle error
-    if (temp) this.module = { ...temp };
+    if (temp) modulesStore.activeModule = { ...temp };
 
-    if (!this.module) {
+    if (modulesStore.activeModule.id === -1) {
       // If the module isn't already loaded in the store, get it from the backend
       const response = await getModules(1, 0, undefined, undefined, undefined, undefined, moduleName);
 
@@ -227,48 +207,42 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
         // TODO: Handle error
         if (!temp) return;
 
-        this.module = { ...temp };
+        modulesStore.activeModule = { ...temp };
       });
     }
   }
 
   public render(): JSX.Element {
-    return (this.module && (
+    return (modulesStore.activeModule && (
       <div className={this.classes.root}>
-        {this.module && (
+        {modulesStore.activeModule && (
           <CreateReleaseDialog
-            moduleId={this.module.id}
-            moduleName={this.module.name}
             open={this.openDialog === 'add'}
-            addRelease={this.addRelease}
             onClose={this.setOpenDialog('none')}
           />
         )}
         <DeleteReleaseDialog
           open={this.openDialog === 'delete'}
           close={this.setOpenDialog('none')}
-          moduleId={this.module.id}
           releaseId={this.deletingReleaseId}
-          removeRelease={this.removeRelease}
         />
         <Paper className={this.classes.paper}>
-          {this.module && (
+          {modulesStore.activeModule && (
             <ModulePageHeader
               editing={this.editing}
               setEditing={this.setEditing}
-              module={this.module}
             />
           )}
         </Paper>
         <Paper className={this.classes.paper}>
           {this.editing ? (
             <MarkdownEditor
-              value={this.module.description}
+              value={modulesStore.activeModule.description}
               handleChange={this.onChangeDescription}
             />
-          ) : <MarkdownRenderer source={this.module.description} />}
+          ) : <MarkdownRenderer source={modulesStore.activeModule.description} />}
         </Paper>
-        {this.module.tags.length > 0 && (
+        {modulesStore.activeModule.tags.length > 0 && (
           <Paper className={this.classes.paper}>
             <Typography variant="subtitle1">
               Tags
@@ -277,7 +251,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
               <FormControl className={this.classes.tagSelect}>
                 <Select
                   multiple
-                  value={this.module.tags}
+                  value={modulesStore.activeModule.tags}
                   onChange={this.onChangeTags}
                   renderValue={(tags: unknown) => (
                     <div>
@@ -292,14 +266,13 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                   ))}
                 </Select>
               </FormControl>
-            ) : <TagList tags={this.module.tags} maxTags={99} />}
+            ) : <TagList tags={modulesStore.activeModule.tags} maxTags={99} />}
           </Paper>
         )}
-        {this.module.releases.length > 0 && (
+        {modulesStore.activeModule.releases.length > 0 && (
           <Paper className={this.classes.paper}>
             <ModulePageReleases
               editing={this.editing}
-              module={this.module}
               openRelease={this.openRelease}
               setOpenDialog={this.setOpenDialog}
               setOpenRelease={this.setOpenRelease}

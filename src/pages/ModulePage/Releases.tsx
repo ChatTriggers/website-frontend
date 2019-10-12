@@ -21,12 +21,11 @@ import {
   Delete as DeleteIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import { IModule } from '~types';
 import { Desktop } from '~components/utils/DeviceUtils';
 import MarkdownEditor from '~components/MarkdownEditor';
 import MarkdownRenderer from '~components/MarkdownRenderer';
 import { BASE_URL } from '~api';
-import { action } from '~store';
+import { action, modulesStore } from '~store';
 
 export type OpenDialog = 'add' | 'delete' | 'none';
 
@@ -60,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IModulePageReleasesProps {
-  module: IModule;
   editing: boolean;
   openRelease: string;
   setOpenDialog(type: OpenDialog, releaseId?: string): (() => void);
@@ -70,12 +68,12 @@ interface IModulePageReleasesProps {
 }
 
 export default ({
-  module, editing, setOpenDialog, onChangeReleaseChangelog, onChangeReleaseModVersion, openRelease, setOpenRelease,
+  editing, setOpenDialog, onChangeReleaseChangelog, onChangeReleaseModVersion, openRelease, setOpenRelease,
 }: IModulePageReleasesProps): JSX.Element => {
   const classes = useStyles();
 
   const onDownloadScripts = (releaseId: string): (() => void) => action((): void => {
-    window.open(`${BASE_URL}/modules/${module.id}/releases/${releaseId}?file=scripts`, 'scripts.zip');
+    window.open(`${BASE_URL}/modules/${modulesStore.activeModule.id}/releases/${releaseId}?file=scripts`, 'scripts.zip');
   });
 
   return (
@@ -92,7 +90,7 @@ export default ({
       </div>
       <List component="nav">
         <Divider />
-        {module.releases.slice().sort((a, b) => b.createdAt - a.createdAt).map(release => {
+        {modulesStore.activeModule.releases.slice().sort((a, b) => b.createdAt - a.createdAt).map(release => {
           const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
           const modChip = editing ? (
             <FormControl margin="none">

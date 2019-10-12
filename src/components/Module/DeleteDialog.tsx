@@ -10,11 +10,11 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { deleteModule } from '~api';
+import { modulesStore } from '~store';
 
 interface IDeleteDialogProps {
   open: boolean;
   close(): void;
-  moduleId: number;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -31,13 +31,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default ({ open, close, moduleId }: IDeleteDialogProps): JSX.Element => {
+export default ({ open, close }: IDeleteDialogProps): JSX.Element => {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
 
   const onDelete = async (): Promise<void> => {
     setLoading(true);
-    await deleteModule(moduleId);
+    await deleteModule(modulesStore.activeModule.id);
     setLoading(false);
     close();
   };

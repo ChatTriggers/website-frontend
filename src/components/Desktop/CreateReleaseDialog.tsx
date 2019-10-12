@@ -12,7 +12,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
 import { createRelease, getModules } from '~api';
-import { IRelease } from '~types';
+import { modulesStore } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -48,16 +48,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface ICreateReleaseDialog {
-  moduleId: number;
-  moduleName: string;
   open: boolean;
   onClose(): void;
-  addRelease(release: IRelease): void;
 }
 
-export default ({
-  moduleId, moduleName, open, onClose, addRelease,
-}: ICreateReleaseDialog): JSX.Element => {
+export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const classes = useStyles();
   const fileRef = React.createRef<HTMLInputElement>();
 
@@ -93,13 +88,13 @@ export default ({
   };
 
   const onSubmit = async (): Promise<void> => {
-    if (!fileRef.current || !fileRef.current.files) return;
+    if (!fileRef.current || !fileRef.current.files || !modulesStore.activeModule) return;
 
     setLoading(true);
-    const newRelease = await createRelease(moduleId, releaseVersion, modVersion, fileRef.current.files[0], changelog);
+    const newRelease = await createRelease(modulesStore.activeModule.id, releaseVersion, modVersion, fileRef.current.files[0], changelog);
     setLoading(false);
 
-    addRelease(newRelease);
+    modulesStore.activeModule.releases.push(newRelease);
     getModules();
     onClose();
   };
@@ -114,9 +109,11 @@ export default ({
         paper: classes.root,
       }}
     >
-      <Typography variant="h5">
-        {`Create Release for ${moduleName}`}
-      </Typography>
+      {modulesStore.activeModule && (
+        <Typography variant="h5">
+          {`Create Release for ${modulesStore.activeModule.name}`}
+        </Typography>
+      )}
       <div className={classes.versions}>
         <TextField
           label="Release Version"

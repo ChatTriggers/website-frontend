@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import ModuleActions from '~components/Module/ModuleActions';
-import { IModule } from '~types';
+import { modulesStore } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -44,15 +44,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface IModulePageHeaderProps {
   editing: boolean;
   setEditing(editing: boolean): void;
-  module: IModule;
 }
 
 export default (props: IModulePageHeaderProps): JSX.Element => {
   const classes = useStyles();
 
-  const {
-    module, editing, setEditing,
-  } = props;
+  const { editing, setEditing } = props;
 
   return (
     <>
@@ -62,28 +59,27 @@ export default (props: IModulePageHeaderProps): JSX.Element => {
             className={classes.title}
             variant="h5"
           >
-            {module.name}
+            {modulesStore.activeModule.name}
           </Typography>
           <Typography
             className={classes.title}
             variant="h6"
           >
-            {`By ${module.owner.name}`}
+            {`By ${modulesStore.activeModule.owner.name}`}
           </Typography>
         </div>
         <ModuleActions
           className={classes.actions}
-          module={module}
           editing={editing}
           setEditing={setEditing}
         />
       </div>
-      {module.image && (
+      {modulesStore.activeModule.image && (
         <div className={classes.body}>
           <div className={classes.imageOuter}>
             <img
               className={classes.image}
-              src={module.image}
+              src={modulesStore.activeModule.image}
               alt="Module"
             />
           </div>

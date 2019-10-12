@@ -41,6 +41,10 @@ export const ApiErrors = {
     403: 'User does not have permission to edit this module',
     404: 'No module with the given moduleId found',
   },
+  ToggleTrust: {
+    403: 'User not authorized',
+    404: 'No user with specified user-id found',
+  },
 };
 
 type ErrorObj = {

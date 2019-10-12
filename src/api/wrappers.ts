@@ -103,6 +103,6 @@ export const updateModule = async (
   await getModules();
 };
 
-export const { createModule } = raw;
-export const { createRelease } = raw;
-export const { requestPasswordComplete } = raw;
+export const {
+  createModule, createRelease, requestPasswordComplete, toggleTrust,
+} = raw;
