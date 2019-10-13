@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/styles';
 import { withRouter } from 'react-router-dom';
 import { History } from 'history';
 import { createUser } from '~api';
+import { action } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -96,6 +97,14 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
     }
   };
 
+  const handlerKeyDown = action(({ key }: React.KeyboardEvent<HTMLInputElement>) => {
+    if (key === 'Enter') {
+      if (username.length > 0 && password.length > 0 && email.length > 0) {
+        onSubmit();
+      }
+    }
+  });
+
   return (
     <div className={classes.root}>
       <div className={classes.paperContainer}>
@@ -109,6 +118,7 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
             value={username}
             onChange={onChangeUsername}
             autoComplete="username"
+            onKeyDownCapture={handlerKeyDown}
           />
           <TextField
             className={classes.password}
@@ -119,6 +129,7 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
             value={email}
             onChange={onChangeEmail}
             autoComplete="email"
+            onKeyDownCapture={handlerKeyDown}
           />
           <TextField
             className={classes.password}
@@ -129,6 +140,7 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
             value={password}
             onChange={onChangePassword}
             autoComplete="new-password"
+            onKeyDownCapture={handlerKeyDown}
           />
           {error && (
             <Typography className={classes.error} variant="caption">

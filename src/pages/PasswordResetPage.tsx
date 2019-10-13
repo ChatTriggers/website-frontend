@@ -93,6 +93,14 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
     runInAction(() => { this.loading = false; });
   }
 
+  private readonly handlerKeyDown = action(({ key }: React.KeyboardEvent<HTMLInputElement>) => {
+    if (key === 'Enter') {
+      if (this.password.length > 7 && this.passwordConfirmation.length > 7) {
+        this.onReset();
+      }
+    }
+  });
+
   public render(): JSX.Element {
     return (
       <div className={this.classes.rootOuter}>
@@ -109,6 +117,7 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
               error={!this.isValid}
               helperText={(!this.isValid && 'Password must be longer than 8 characters') || ''}
               fullWidth
+              onKeyDownCapture={this.handlerKeyDown}
             />
             <TextField
               label="Password Confirmation"
@@ -118,6 +127,7 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
               error={!this.isEqual}
               helperText={(!this.isEqual && 'Must match password field above') || ''}
               fullWidth
+              onKeyDownCapture={this.handlerKeyDown}
             />
             <div style={{ display: 'flex', justifyContent: 'end' }}>
               <ButtonGroup className={this.classes.buttons}>

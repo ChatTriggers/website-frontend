@@ -197,7 +197,7 @@ export default observer(() => {
         </Paper>
         <Paper className={classes.paper}>
           <FormControl component="fieldset">
-            <FormLabel component="legend">Module Search Filters</FormLabel>
+            <FormLabel component="legend" focused={false}>Module Search Filters</FormLabel>
             <RadioGroup
               className={classes.radio}
               value={modulesStore.searchFilter}
