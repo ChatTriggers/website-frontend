@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: theme.spacing(4),
       padding: theme.spacing(1),
       maxWidth: `calc(1000px - ${theme.spacing(1) * 2}px)`,
+      width: '100%',
     },
   },
   header: {
@@ -104,20 +105,26 @@ export default withTheme(withWidth()(({ theme, width: deviceWidth }: IModuleSkel
           {(() => {
             let short = false;
 
+            const desktop = deviceWidth === 'lg' || deviceWidth === 'xl';
+
+            let normalLengthVariation: number;
+            let shortLengthVariation: number;
+            const minNormalLines = 2;
+            const shortLineProb = 0.7;
+            const units = desktop ? '%' : 'vw';
+
             return Array(Math.floor(Math.random() * 4 + 3)).fill(undefined).map((_, i) => i).map(n => {
-              let width: string;
-
-              const prob = deviceWidth === 'sm' ? 0.6 : 0.2;
-              const minLine = deviceWidth === 'sm' ? 0 : 2;
-
-              if (!short && Math.random() <= prob && n > minLine) {
-                width = `calc(100vw - ${theme.spacing(2) * 2}px - ${Math.random() * 20 + 60}vw - 
-                         ${deviceWidth === 'lg' || deviceWidth === 'xl' ? '241' : 0}px)`;
-                short = true;
+              if (desktop) {
+                normalLengthVariation = Math.random() * 10 + 5;
+                shortLengthVariation = Math.random() * 20 + 40;
               } else {
-                width = `calc(100vw - ${theme.spacing(2) * 2}px - ${Math.random() * 10 + 10}vw - 
-                         ${deviceWidth === 'lg' || deviceWidth === 'xl' ? '241' : 0}px)`;
+                normalLengthVariation = Math.random() * 20 + 10;
+                shortLengthVariation = Math.random() * 20 + 60;
               }
+
+              short = !short && Math.random() <= shortLineProb && n > minNormalLines;
+              const width = `calc(100${units} - ${desktop ? 0 : theme.spacing(2) * 2}px - 
+                            ${short ? shortLengthVariation : normalLengthVariation}${units})`;
 
               return <Skeleton key={n} style={{ width }} />;
             });
