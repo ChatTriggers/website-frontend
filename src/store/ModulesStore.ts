@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { observable, computed, action } from 'mobx';
 import {
-  IModule, IModuleMetadata, ModuleSearchFilter,
+  IModule, IModuleMetadata, ModuleSearchFilter, ModuleSorting,
 } from '~types';
 
 export const MODULES_PER_PAGE_OPTIONS = [10, 25, 50];
@@ -55,6 +55,9 @@ class ModulesStore {
     releases: [],
     tags: [],
   };
+
+  @observable
+  public moduleSorting: ModuleSorting = 'DATE_CREATED_DESC';
 
   @computed
   get totalPages(): number {
@@ -132,6 +135,13 @@ class ModulesStore {
   @action
   public setAllowedTags = (tags: string[]): this => {
     this.allowedTags = tags;
+
+    return this;
+  }
+
+  @action
+  public setModuleSorting = (sorting: ModuleSorting): this => {
+    this.moduleSorting = sorting;
 
     return this;
   }

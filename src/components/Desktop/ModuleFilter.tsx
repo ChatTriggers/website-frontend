@@ -1,11 +1,13 @@
 import React from 'react';
 import {
   Paper,
-  FormGroup,
+  FormControl,
   FormControlLabel,
   TextField,
   Radio,
   RadioGroup,
+  MenuItem,
+  Grid,
   Theme,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
@@ -14,6 +16,7 @@ import {
 } from '~store';
 import { getModules } from '~api';
 import TablePagination from './TablePagination';
+import { ModuleSorting } from '~types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -34,9 +37,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignContent: 'center',
-  },
-  search: {
-    width: '50%',
   },
   pagination: {
     paddingRight: 0,
@@ -73,32 +73,64 @@ export default observer((): JSX.Element => {
     }
   };
 
+  const onChangeModuleSorting = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+    const moduleSorting = e.target.value as ModuleSorting;
+
+    if (moduleSorting !== modulesStore.moduleSorting) {
+      modulesStore.setModuleSorting(moduleSorting);
+      getModules();
+    }
+  };
+
   return (
     <Paper className={classes.root}>
-      <FormGroup className={classes.searchContainer} row>
-        <TextField
-          className={classes.search}
-          id="search-query"
-          label="Search Modules"
-          InputLabelProps={{ shrink: true }}
-          value={modulesStore.search || ''}
-          onChange={onSearchChange}
-        />
-        <TablePagination className={classes.pagination} />
-      </FormGroup>
-      <div className={classes.content}>
-        <RadioGroup
-          name="module-filter"
-          value={selectedRadio}
-          onChange={onFilterChange}
-          row
-        >
-          <FormControlLabel value="all" label="All Modules" control={<Radio />} />
-          <FormControlLabel value="trusted" label="Trusted Modules" control={<Radio />} />
-          {authStore.isAuthed && <FormControlLabel value="user" label="My Modules" control={<Radio />} />}
-          {authStore.isAuthed && !authStore.isDefault && <FormControlLabel value="flagged" label="Flagged Modules" control={<Radio />} />}
-        </RadioGroup>
-      </div>
+      <Grid container spacing={2}>
+        <Grid item xs={5}>
+          <TextField
+            id="search-query"
+            label="Search Modules"
+            InputLabelProps={{ shrink: true }}
+            value={modulesStore.search || ''}
+            onChange={onSearchChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={7}>
+          <TablePagination className={classes.pagination} />
+        </Grid>
+        <Grid item xs={8}>
+          <FormControl>
+            <RadioGroup
+              name="module-filter"
+              value={selectedRadio}
+              onChange={onFilterChange}
+              row
+            >
+              <FormControlLabel value="all" label="All Modules" control={<Radio />} />
+              <FormControlLabel value="trusted" label="Trusted Modules" control={<Radio />} />
+              {authStore.isAuthed && <FormControlLabel value="user" label="My Modules" control={<Radio />} />}
+              {authStore.isAuthed && !authStore.isDefault && (
+                <FormControlLabel value="flagged" label="Flagged Modules" control={<Radio />} />
+              )}
+            </RadioGroup>
+          </FormControl>
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            id="module-sorting-filter"
+            label="Module Sorting"
+            value={modulesStore.moduleSorting}
+            onChange={onChangeModuleSorting}
+            select
+            fullWidth
+          >
+            <MenuItem value="DATE_CREATED_DESC">Date (Newest to Oldest)</MenuItem>
+            <MenuItem value="DATE_CREATED_ASC">Date (Oldest to Newest)</MenuItem>
+            <MenuItem value="DOWNLOADS_DESC">Downloads (High to Low)</MenuItem>
+            <MenuItem value="DOWNLOADS_ASC">Downloads (Low to High)</MenuItem>
+          </TextField>
+        </Grid>
+      </Grid>
     </Paper>
   );
 });

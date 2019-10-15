@@ -1,5 +1,5 @@
 import qs from 'querystring';
-import { IModule, IModuleResponse } from '~types';
+import { IModule, IModuleResponse, ModuleSorting } from '~types';
 import { ApiErrors, validateStatusCode } from './ApiErrors';
 import { axios, BASE_URL } from '../utils';
 
@@ -15,6 +15,7 @@ export const getModules = async (
   flagged?: boolean,
   tag?: string,
   q?: string,
+  sort?: ModuleSorting,
 ): Promise<IModuleResponse> => {
   const response = await axios.get<IModuleResponse>(MODULES_URL, {
     params: {
@@ -25,6 +26,7 @@ export const getModules = async (
       flagged: flagged || undefined,
       tag,
       q,
+      sort,
     },
   });
 

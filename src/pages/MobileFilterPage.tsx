@@ -25,7 +25,7 @@ import {
   action,
   MODULES_PER_PAGE_OPTIONS,
 } from '~store';
-import { ModuleSearchFilter } from '~types';
+import { ModuleSearchFilter, ModuleSorting } from '~types';
 import { getModules } from '~api';
 import { Desktop } from '~components/utils/DeviceUtils';
 
@@ -169,6 +169,15 @@ export default observer(() => {
     }
   };
 
+  const onChangeModuleSorting = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+    const moduleSorting = e.target.value as ModuleSorting;
+
+    if (moduleSorting !== modulesStore.moduleSorting) {
+      modulesStore.setModuleSorting(moduleSorting);
+      getModules();
+    }
+  };
+
   return (
     <>
       <Desktop>
@@ -250,6 +259,21 @@ export default observer(() => {
                 ))}
               </Select>
             </div>
+          </Paper>
+          <Paper className={classes.paper}>
+            <TextField
+              id="module-sorting-filter"
+              label="Module Sorting"
+              value={modulesStore.moduleSorting}
+              onChange={onChangeModuleSorting}
+              select
+              fullWidth
+            >
+              <MenuItem value="DATE_CREATED_DESC">Date (Newest to Oldest)</MenuItem>
+              <MenuItem value="DATE_CREATED_ASC">Date (Oldest to Newest)</MenuItem>
+              <MenuItem value="DOWNLOADS_DESC">Downloads (High to Low)</MenuItem>
+              <MenuItem value="DOWNLOADS_ASC">Downloads (Low to High)</MenuItem>
+            </TextField>
           </Paper>
         </div>
       </div>

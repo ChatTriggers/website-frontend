@@ -41,3 +41,4 @@ export interface IRelease {
 }
 
 export type ModuleSearchFilter = 'all' | 'trusted' | 'user' | 'flagged';
+export type ModuleSorting = 'DATE_CREATED_DESC' | 'DATE_CREATED_ASC' | 'DOWNLOADS_DESC' | 'DOWNLOADS_ASC';

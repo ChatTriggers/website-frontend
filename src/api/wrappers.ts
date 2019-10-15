@@ -64,6 +64,7 @@ export const getModules = async (): Promise<void> => {
       modulesStore.searchFilter === 'flagged',
       searchTags,
       search,
+      modulesStore.moduleSorting,
     );
 
     modulesStore.setError(false)

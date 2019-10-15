@@ -10,6 +10,7 @@ import {
   KeyboardArrowRight as KeyboardArrowRightIcon,
 } from '@material-ui/icons';
 import { makeStyles, createStyles, withStyles } from '@material-ui/styles';
+import clsx from 'clsx';
 import { getModules } from '~api';
 import { modulesStore, MODULES_PER_PAGE_OPTIONS, observer } from '~store';
 import { StyledComponent, Styles } from '~components';
@@ -19,18 +20,19 @@ const useStylesActions = makeStyles((theme: Theme) => createStyles({
     display: 'flex',
     justifyContent: 'center',
     alignContent: 'center',
-    flexShrink: 0,
     color: theme.palette.text.secondary,
-    marginLeft: theme.spacing(2.5),
   },
   text: {
     alignSelf: 'center',
     justifySelf: 'center',
-    padding: '0 10px',
   },
 }));
 
-const TablePaginationActions = observer(() => {
+interface ITablePaginationActionsProps {
+  className?: string;
+}
+
+const TablePaginationActions = observer(({ className }: ITablePaginationActionsProps) => {
   const classes = useStylesActions({});
 
   const getPageClickHandler = (pageGetter: (page: number) => number) => () => {
@@ -48,7 +50,7 @@ const TablePaginationActions = observer(() => {
   const handleLastPageClick = getPageClickHandler(() => modulesStore.totalPages - 1);
 
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.root, className)}>
       <IconButton
         onClick={handleFirstPageClick}
         disabled={modulesStore.page === 0}
@@ -83,13 +85,19 @@ const stylesPagination: Styles = (theme: Theme) => ({
     justifyContent: 'end',
     alignContent: 'center',
   },
+  form: {
+    display: 'flex',
+    width: '100%',
+  },
   textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 150,
+    marginRight: theme.spacing(2),
+    flexGrow: 6,
   },
   menu: {
-    width: 150,
+    flexGrow: 1,
+  },
+  selectors: {
+    flexGrow: 3,
   },
 });
 
@@ -124,7 +132,7 @@ class TablePagination extends StyledComponent<typeof stylesPagination, ITablePag
   public render(): JSX.Element {
     return (
       <div className={`${this.classes.root} ${this.props.className || ''}`}>
-        <FormGroup row>
+        <FormGroup row className={this.classes.form}>
           <TextField
             id="modules-per-page-select"
             className={this.classes.textField}
@@ -161,7 +169,7 @@ class TablePagination extends StyledComponent<typeof stylesPagination, ITablePag
               <option key={i} value={i}>{i + 1}</option>
             ))}
           </TextField>
-          <TablePaginationActions />
+          <TablePaginationActions className={this.classes.selectors} />
         </FormGroup>
       </div>
     );
