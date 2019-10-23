@@ -15,13 +15,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   content: {
     [theme.breakpoints.only('xs')]: {
       marginTop: 56,
+      minHeight: 'calc(100vh - 56px)',
     },
     [theme.breakpoints.between('sm', 'md')]: {
       marginTop: 64,
+      minHeight: 'calc(100vh - 64px)',
     },
     [theme.breakpoints.up('lg')]: {
       marginTop: 64,
       width: 'calc(100vw - 240px)',
+      minHeight: 'calc(100vh - 64px)',
     },
     flexGrow: 1,
     background: theme.palette.background.default,
