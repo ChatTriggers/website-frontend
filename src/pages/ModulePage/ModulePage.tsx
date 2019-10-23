@@ -24,6 +24,7 @@ import DeleteReleaseDialog from '~components/Desktop/DeleteReleaseDialog';
 import { getModules, updateRelease } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
 import CreateReleaseDialog from '~components/Desktop/CreateReleaseDialog';
+import ModuleError from '~components/Module/ModuleError';
 import ModulePageHeader from './Header';
 import ModulePageReleases, { OpenDialog } from './Releases';
 import { IRelease } from '~types';
@@ -102,6 +103,9 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
 
   @observable
   private openDialog: OpenDialog = 'none';
+
+  @observable
+  private error = false;
 
   private setOpenDialog = (dialog: OpenDialog, deletingRelease?: string): (() => void) => action(() => {
     this.openDialog = dialog;
@@ -198,7 +202,11 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
 
       if (response.modules.length !== 1) {
         // TODO: Display error on screen
-        throw new Error(`No module with name ${moduleName} found`);
+        runInAction(() => {
+          this.error = true;
+        });
+        return;
+        // throw new Error(`No module with name ${moduleName} found`);
       }
 
       runInAction(() => {
@@ -213,6 +221,14 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   }
 
   public render(): JSX.Element {
+    if (this.error) {
+      return (
+        <div className={this.classes.root}>
+          <ModuleError />
+        </div>
+      );
+    }
+
     return (modulesStore.activeModule && (
       <div className={this.classes.root}>
         {modulesStore.activeModule && (

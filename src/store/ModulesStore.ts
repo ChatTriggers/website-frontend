@@ -35,9 +35,6 @@ class ModulesStore {
   public modules: IModule[] = [];
 
   @observable
-  public error = false;
-
-  @observable
   public allowedTags: string[] = [];
 
   // I really don't want to have to do undefined checks on this object everywhere,
@@ -82,20 +79,6 @@ class ModulesStore {
   @action
   public clearModules = (): this => {
     this.modules = [];
-
-    return this;
-  }
-
-  @action
-  public setError = (error = true): this => {
-    this.error = error;
-
-    return this;
-  }
-
-  @action
-  public clearError = (): this => {
-    this.error = false;
 
     return this;
   }

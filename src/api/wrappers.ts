@@ -56,11 +56,9 @@ export const getModules = async (): Promise<void> => {
       modulesStore.moduleSorting,
     );
 
-    modulesStore.setError(false)
-      .setModules(response.modules)
-      .setMeta(response.meta);
+    modulesStore.setModules(response.modules).setMeta(response.meta);
   } catch (e) {
-    modulesStore.setError(true);
+    // TODO
   }
 };
 
