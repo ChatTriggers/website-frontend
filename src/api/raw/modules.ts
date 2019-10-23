@@ -13,7 +13,7 @@ export const getModules = async (
   owner?: number,
   trusted?: boolean,
   flagged?: boolean,
-  tag?: string,
+  tags?: string,
   q?: string,
   sort?: ModuleSorting,
 ): Promise<IModuleResponse> => {
@@ -24,7 +24,7 @@ export const getModules = async (
       owner,
       trusted: trusted || undefined,
       flagged: flagged || undefined,
-      tag,
+      tags,
       q,
       sort,
     },

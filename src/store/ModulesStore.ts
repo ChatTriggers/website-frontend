@@ -29,6 +29,9 @@ class ModulesStore {
   public searchFilter: ModuleSearchFilter = 'all';
 
   @observable
+  public searchTags: string[] = [];
+
+  @observable
   public modules: IModule[] = [];
 
   @observable
@@ -67,6 +70,13 @@ class ModulesStore {
   @computed
   get offset(): number {
     return this.meta ? this.page * this.modulesPerPage : 0;
+  }
+
+  @action
+  public setSearchTags = (tags: string[]): this => {
+    this.searchTags = tags;
+
+    return this;
   }
 
   @action

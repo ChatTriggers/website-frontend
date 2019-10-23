@@ -9,6 +9,7 @@ import {
   MenuItem,
   Grid,
   Theme,
+  Chip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -61,6 +62,17 @@ export default observer((): JSX.Element => {
     }, 1500));
   };
 
+  const onSearchTagsChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+
+    const { target } = e;
+    modulesStore.setSearchTags(target.value as string[]);
+
+    setSearchTimeout(setTimeout(() => {
+      getModules();
+    }, 1500));
+  };
+
   const onFilterChange = (_: React.ChangeEvent<{}>, value: string): void => {
     const val = value as RadioOption;
 
@@ -85,20 +97,60 @@ export default observer((): JSX.Element => {
   return (
     <Paper className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={5}>
+        <Grid item xs={6}>
           <TextField
             id="search-query"
             label="Search Modules"
-            InputLabelProps={{ shrink: true }}
             value={modulesStore.search || ''}
             onChange={onSearchChange}
             fullWidth
+            InputLabelProps={{ shrink: true }}
           />
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={6}>
+          <TextField
+            id="search-tags"
+            label="Filter Modules by Tags"
+            value={modulesStore.searchTags}
+            onChange={onSearchTagsChange}
+            fullWidth
+            select
+            InputLabelProps={{ shrink: true }}
+            SelectProps={{
+              multiple: true,
+              renderValue: selected => (selected as string[]).map(tag => (
+                <Chip key={tag} label={tag} />
+              )),
+              margin: 'dense',
+              MenuProps: {
+                style: {
+                  maxHeight: 400,
+                },
+              },
+            }}
+          >
+            {modulesStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+          </TextField>
+        </Grid>
+        <Grid item xs={6}>
           <TablePagination className={classes.pagination} />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={6}>
+          <TextField
+            id="module-sorting-filter"
+            label="Module Sorting"
+            value={modulesStore.moduleSorting}
+            onChange={onChangeModuleSorting}
+            select
+            fullWidth
+          >
+            <MenuItem value="DATE_CREATED_DESC">Date (Newest to Oldest)</MenuItem>
+            <MenuItem value="DATE_CREATED_ASC">Date (Oldest to Newest)</MenuItem>
+            <MenuItem value="DOWNLOADS_DESC">Downloads (High to Low)</MenuItem>
+            <MenuItem value="DOWNLOADS_ASC">Downloads (Low to High)</MenuItem>
+          </TextField>
+        </Grid>
+        <Grid item xs={12}>
           <FormControl>
             <RadioGroup
               name="module-filter"
@@ -114,21 +166,6 @@ export default observer((): JSX.Element => {
               )}
             </RadioGroup>
           </FormControl>
-        </Grid>
-        <Grid item xs={4}>
-          <TextField
-            id="module-sorting-filter"
-            label="Module Sorting"
-            value={modulesStore.moduleSorting}
-            onChange={onChangeModuleSorting}
-            select
-            fullWidth
-          >
-            <MenuItem value="DATE_CREATED_DESC">Date (Newest to Oldest)</MenuItem>
-            <MenuItem value="DATE_CREATED_ASC">Date (Oldest to Newest)</MenuItem>
-            <MenuItem value="DOWNLOADS_DESC">Downloads (High to Low)</MenuItem>
-            <MenuItem value="DOWNLOADS_ASC">Downloads (Low to High)</MenuItem>
-          </TextField>
         </Grid>
       </Grid>
     </Paper>

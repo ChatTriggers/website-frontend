@@ -35,6 +35,7 @@ interface IMobileFilterPageProps {
 
 interface IStyleProps {
   searchValue: boolean;
+  tagSearchValue: boolean;
 }
 
 const useStyles = makeStyles<Theme, IStyleProps>((theme: Theme) => ({
@@ -62,6 +63,15 @@ const useStyles = makeStyles<Theme, IStyleProps>((theme: Theme) => ({
       duration: theme.transitions.duration.shorter,
     }),
     marginTop: props => (props.searchValue ? 0 : -25),
+  },
+  tagSearch: {
+    width: '100%',
+    marginBottom: 0,
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.shorter,
+    }),
+    marginTop: props => (props.tagSearchValue ? 0 : -25),
   },
   radio: {
     display: 'flex',
@@ -92,35 +102,18 @@ const useStyles = makeStyles<Theme, IStyleProps>((theme: Theme) => ({
 export default observer(() => {
   const [searching, setSearching] = React.useState(false);
   const [searchFocused, setSearchFocused] = React.useState(false);
+  const [tagSearchFocused, setTagSearchFocused] = React.useState(false);
   const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout | undefined);
 
-  const classes = useStyles({ searchValue: searchFocused || !!modulesStore.search });
+  const classes = useStyles({
+    searchValue: searchFocused || !!modulesStore.search,
+    tagSearchValue: tagSearchFocused || modulesStore.searchTags.length !== 0,
+  });
 
-  let { search } = modulesStore;
-  const tags = search && search.match(/tag:\w+ /g);
-  const tagAdornments = tags && tags.map(tag => (
-    <Chip
-      className={classes.tagChip}
-      key={tag}
-      size="small"
-      color="primary"
-      label={tag.replace('tag:', '')}
-    />
-  ));
-
-  if (tags) {
-    tags.forEach(tag => {
-      search = search && search.replace(tag, '');
-    });
-    search = search && search.trim();
-  }
+  const { search, searchTags } = modulesStore;
 
   const onSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    if (tags) {
-      modulesStore.setSearch(tags.join(' ') + target.value);
-    } else {
-      modulesStore.setSearch(target.value);
-    }
+    modulesStore.setSearch(target.value);
 
     if (searchTimeout) clearTimeout(searchTimeout);
 
@@ -131,11 +124,16 @@ export default observer(() => {
     }, 1500));
   });
 
-  const onSearchKeyDown = action(({ key }: React.KeyboardEvent<HTMLInputElement>) => {
-    // Handle pressing backspace on an empty input to delete tags
-    if (key === 'Backspace' && !search && tags && tags.length > 0) {
-      modulesStore.setSearch(modulesStore.search && modulesStore.search.slice(0, modulesStore.search.length - 1));
-    }
+  const onTagSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    modulesStore.setSearchTags(target.value as unknown as string[]);
+
+    if (searchTimeout) clearTimeout(searchTimeout);
+
+    setSearchTimeout(setTimeout(async () => {
+      setSearching(true);
+      await getModules();
+      setSearching(false);
+    }, 1500));
   });
 
   const onSearchFocus = (): void => {
@@ -144,6 +142,14 @@ export default observer(() => {
 
   const onSearchBlur = (): void => {
     setSearchFocused(false);
+  };
+
+  const onTagSearchFocus = (): void => {
+    setTagSearchFocused(true);
+  };
+
+  const onTagSearchBlur = (): void => {
+    setTagSearchFocused(false);
   };
 
   const onFilterChange = action((e: React.ChangeEvent<{}>) => {
@@ -178,6 +184,11 @@ export default observer(() => {
     }
   };
 
+  React.useEffect(() => () => {
+    // onUnmount
+    if (searchTimeout) clearTimeout(searchTimeout);
+  }, []);
+
   return (
     <>
       <Desktop>
@@ -188,20 +199,18 @@ export default observer(() => {
           <Paper className={classes.paper}>
             <TextField
               className={classes.search}
-              label="Search"
+              label="Search Modules"
               margin="normal"
               placeholder="Search module names"
               value={search}
-              onKeyDownCapture={onSearchKeyDown}
               onChange={onSearchChange}
               onFocus={onSearchFocus}
               onBlur={onSearchBlur}
               InputProps={{
-                startAdornment: tagAdornments,
                 endAdornment: (searching && (
                   <div>
                     <CircularProgress
-                      size={20}
+                      size={15}
                       thickness={7}
                     />
                   </div>
@@ -209,6 +218,37 @@ export default observer(() => {
               }}
               multiline
             />
+          </Paper>
+          <Paper className={classes.paper}>
+            <TextField
+              className={classes.tagSearch}
+              label="Filter by Tags"
+              margin="normal"
+              select
+              value={searchTags}
+              onChange={onTagSearchChange}
+              onFocus={onTagSearchFocus}
+              onBlur={onTagSearchBlur}
+              InputProps={{
+                endAdornment: (searching && (
+                  <div>
+                    <CircularProgress
+                      size={15}
+                      thickness={7}
+                      style={{ marginRight: 30 }}
+                    />
+                  </div>
+                )) || undefined,
+              }}
+              SelectProps={{
+                multiple: true,
+                renderValue: (selected: unknown) => (selected as string[]).map(tag => (
+                  <Chip key={tag} label={tag} size="small" color="primary" style={{ marginRight: 4 }} />
+                )),
+              }}
+            >
+              {modulesStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+            </TextField>
           </Paper>
           <Paper className={classes.paper}>
             <FormControl component="fieldset">
