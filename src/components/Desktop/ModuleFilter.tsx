@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
-  observer, modulesStore, authStore,
+  observer, modulesStore, authStore, errorStore, runInAction,
 } from '~store';
 import { getModules } from '~api';
 import TablePagination from './TablePagination';
@@ -55,29 +55,53 @@ type RadioOption = 'all' | 'user' | 'trusted' | 'flagged';
 
 export default observer((): JSX.Element => {
   const classes = useStyles();
-  const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout | undefined);
+  const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout[] | undefined);
   const [selectedRadio, setSelectedRadio] = React.useState('all' as RadioOption);
 
   const onSearchChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
-    if (searchTimeout) clearTimeout(searchTimeout);
+    if (searchTimeout) searchTimeout.forEach(clearTimeout);
+
+    if (errorStore.modulesNotLoaded) {
+      runInAction(() => {
+        errorStore.modulesNotLoaded = false;
+      });
+    }
 
     const { target } = e;
     modulesStore.setSearch(target.value as string);
 
-    setSearchTimeout(setTimeout(() => {
+    setSearchTimeout([setTimeout(() => {
       getModules();
-    }, 1500));
+    }, 1500), setTimeout(() => {
+      if (modulesStore.modules.length === 0) {
+        runInAction(() => {
+          errorStore.modulesNotLoaded = true;
+        });
+      }
+    }, 6500)]);
   };
 
   const onSearchTagsChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
-    if (searchTimeout) clearTimeout(searchTimeout);
+    if (searchTimeout) searchTimeout.forEach(clearTimeout);
+
+    if (errorStore.modulesNotLoaded) {
+      runInAction(() => {
+        errorStore.modulesNotLoaded = false;
+      });
+    }
 
     const { target } = e;
     modulesStore.setSearchTags(target.value as string[]);
 
-    setSearchTimeout(setTimeout(() => {
+    setSearchTimeout([setTimeout(() => {
       getModules();
-    }, 1500));
+    }, 1500), setTimeout(() => {
+      if (modulesStore.modules.length === 0) {
+        runInAction(() => {
+          errorStore.modulesNotLoaded = true;
+        });
+      }
+    }, 6500)]);
   };
 
   const onFilterChange = (_: React.ChangeEvent<{}>, value: string): void => {

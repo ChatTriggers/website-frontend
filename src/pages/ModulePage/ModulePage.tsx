@@ -224,7 +224,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
     if (this.error) {
       return (
         <div className={this.classes.root}>
-          <ModuleError />
+          <ModuleError errorType="module-doesnt-exist" />
         </div>
       );
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { modulesStore, observer } from '~store';
+import { modulesStore, errorStore, observer } from '~store';
 import { Mobile, NotMobile } from '~components';
 import Module from '~components/Module';
 import FloatingActionButton from '~components/Module/FloatingActionButton';
@@ -9,6 +9,7 @@ import ModuleSkeleton from '~components/Module/ModuleSkeleton';
 import MobilePagination from '~components/Mobile/Pagination';
 import MobileFilterButton from '~components/Mobile/FilterButton';
 import ModuleFilter from '~components/Desktop/ModuleFilter';
+import ModuleError from '~components/Module/ModuleError';
 
 const useStyles = makeStyles((theme: Theme) => ({
   modules: {
@@ -33,6 +34,16 @@ export default observer(() => {
   const modules = modulesStore.modules.map(module => <Module key={module.id} module={module} />);
   const skeletons = Array(4).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />);
 
+  let content: JSX.Element | JSX.Element[];
+
+  if (errorStore.modulesNotLoaded) {
+    content = <ModuleError errorType="no-modules-found" />;
+  } else if (modules.length > 0) {
+    content = modules;
+  } else {
+    content = skeletons;
+  }
+
   return (
     <>
       <FloatingActionButton />
@@ -44,7 +55,7 @@ export default observer(() => {
         <NotMobile>
           <ModuleFilter />
         </NotMobile>
-        {modules.length > 0 ? modules : skeletons}
+        {content}
       </Container>
     </>
   );

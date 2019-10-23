@@ -21,8 +21,10 @@ import clsx from 'clsx';
 import {
   modulesStore,
   authStore,
+  errorStore,
   observer,
   action,
+  runInAction,
   MODULES_PER_PAGE_OPTIONS,
 } from '~store';
 import { ModuleSearchFilter, ModuleSorting } from '~types';
@@ -103,7 +105,7 @@ export default observer(() => {
   const [searching, setSearching] = React.useState(false);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [tagSearchFocused, setTagSearchFocused] = React.useState(false);
-  const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout | undefined);
+  const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout[] | undefined);
 
   const classes = useStyles({
     searchValue: searchFocused || !!modulesStore.search,
@@ -115,25 +117,49 @@ export default observer(() => {
   const onSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
     modulesStore.setSearch(target.value);
 
-    if (searchTimeout) clearTimeout(searchTimeout);
+    if (errorStore.modulesNotLoaded) {
+      runInAction(() => {
+        errorStore.modulesNotLoaded = false;
+      });
+    }
 
-    setSearchTimeout(setTimeout(async () => {
+    if (searchTimeout) searchTimeout.forEach(clearTimeout);
+
+    setSearchTimeout([setTimeout(async () => {
       setSearching(true);
       await getModules();
       setSearching(false);
-    }, 1500));
+    }, 1500), setTimeout(() => {
+      if (modulesStore.modules.length === 0) {
+        runInAction(() => {
+          errorStore.modulesNotLoaded = true;
+        });
+      }
+    }, 6500)]);
   });
 
   const onTagSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
     modulesStore.setSearchTags(target.value as unknown as string[]);
 
-    if (searchTimeout) clearTimeout(searchTimeout);
+    if (errorStore.modulesNotLoaded) {
+      runInAction(() => {
+        errorStore.modulesNotLoaded = false;
+      });
+    }
 
-    setSearchTimeout(setTimeout(async () => {
+    if (searchTimeout) searchTimeout.forEach(clearTimeout);
+
+    setSearchTimeout([setTimeout(async () => {
       setSearching(true);
       await getModules();
       setSearching(false);
-    }, 1500));
+    }, 1500), setTimeout(() => {
+      if (modulesStore.modules.length === 0) {
+        runInAction(() => {
+          errorStore.modulesNotLoaded = true;
+        });
+      }
+    }, 6500)]);
   });
 
   const onSearchFocus = (): void => {
@@ -186,7 +212,7 @@ export default observer(() => {
 
   React.useEffect(() => () => {
     // onUnmount
-    if (searchTimeout) clearTimeout(searchTimeout);
+    if (searchTimeout) searchTimeout.forEach(clearTimeout);
   }, []);
 
   return (

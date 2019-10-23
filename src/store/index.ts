@@ -7,6 +7,7 @@ configure({
 export { default as modulesStore, MODULES_PER_PAGE_OPTIONS } from './ModulesStore';
 export { default as authStore } from './AuthStore';
 export { default as globalStore } from './GlobalStore';
+export { default as errorStore } from './ErrorStore';
 
 export {
   observable, action, computed, runInAction,
