@@ -21,10 +21,17 @@ import { ModuleSorting } from '~types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(2, 4, 6, 4),
-    padding: theme.spacing(4, 4, 3, 4),
-    width: '100%',
-    maxWidth: `calc(1000px - ${theme.spacing(4) * 2}px)`,
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '100vw',
+      margin: theme.spacing(3, 3, 5, 3),
+      padding: theme.spacing(2),
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: '100%',
+      maxWidth: `calc(1000px - ${theme.spacing(4) * 2}px)`,
+      margin: theme.spacing(3, 4, 5, 4),
+      padding: theme.spacing(4, 4, 3, 4),
+    },
   },
   content: {
     margin: 0,
@@ -97,7 +104,7 @@ export default observer((): JSX.Element => {
   return (
     <Paper className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             id="search-query"
             label="Search Modules"
@@ -107,7 +114,7 @@ export default observer((): JSX.Element => {
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             id="search-tags"
             label="Filter Modules by Tags"
@@ -132,10 +139,10 @@ export default observer((): JSX.Element => {
             {modulesStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
           </TextField>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TablePagination className={classes.pagination} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <TextField
             id="module-sorting-filter"
             label="Module Sorting"

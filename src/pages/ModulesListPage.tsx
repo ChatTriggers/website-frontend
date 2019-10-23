@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { modulesStore, observer } from '~store';
-import { Mobile, Desktop } from '~components';
+import { Mobile, NotMobile } from '~components';
 import Module from '~components/Module';
 import FloatingActionButton from '~components/Module/FloatingActionButton';
 import ModuleSkeleton from '~components/Module/ModuleSkeleton';
@@ -41,9 +41,9 @@ export default observer(() => {
         <MobileFilterButton />
       </Mobile>
       <Container className={classes.modules}>
-        <Desktop>
+        <NotMobile>
           <ModuleFilter />
-        </Desktop>
+        </NotMobile>
         {modules.length > 0 ? modules : skeletons}
       </Container>
     </>
