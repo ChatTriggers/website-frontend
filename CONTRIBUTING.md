@@ -1,3 +1,0 @@
-# Contributing
-
-To contribute you will need to fork this repository and clone your fork to your computer. From there, you will need to open a terminal in the directory for the repository and run the command `yarn install`. After the packages have been installed you can simply run `yarn start` and the development server will start up with the website running on `localhost:3000`. Unfortunately unless you are highly trusted by the maintainers of the project you will not be able to see any modules or be able to create accounts, unless you create a fake database to mock the data. Therefore you will only be able to work on other aspects of the website.
