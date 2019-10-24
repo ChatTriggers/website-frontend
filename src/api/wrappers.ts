@@ -1,6 +1,6 @@
 import * as raw from './raw';
 import { IUser } from '~types';
-import { modulesStore, authStore } from '~store';
+import { modulesStore, authStore, apiStore } from '~store';
 
 export const login = async (
   username: string,
@@ -46,17 +46,18 @@ export const getModules = async (): Promise<void> => {
 
   try {
     const response = await raw.getModules(
-      modulesStore.modulesPerPage,
-      modulesStore.offset,
-      (modulesStore.searchFilter === 'user' && authStore.user && authStore.user.id) || undefined,
-      modulesStore.searchFilter === 'trusted',
-      modulesStore.searchFilter === 'flagged',
-      modulesStore.searchTags.join(','),
-      modulesStore.search,
-      modulesStore.moduleSorting,
+      apiStore.modulesPerPage,
+      apiStore.offset,
+      (apiStore.filter === 'user' && authStore.user && authStore.user.id) || undefined,
+      apiStore.filter === 'trusted',
+      apiStore.filter === 'flagged',
+      apiStore.tags.join(','),
+      apiStore.search,
+      apiStore.sorting,
     );
 
-    modulesStore.setModules(response.modules).setMeta(response.meta);
+    modulesStore.setModules(response.modules);
+    apiStore.setMeta(response.meta);
   } catch (e) {
     // TODO
   }
@@ -72,7 +73,7 @@ export const getCurrentAccount = async (): Promise<void> => {
 
 export const loadTags = async (): Promise<void> => {
   // TODO: Handle error
-  modulesStore.setAllowedTags(await raw.getTags());
+  apiStore.setAllowedTags(await raw.getTags());
 };
 
 export const deleteModule = async (moduleId: number): Promise<void> => {

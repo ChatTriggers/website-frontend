@@ -14,7 +14,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
 import { getModules, createModule } from '~api';
-import { modulesStore } from '~store';
+import { apiStore } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -165,7 +165,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
               },
             }}
           >
-            {modulesStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+            {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
           </TextField>
         </Grid>
         <Grid item xs={12}>

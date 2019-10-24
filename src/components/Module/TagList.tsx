@@ -12,7 +12,7 @@ import {
 import { withStyles } from '@material-ui/styles';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import {
-  observer, observable, action, modulesStore,
+  observer, observable, action, apiStore,
 } from '~store';
 import { StyledComponent, Styles } from '~components';
 import { getModules } from '~api';
@@ -55,7 +55,7 @@ class TagList extends StyledComponent<typeof styles, ITagListProps> {
 
   @action
   private onClickTag = (tag: string) => () => {
-    modulesStore.setSearch(`tag:${tag}`);
+    apiStore.setSearch(`tag:${tag}`);
     getModules();
     this.props.history.push('/modules');
   }

@@ -21,6 +21,7 @@ import clsx from 'clsx';
 import {
   modulesStore,
   authStore,
+  apiStore,
   errorStore,
   observer,
   action,
@@ -108,14 +109,14 @@ export default observer(() => {
   const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout[] | undefined);
 
   const classes = useStyles({
-    searchValue: searchFocused || !!modulesStore.search,
-    tagSearchValue: tagSearchFocused || modulesStore.searchTags.length !== 0,
+    searchValue: searchFocused || !!apiStore.search,
+    tagSearchValue: tagSearchFocused || apiStore.tags.length !== 0,
   });
 
-  const { search, searchTags } = modulesStore;
+  const { search, tags } = apiStore;
 
   const onSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    modulesStore.setSearch(target.value);
+    apiStore.setSearch(target.value);
 
     if (errorStore.modulesNotLoaded) {
       runInAction(() => {
@@ -139,7 +140,7 @@ export default observer(() => {
   });
 
   const onTagSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    modulesStore.setSearchTags(target.value as unknown as string[]);
+    apiStore.setTags(target.value as unknown as string[]);
 
     if (errorStore.modulesNotLoaded) {
       runInAction(() => {
@@ -181,8 +182,8 @@ export default observer(() => {
   const onFilterChange = action((e: React.ChangeEvent<{}>) => {
     const filter = (e.target as HTMLInputElement).value as ModuleSearchFilter;
 
-    if (filter !== modulesStore.searchFilter) {
-      modulesStore.setSearchFilter(filter);
+    if (filter !== apiStore.filter) {
+      apiStore.setFilter(filter);
       getModules();
     }
   });
@@ -190,22 +191,22 @@ export default observer(() => {
   const onChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     const modulesPerPage = e.target.value as number;
 
-    if (modulesPerPage !== modulesStore.modulesPerPage) {
-      if (modulesPerPage < modulesStore.modulesPerPage) {
+    if (modulesPerPage !== apiStore.modulesPerPage) {
+      if (modulesPerPage < apiStore.modulesPerPage) {
         modulesStore.setModules(modulesStore.modules.slice(0, modulesPerPage));
       } else {
         getModules();
       }
 
-      modulesStore.setModulesPerPage(modulesPerPage);
+      apiStore.setModulesPerPage(modulesPerPage);
     }
   };
 
   const onChangeModuleSorting = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     const moduleSorting = e.target.value as ModuleSorting;
 
-    if (moduleSorting !== modulesStore.moduleSorting) {
-      modulesStore.setModuleSorting(moduleSorting);
+    if (moduleSorting !== apiStore.sorting) {
+      apiStore.setSorting(moduleSorting);
       getModules();
     }
   };
@@ -251,7 +252,7 @@ export default observer(() => {
               label="Filter by Tags"
               margin="normal"
               select
-              value={searchTags}
+              value={tags}
               onChange={onTagSearchChange}
               onFocus={onTagSearchFocus}
               onBlur={onTagSearchBlur}
@@ -273,7 +274,7 @@ export default observer(() => {
                 )),
               }}
             >
-              {modulesStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+              {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
             </TextField>
           </Paper>
           <Paper className={classes.paper}>
@@ -281,7 +282,7 @@ export default observer(() => {
               <FormLabel component="legend" focused={false}>Module Search Filters</FormLabel>
               <RadioGroup
                 className={classes.radio}
-                value={modulesStore.searchFilter}
+                value={apiStore.filter}
                 onChange={onFilterChange}
               >
                 <FormControlLabel
@@ -317,7 +318,7 @@ export default observer(() => {
               </Typography>
               <Select
                 className={classes.select}
-                value={modulesStore.modulesPerPage}
+                value={apiStore.modulesPerPage}
                 onChange={onChangeModulesPerPage}
               >
                 {MODULES_PER_PAGE_OPTIONS.map(n => (
@@ -330,7 +331,7 @@ export default observer(() => {
             <TextField
               id="module-sorting-filter"
               label="Module Sorting"
-              value={modulesStore.moduleSorting}
+              value={apiStore.sorting}
               onChange={onChangeModuleSorting}
               select
               fullWidth

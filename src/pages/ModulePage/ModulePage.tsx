@@ -15,6 +15,7 @@ import {
   observable,
   action,
   modulesStore,
+  apiStore,
   runInAction,
 } from '~store';
 import MarkdownRenderer from '~components/MarkdownRenderer';
@@ -275,7 +276,7 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
                     </div>
                   )}
                 >
-                  {modulesStore.allowedTags.map(tag => (
+                  {apiStore.allowedTags.map(tag => (
                     <MenuItem key={tag} value={tag}>
                       {tag}
                     </MenuItem>

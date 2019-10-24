@@ -13,7 +13,7 @@ import {
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 import { getModules } from '~api';
-import { modulesStore, observer } from '~store';
+import { apiStore, observer } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -35,19 +35,19 @@ export default observer(() => {
   const classes = useStyles();
 
   const onChangePage = (page: number): void => {
-    if (page === modulesStore.page) return;
+    if (page === apiStore.page) return;
 
-    modulesStore.setPage(page);
+    apiStore.setPage(page);
     getModules();
   };
 
   const onFirstPage = (): void => onChangePage(0);
 
-  const onLastPage = (): void => onChangePage(modulesStore.totalPages);
+  const onLastPage = (): void => onChangePage(apiStore.totalPages);
 
-  const onPreviousPage = (): void => onChangePage(modulesStore.page - 1);
+  const onPreviousPage = (): void => onChangePage(apiStore.page - 1);
 
-  const onNextPage = (): void => onChangePage(modulesStore.page + 1);
+  const onNextPage = (): void => onChangePage(apiStore.page + 1);
 
   const onChangePageEvent = (e: React.ChangeEvent<HTMLInputElement>): void => {
     onChangePage(parseInt(e.target.value, 10));
@@ -58,14 +58,14 @@ export default observer(() => {
       <IconButton
         className={classes.button}
         onClick={onFirstPage}
-        disabled={modulesStore.page === 0}
+        disabled={apiStore.page === 0}
       >
         <FirstPageIcon fontSize="large" />
       </IconButton>
       <IconButton
         className={classes.button}
         onClick={onPreviousPage}
-        disabled={modulesStore.page === 0}
+        disabled={apiStore.page === 0}
       >
         <PreviousPageIcon fontSize="large" />
       </IconButton>
@@ -73,7 +73,7 @@ export default observer(() => {
         className={classes.pageSelector}
         select
         label="Page"
-        value={modulesStore.page}
+        value={apiStore.page}
         onChange={onChangePageEvent}
         margin="normal"
         SelectProps={{
@@ -81,21 +81,21 @@ export default observer(() => {
         }}
         InputLabelProps={{ shrink: true }}
       >
-        {Array.from(Array(modulesStore.totalPages).keys()).map(n => (
+        {Array.from(Array(apiStore.totalPages).keys()).map(n => (
           <option key={n} value={n}>{n + 1}</option>
         ))}
       </TextField>
       <IconButton
         className={classes.button}
         onClick={onNextPage}
-        disabled={modulesStore.page === modulesStore.totalPages}
+        disabled={apiStore.page === apiStore.totalPages}
       >
         <NextPageIcon fontSize="large" />
       </IconButton>
       <IconButton
         className={classes.button}
         onClick={onLastPage}
-        disabled={modulesStore.page === modulesStore.totalPages}
+        disabled={apiStore.page === apiStore.totalPages}
       >
         <LastPageIcon fontSize="large" />
       </IconButton>

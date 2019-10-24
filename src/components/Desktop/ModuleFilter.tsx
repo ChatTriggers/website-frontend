@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
-  observer, modulesStore, authStore, errorStore, runInAction,
+  observer, modulesStore, authStore, errorStore, runInAction, apiStore,
 } from '~store';
 import { getModules } from '~api';
 import TablePagination from './TablePagination';
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.up('lg')]: {
       width: '100%',
       maxWidth: `calc(1000px - ${theme.spacing(4) * 2}px)`,
-      margin: theme.spacing(3, 4, 5, 4),
+      margin: theme.spacing(4, 4, 5, 4),
       padding: theme.spacing(4, 4, 3, 4),
     },
   },
@@ -68,7 +68,7 @@ export default observer((): JSX.Element => {
     }
 
     const { target } = e;
-    modulesStore.setSearch(target.value as string);
+    apiStore.setSearch(target.value as string);
 
     setSearchTimeout([setTimeout(() => {
       getModules();
@@ -91,7 +91,7 @@ export default observer((): JSX.Element => {
     }
 
     const { target } = e;
-    modulesStore.setSearchTags(target.value as string[]);
+    apiStore.setTags(target.value as string[]);
 
     setSearchTimeout([setTimeout(() => {
       getModules();
@@ -111,7 +111,7 @@ export default observer((): JSX.Element => {
       if ((!authStore.isAuthed || authStore.isDefault) && val === 'flagged') return;
 
       setSelectedRadio(val);
-      modulesStore.setSearchFilter(val);
+      apiStore.setFilter(val);
       getModules();
     }
   };
@@ -119,8 +119,8 @@ export default observer((): JSX.Element => {
   const onChangeModuleSorting = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     const moduleSorting = e.target.value as ModuleSorting;
 
-    if (moduleSorting !== modulesStore.moduleSorting) {
-      modulesStore.setModuleSorting(moduleSorting);
+    if (moduleSorting !== apiStore.sorting) {
+      apiStore.setSorting(moduleSorting);
       getModules();
     }
   };
@@ -132,7 +132,7 @@ export default observer((): JSX.Element => {
           <TextField
             id="search-query"
             label="Search Modules"
-            value={modulesStore.search || ''}
+            value={apiStore.search || ''}
             onChange={onSearchChange}
             fullWidth
             InputLabelProps={{ shrink: true }}
@@ -142,7 +142,7 @@ export default observer((): JSX.Element => {
           <TextField
             id="search-tags"
             label="Filter Modules by Tags"
-            value={modulesStore.searchTags}
+            value={apiStore.tags}
             onChange={onSearchTagsChange}
             fullWidth
             select
@@ -160,7 +160,7 @@ export default observer((): JSX.Element => {
               },
             }}
           >
-            {modulesStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+            {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
           </TextField>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -170,7 +170,7 @@ export default observer((): JSX.Element => {
           <TextField
             id="module-sorting-filter"
             label="Module Sorting"
-            value={modulesStore.moduleSorting}
+            value={apiStore.sorting}
             onChange={onChangeModuleSorting}
             select
             fullWidth

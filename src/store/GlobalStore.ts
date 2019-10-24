@@ -5,6 +5,9 @@ import { observable, action } from 'mobx';
 
 class GlobalStore {
   @observable
+  public firstLoad = true;
+
+  @observable
   public drawerTitle = '';
 
   @action
