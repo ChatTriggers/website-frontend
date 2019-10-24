@@ -167,6 +167,11 @@ export default ({
           );
         })}
       </List>
+      {modulesStore.activeModule.releases.length === 0 && (
+        <Typography variant="body1">
+          No releases
+        </Typography>
+      )}
     </>
   );
 };

@@ -9,10 +9,11 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { deleteModule } from '~api';
 import { modulesStore } from '~store';
 
-interface IDeleteDialogProps {
+interface IDeleteDialogProps extends RouteComponentProps<{}> {
   open: boolean;
   close(): void;
 }
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default ({ open, close }: IDeleteDialogProps): JSX.Element => {
+export default withRouter(({ open, close, history }: IDeleteDialogProps): JSX.Element => {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
 
@@ -40,6 +41,8 @@ export default ({ open, close }: IDeleteDialogProps): JSX.Element => {
     await deleteModule(modulesStore.activeModule.id);
     setLoading(false);
     close();
+
+    history.replace('/modules');
   };
 
   return (
@@ -68,4 +71,4 @@ export default ({ open, close }: IDeleteDialogProps): JSX.Element => {
       </div>
     </Dialog>
   );
-};
+});

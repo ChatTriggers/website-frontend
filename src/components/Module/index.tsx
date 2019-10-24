@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   imageOuter: {
     alignSelf: 'center',
     justifySelf: 'center',
+    marginBottom: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       maxWidth: 320,
       padding: theme.spacing(0, 2, 0, 0),

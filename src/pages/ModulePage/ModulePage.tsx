@@ -285,18 +285,16 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
             ) : <TagList tags={modulesStore.activeModule.tags} maxTags={99} />}
           </Paper>
         )}
-        {modulesStore.activeModule.releases.length > 0 && (
-          <Paper className={this.classes.paper}>
-            <ModulePageReleases
-              editing={this.editing}
-              openRelease={this.openRelease}
-              setOpenDialog={this.setOpenDialog}
-              setOpenRelease={this.setOpenRelease}
-              onChangeReleaseModVersion={this.onChangeReleaseModVersion}
-              onChangeReleaseChangelog={this.onChangeReleaseChangelog}
-            />
-          </Paper>
-        )}
+        <Paper className={this.classes.paper}>
+          <ModulePageReleases
+            editing={this.editing}
+            openRelease={this.openRelease}
+            setOpenDialog={this.setOpenDialog}
+            setOpenRelease={this.setOpenRelease}
+            onChangeReleaseModVersion={this.onChangeReleaseModVersion}
+            onChangeReleaseChangelog={this.onChangeReleaseChangelog}
+          />
+        </Paper>
       </div>
     )) || <div />;
   }

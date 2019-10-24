@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import { animateScroll as scroll } from 'react-scroll';
 import { NotDesktop, Desktop } from '~components';
 import { authStore, observer } from '~store';
+import CreateModuleDialog from '~components/Desktop/CreateModuleDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   fab: {
@@ -20,16 +21,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 const FabDesktopButton = (): JSX.Element => {
   const classes = useStyles();
 
+  const [open, setOpen] = React.useState(false);
+
+  const onClose = (): void => {
+    setOpen(false);
+  };
+
   const onFabClick = (): void => {
-    //
+    setOpen(true);
   };
 
   return (
-    <Tooltip title="Create Module" placement="left">
-      <Fab className={classes.fab} color="primary" onClick={onFabClick}>
-        <AddIcon />
-      </Fab>
-    </Tooltip>
+    <>
+      <CreateModuleDialog open={open} onClose={onClose} />
+      <Tooltip title="Create Module" placement="left">
+        <Fab className={classes.fab} color="primary" onClick={onFabClick}>
+          <AddIcon />
+        </Fab>
+      </Tooltip>
+    </>
   );
 };
 
