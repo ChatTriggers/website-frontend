@@ -119,6 +119,7 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
             onChange={onChangeUsername}
             autoComplete="username"
             onKeyDownCapture={handlerKeyDown}
+            autoFocus
           />
           <TextField
             className={classes.password}

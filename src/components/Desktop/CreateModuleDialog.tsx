@@ -130,6 +130,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
             helperText={nameError ? 'The name must be alpha-numeric and between 3 and 64 characters in length' : ''}
             fullWidth
             required
+            autoFocus
             InputLabelProps={{ shrink: true }}
           />
         </Grid>

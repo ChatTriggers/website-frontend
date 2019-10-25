@@ -114,6 +114,7 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
             onChange={onChangeUsername}
             autoComplete="username"
             onKeyDownCapture={handlerKeyDown}
+            autoFocus
           />
           <TextField
             className={classes.password}

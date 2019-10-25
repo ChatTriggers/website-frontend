@@ -124,6 +124,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
           value={releaseVersion}
           onChange={onChangeReleaseVersion}
           fullWidth
+          autoFocus
           InputLabelProps={{ shrink: true }}
         />
         <TextField
