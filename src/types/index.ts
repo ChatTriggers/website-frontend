@@ -7,6 +7,7 @@ export interface IModule {
   tags: string[];
   downloads: number;
   releases: IRelease[];
+  flagged?: boolean;
 }
 
 export interface IModuleMetadata {

@@ -10,7 +10,7 @@ import DeleteDialog from '~components/Module/DeleteDialog';
 import {
   authStore, observer, modulesStore, runInAction,
 } from '~store';
-import { toggleTrust } from '~api';
+import { toggleTrust, updateModule } from '~api';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   buttonTrust: {
     backgroundColor: colors.green[300],
   },
+  buttonFlag: {
+    backgroundColor: colors.orange[300],
+  },
 }));
 
 interface IModuleActionsProps {
@@ -39,6 +42,7 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [trustLoading, setTrustLoading] = React.useState(false);
+  const [flaggedLoading, setFlaggedLoading] = React.useState(false);
 
   const openDialog = (): void => {
     setOpen(true);
@@ -48,6 +52,32 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
     setOpen(false);
   };
 
+  const toggleModuleFlagged = async (): Promise<void> => {
+    const m = modulesStore.activeModule;
+    const newFlagged = !m.flagged;
+
+    setFlaggedLoading(true);
+    await updateModule(m.id, m.description, m.image, newFlagged);
+
+    runInAction(() => {
+      modulesStore.activeModule.flagged = newFlagged;
+      modulesStore.modules = clone(modulesStore.modules).reduce((prev, curr) => {
+        if (curr.id !== m.id) {
+          prev.push(curr);
+        } else {
+          prev.push({
+            ...curr,
+            flagged: newFlagged,
+          });
+        }
+
+        return prev;
+      }, [] as IModule[]);
+    });
+
+    setFlaggedLoading(false);
+  };
+
   const toggleUserTrust = async (): Promise<void> => {
     const newRank = modulesStore.activeModule.owner.rank === 'trusted' ? 'default' : 'trusted';
 
@@ -55,21 +85,17 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
     await toggleTrust(modulesStore.activeModule.owner.id);
 
     runInAction(() => {
+      modulesStore.activeModule.owner.rank = newRank;
       modulesStore.modules = clone(modulesStore.modules).reduce((prev, curr) => {
         if (curr.owner.id !== modulesStore.activeModule.owner.id) {
           prev.push(curr);
         } else {
-          const newModule = {
+          prev.push({
             ...curr,
             owner: {
               ...curr.owner,
               rank: newRank as 'default' | 'trusted' | 'admin',
             },
-          };
-
-          prev.push(newModule);
-          runInAction(() => {
-            modulesStore.activeModule.owner.rank = newRank;
           });
         }
 
@@ -91,15 +117,6 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
         />
         {authed && (
           <>
-            <Button
-              className={clsx(classes.button, classes.buttonDelete)}
-              fullWidth
-              size="small"
-              variant="contained"
-              onClick={openDialog}
-            >
-              Delete Module
-            </Button>
             { /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
             {authStore.isAdmin && modulesStore.activeModule.owner.id !== authStore.user!.id && (
               <Button
@@ -110,10 +127,32 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
                 onClick={toggleUserTrust}
               >
                 {trustLoading
-                  ? <CircularProgress size={20} />
+                  ? <CircularProgress size={22} />
                   : `${modulesStore.activeModule.owner.rank === 'trusted' ? 'Untrust' : 'Trust'} ${modulesStore.activeModule.owner.name}`}
               </Button>
             )}
+            {authStore.isTrustedOrHigher && (
+              <Button
+                className={clsx(classes.button, classes.buttonFlag)}
+                fullWidth
+                size="small"
+                variant="contained"
+                onClick={toggleModuleFlagged}
+              >
+                {flaggedLoading
+                  ? <CircularProgress size={22} />
+                  : `${modulesStore.activeModule.flagged ? 'Unflag module' : 'Flag module'}`}
+              </Button>
+            )}
+            <Button
+              className={clsx(classes.button, classes.buttonDelete)}
+              fullWidth
+              size="small"
+              variant="contained"
+              onClick={openDialog}
+            >
+              Delete Module
+            </Button>
           </>
         )}
       </div>
