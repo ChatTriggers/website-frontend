@@ -86,7 +86,7 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
       await login(username, password);
       setLoading(false);
       setError(false);
-      history.goBack(); // TODO: Provide feedback that login actually worked
+      history.goBack();
     } catch (e) {
       setError(true);
     }

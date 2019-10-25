@@ -91,7 +91,7 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
       await createUser(username, password, email);
       setLoading(false);
       setError(false);
-      history.goBack(); // TODO: Provide feedback that account creation actually worked
+      history.goBack();
     } catch (e) {
       setError(true);
     }
@@ -145,8 +145,7 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
           />
           {error && (
             <Typography className={classes.error} variant="caption">
-              {/* TODO: Better error message here */}
-                Error creating account
+                Error creating account. Please try again later.
             </Typography>
           )}
           <Button

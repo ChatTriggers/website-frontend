@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -19,51 +15,23 @@
     "noEmit": true,
     "jsx": "preserve",
     "experimentalDecorators": true,
-    "typeRoots": [
-      "./src/definitions"
-    ],
+    "typeRoots": ["./src/definitions"],
     "baseUrl": "src",
     "paths": {
-      "~store/*": [
-        "./store/*"
-      ],
-      "~store": [
-        "./store/index"
-      ],
-      "~components/*": [
-        "./components/*"
-      ],
-      "~components": [
-        "./components/index"
-      ],
-      "~api/*": [
-        "./api/*"
-      ],
-      "~api": [
-        "./api/index"
-      ],
-      "~assets/*": [
-        "./assets/*"
-      ],
-      "~assets": [
-        "./assets/index"
-      ],
-      "~src/*": [
-        "./*"
-      ],
-      "~src": [
-        "./index"
-      ],
-      "~types/*": [
-        "./types/*"
-      ],
-      "~types": [
-        "./types/index"
-      ]
+      "~store/*": ["./store/*"],
+      "~store": ["./store/index"],
+      "~components/*": ["./components/*"],
+      "~components": ["./components/index"],
+      "~api/*": ["./api/*"],
+      "~api": ["./api/index"],
+      "~assets/*": ["./assets/*"],
+      "~assets": ["./assets/index"],
+      "~src/*": ["./*"],
+      "~src": ["./index"],
+      "~types/*": ["./types/*"],
+      "~types": ["./types/index"],
+      "~pages/*": ["./pages/*"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "exclude": ["node_modules", "build"]
 }

@@ -18,7 +18,6 @@ export const login = async (
     authStore.setUser(user);
 
     return user;
-    // TODO: Handle error
   }
 };
 
@@ -33,7 +32,6 @@ export const createUser = async (
   authStore.setUser(newUser);
 
   return newUser;
-  // TODO: Handle error
 };
 
 export const logout = async (): Promise<void> => {
@@ -59,7 +57,9 @@ export const getModules = async (): Promise<void> => {
     modulesStore.setModules(response.modules);
     apiStore.setMeta(response.meta);
   } catch (e) {
-    // TODO
+    // Only way this fails is if the user isn't connected to the internet,
+    // in which case the react-detect-offline package will switch to an
+    // offline page
   }
 };
 
@@ -72,7 +72,9 @@ export const getCurrentAccount = async (): Promise<void> => {
 };
 
 export const loadTags = async (): Promise<void> => {
-  // TODO: Handle error
+  // Only way this fails is if the user isn't connected to the internet,
+  // in which case the react-detect-offline package will switch to an
+  // offline page
   apiStore.setAllowedTags(await raw.getTags());
 };
 
