@@ -92,7 +92,7 @@ export const updateModule = async (
   flagged?: boolean,
   tags?: string[],
 ): Promise<void> => {
-  await raw.updateModule(moduleId, description, image, flagged, tags);
+  await raw.updateModule(moduleId, description, image || undefined, flagged, tags);
   await getModules();
 };
 

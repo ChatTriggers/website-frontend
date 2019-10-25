@@ -30,6 +30,11 @@ class AuthStore {
     return (this.user && this.user.rank === 'admin') || false;
   }
 
+  @computed
+  get isTrustedOrHigher(): boolean {
+    return this.isTrusted || this.isAdmin;
+  }
+
   @action
   public setUser = (user?: IUser): this => {
     this.user = user;

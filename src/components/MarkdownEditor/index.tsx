@@ -3,7 +3,7 @@ import Editor, { IToolbar } from 'for-editor-dark';
 
 interface IMarkdownEditorProps {
   value: string;
-  handleChange(value?: string): void;
+  handleChange(value: string): void;
 }
 
 const toolbar: IToolbar = {

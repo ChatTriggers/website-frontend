@@ -4,29 +4,37 @@ import {
   List,
   ListItem,
   ListItemText,
-  Input,
-  InputAdornment,
+  IconButton,
   Collapse,
   Divider,
-  FormControl,
   Chip,
-  IconButton,
   Button,
   colors,
   Theme,
+  TextField,
+  MenuItem,
 } from '@material-ui/core';
 import {
   ExpandLess as ExpandLessIcon,
   ExpandMore as ExpandMoreIcon,
   Delete as DeleteIcon,
+  Edit as EditIcon,
+  Clear as ClearIcon,
+  Check as CheckIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 import { Desktop } from '~components/utils/DeviceUtils';
 import MarkdownEditor from '~components/MarkdownEditor';
 import MarkdownRenderer from '~components/MarkdownRenderer';
-import { BASE_URL } from '~api';
-import { action, modulesStore } from '~store';
+import DeleteReleaseDialog from '~components/Desktop/DeleteReleaseDialog';
+import CreateReleaseDialog from '~components/Desktop/CreateReleaseDialog';
+import { BASE_URL, getModules } from '~api';
+import {
+  action, modulesStore, authStore, apiStore, runInAction, observer,
+} from '~store';
 import SemvarSorter from '~components/utils/SemvarSorter';
+import { IRelease } from '~types';
+import { updateRelease } from '~api/raw';
 
 export type OpenDialog = 'add' | 'delete' | 'none';
 
@@ -44,10 +52,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   releaseBody: {
     padding: theme.spacing(0, 4),
   },
-  deleteReleaseButton: {
-    backgroundColor: colors.red[300],
-    marginRight: theme.spacing(2),
-  },
   releasesDownloadButton: {
     marginRight: theme.spacing(2),
   },
@@ -57,21 +61,48 @@ const useStyles = makeStyles((theme: Theme) => ({
   descDivider: {
     margin: theme.spacing(0, 4, 1, 4),
   },
+  editButton: {
+    backgroundColor: colors.green[300],
+    opacity: 0.8,
+    margin: theme.spacing(0, 1),
+  },
+  deleteButton: {
+    backgroundColor: colors.red[300],
+    opacity: 0.8,
+    margin: theme.spacing(0, 2, 0, 0),
+  },
 }));
 
-interface IModulePageReleasesProps {
-  editing: boolean;
-  openRelease: string;
-  setOpenDialog(type: OpenDialog, releaseId?: string): (() => void);
-  setOpenRelease(releaseId: string): (() => void);
-  onChangeReleaseModVersion(id: string): ((e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void);
-  onChangeReleaseChangelog(id: string): ((description: string) => void);
-}
-
-export default ({
-  editing, setOpenDialog, onChangeReleaseChangelog, onChangeReleaseModVersion, openRelease, setOpenRelease,
-}: IModulePageReleasesProps): JSX.Element => {
+export default observer((): JSX.Element => {
   const classes = useStyles();
+  const authed = authStore.isTrustedOrHigher || (authStore.user && authStore.user.id === modulesStore.activeModule.owner.id);
+
+  const [editingRelease, setEditingRelease] = React.useState('');
+  const [version, setVersion] = React.useState('');
+  const [changelog, setChangelog] = React.useState('');
+  const [deletingRelease, setDeletingRelease] = React.useState('');
+  const [openedRelease, _setOpenedRelease] = React.useState('');
+  const [creatingRelease, setCreatingRelease] = React.useState(false);
+
+  const onChangeReleaseVersion = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+    setVersion(e.target.value as string);
+  };
+
+  const closeDeleteDialog = (): void => {
+    setDeletingRelease('');
+  };
+
+  const openCreatingDialog = (): void => {
+    setCreatingRelease(true);
+  };
+
+  const closeCreatingDialog = (): void => {
+    setCreatingRelease(false);
+  };
+
+  const setOpenedRelease = (releaseId: string): void => {
+    _setOpenedRelease(openedRelease === releaseId ? '' : releaseId);
+  };
 
   const onDownloadScripts = (releaseId: string): (() => void) => action((): void => {
     window.open(`${BASE_URL}/modules/${modulesStore.activeModule.id}/releases/${releaseId}?file=scripts`, 'scripts.zip');
@@ -79,12 +110,21 @@ export default ({
 
   return (
     <>
+      <DeleteReleaseDialog
+        open={deletingRelease.length > 0}
+        onClose={closeDeleteDialog}
+        releaseId={deletingRelease}
+      />
+      <CreateReleaseDialog
+        open={creatingRelease}
+        onClose={closeCreatingDialog}
+      />
       <div className={classes.title}>
         <Typography variant="subtitle1">
         Releases
         </Typography>
-        {editing && (
-          <Button variant="contained" color="primary" onClick={setOpenDialog('add')}>
+        {authed && (
+          <Button variant="contained" color="primary" onClick={openCreatingDialog}>
             Create Release
           </Button>
         )}
@@ -92,27 +132,67 @@ export default ({
       <List component="nav">
         <Divider />
         {modulesStore.activeModule.releases.slice().sort((a, b) => SemvarSorter(a.modVersion, b.modVersion)).map(release => {
+          const editing = editingRelease === release.id;
+
           const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
           const modChip = editing ? (
-            <FormControl margin="none">
-              <Input
-                value={release.modVersion}
-                onChange={onChangeReleaseModVersion(release.id)}
-                startAdornment={<InputAdornment style={{ marginRight: 0 }} position="start">v</InputAdornment>}
-              />
-            </FormControl>
+            <TextField
+              id="release-mod-version-select"
+              value={version}
+              onChange={onChangeReleaseVersion}
+              select
+              SelectProps={{
+                MenuProps: {
+                  style: {
+                    maxWidth: 400,
+                  },
+                },
+              }}
+            >
+              {apiStore.ctVersions.map(v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
+            </TextField>
           ) : <Chip label={`v${release.modVersion}`} size="small" />;
+
+          const onClickEditing = (): void => {
+            if (editing) {
+              setEditingRelease('');
+              runInAction(() => {
+                modulesStore.activeModule.releases = modulesStore.activeModule.releases.reduce((prev, curr) => {
+                  if (curr.id !== release.id) prev.push(curr);
+                  else prev.push({ ...curr, modVersion: version, changelog });
+
+                  return prev;
+                }, [] as IRelease[]);
+              });
+
+              updateRelease(modulesStore.activeModule.id, release.id, version, changelog);
+              getModules();
+            } else {
+              setEditingRelease(release.id);
+              setVersion(release.modVersion);
+              setChangelog(release.changelog);
+            }
+          };
+
+          const onClickDelete = (): void => {
+            if (editing) {
+              setEditingRelease('');
+            } else {
+              setDeletingRelease(release.id);
+            }
+          };
 
           const label = (
             <div className={classes.releaseTitle}>
-              {editing && (
-                <IconButton
-                  className={classes.deleteReleaseButton}
-                  onClick={setOpenDialog('delete', release.id)}
-                  size="small"
-                >
-                  <DeleteIcon />
-                </IconButton>
+              {authStore.user && authStore.user.id === modulesStore.activeModule.owner.id && (
+                <>
+                  <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
+                    {editing ? <CheckIcon /> : <EditIcon />}
+                  </IconButton>
+                  <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
+                    {editing ? <ClearIcon /> : <DeleteIcon />}
+                  </IconButton>
+                </>
               )}
               {releaseChip}
               <Typography className={classes.releaseTypography}>for ct</Typography>
@@ -137,12 +217,12 @@ export default ({
                   Download
                   </Button>
                 </Desktop>
-                <IconButton onClick={setOpenRelease(release.id)}>
-                  {openRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                <IconButton onClick={() => setOpenedRelease(release.id)}>
+                  {openedRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
               </ListItem>
               <Collapse
-                in={openRelease === release.id}
+                in={openedRelease === release.id}
                 timeout="auto"
                 unmountOnExit
               >
@@ -156,10 +236,10 @@ export default ({
                   <Typography>Changelog:</Typography>
                   {editing ? (
                     <MarkdownEditor
-                      value={release.changelog}
-                      handleChange={onChangeReleaseChangelog(release.id)}
+                      value={changelog}
+                      handleChange={setChangelog}
                     />
-                  ) : module && <MarkdownRenderer source={release.changelog} />}
+                  ) : <MarkdownRenderer source={release.changelog} />}
                 </div>
               </Collapse>
               <Divider />
@@ -174,4 +254,4 @@ export default ({
       )}
     </>
   );
-};
+});

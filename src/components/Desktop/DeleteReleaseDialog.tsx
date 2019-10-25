@@ -12,12 +12,12 @@ import { makeStyles } from '@material-ui/styles';
 import clone from 'clone';
 import { deleteRelease } from '~api/raw';
 import { getModules } from '~api';
-import { modulesStore } from '~store';
+import { modulesStore, runInAction } from '~store';
 import { IRelease } from '~src/types';
 
 interface IDeleteDialogProps {
   open: boolean;
-  close(): void;
+  onClose(): void;
   releaseId: string;
 }
 
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default ({ open, close, releaseId }: IDeleteDialogProps): JSX.Element => {
+export default ({ open, onClose, releaseId }: IDeleteDialogProps): JSX.Element => {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
 
@@ -45,21 +45,23 @@ export default ({ open, close, releaseId }: IDeleteDialogProps): JSX.Element => 
     getModules();
     setLoading(false);
 
-    modulesStore.activeModule = {
-      ...modulesStore.activeModule,
-      releases: clone(modulesStore.activeModule.releases).reduce((prev, curr) => {
-        if (curr.id !== releaseId) prev.push(curr);
-        return prev;
-      }, [] as IRelease[]),
-    };
+    runInAction(() => {
+      modulesStore.activeModule = {
+        ...modulesStore.activeModule,
+        releases: clone(modulesStore.activeModule.releases).reduce((prev, curr) => {
+          if (curr.id !== releaseId) prev.push(curr);
+          return prev;
+        }, [] as IRelease[]),
+      };
+    });
 
-    close();
+    onClose();
   };
 
   return (
     <Dialog
       open={open}
-      onClose={close}
+      onClose={onClose}
       maxWidth="sm"
       fullWidth
     >
@@ -70,7 +72,7 @@ export default ({ open, close, releaseId }: IDeleteDialogProps): JSX.Element => 
         </Typography>
         <FormGroup className={classes.buttons} row>
           <ButtonGroup size="medium">
-            <Button onClick={close}>Cancel</Button>
+            <Button onClick={onClose}>Cancel</Button>
             <Button
               className={classes.deleteButton}
               onClick={onDelete}

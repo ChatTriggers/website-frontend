@@ -33,11 +33,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface IModuleActionsProps {
   className?: string;
-  editing: boolean;
-  setEditing(editing: boolean): void;
 }
 
-export default observer(({ className, editing, setEditing }: IModuleActionsProps): JSX.Element => {
+export default observer(({ className }: IModuleActionsProps): JSX.Element => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [trustLoading, setTrustLoading] = React.useState(false);
@@ -48,10 +46,6 @@ export default observer(({ className, editing, setEditing }: IModuleActionsProps
 
   const closeDialog = (): void => {
     setOpen(false);
-  };
-
-  const clickEditButton = (): void => {
-    setEditing(!editing);
   };
 
   const toggleUserTrust = async (): Promise<void> => {
@@ -97,15 +91,6 @@ export default observer(({ className, editing, setEditing }: IModuleActionsProps
         />
         {authed && (
           <>
-            <Button
-              className={clsx(classes.button, classes.buttonEdit)}
-              fullWidth
-              size="small"
-              variant="contained"
-              onClick={clickEditButton}
-            >
-              {editing ? 'Done Editing Module' : 'Edit Module'}
-            </Button>
             <Button
               className={clsx(classes.button, classes.buttonDelete)}
               fullWidth

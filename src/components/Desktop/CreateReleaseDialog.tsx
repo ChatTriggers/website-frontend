@@ -13,7 +13,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
 import { createRelease, getModules } from '~api';
-import { modulesStore, apiStore } from '~store';
+import { modulesStore, apiStore, runInAction } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -95,7 +95,9 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
     const newRelease = await createRelease(modulesStore.activeModule.id, releaseVersion, modVersion, fileRef.current.files[0], changelog);
     setLoading(false);
 
-    modulesStore.activeModule.releases.push(newRelease);
+    runInAction(() => {
+      modulesStore.activeModule.releases.push(newRelease);
+    });
     getModules();
     onClose();
   };

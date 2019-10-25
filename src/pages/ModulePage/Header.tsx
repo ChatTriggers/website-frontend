@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import ModuleActions from '~components/Module/ModuleActions';
-import { modulesStore } from '~store';
+import { modulesStore, observer } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -41,15 +41,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface IModulePageHeaderProps {
-  editing: boolean;
-  setEditing(editing: boolean): void;
-}
-
-export default (props: IModulePageHeaderProps): JSX.Element => {
+export default observer((): JSX.Element => {
   const classes = useStyles();
-
-  const { editing, setEditing } = props;
 
   return (
     <>
@@ -68,11 +61,7 @@ export default (props: IModulePageHeaderProps): JSX.Element => {
             {`By ${modulesStore.activeModule.owner.name}`}
           </Typography>
         </div>
-        <ModuleActions
-          className={classes.actions}
-          editing={editing}
-          setEditing={setEditing}
-        />
+        <ModuleActions className={classes.actions} />
       </div>
       {modulesStore.activeModule.image && (
         <div className={classes.body}>
@@ -87,4 +76,4 @@ export default (props: IModulePageHeaderProps): JSX.Element => {
       )}
     </>
   );
-};
+});
