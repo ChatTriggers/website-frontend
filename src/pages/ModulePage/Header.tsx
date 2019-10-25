@@ -6,6 +6,7 @@ import {
   Theme,
   colors,
   TextField,
+  withWidth,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -13,6 +14,7 @@ import {
   Check as CheckIcon,
   Clear as ClearIcon,
 } from '@material-ui/icons';
+import { WithWidthProps } from '@material-ui/core/withWidth';
 import ModuleActions from '~components/Module/ModuleActions';
 import {
   modulesStore, authStore, runInAction, observer,
@@ -43,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   image: {
     // height: '100%',
-    maxWidth: `calc(100vw - ${theme.spacing(2) * 4}px)`,
+    maxWidth: '100%',
     maxHeight: '180px',
     objectFit: 'contain',
   },
@@ -64,10 +66,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default observer((): JSX.Element => {
+export default withWidth()(observer(({ width }: WithWidthProps): JSX.Element => {
   const [editing, setEditing] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState('');
   const [imageValid, setImageValid] = React.useState(true);
+  const [imgBottom, setImgBottom] = React.useState(width === 'xs' || width === 'sm');
 
   const classes = useStyles();
   const authed = authStore.user && (authStore.user.id === modulesStore.activeModule.owner.id || authStore.isTrustedOrHigher);
@@ -100,45 +103,66 @@ export default observer((): JSX.Element => {
     setImageValid(/^https?:\/\/(\w+\.)?imgur.com\/[a-zA-Z0-9]{7}\.[a-zA-Z0-9]+$/g.test(e.target.value as string));
   };
 
-  return (
-    <Grid container spacing={2}>
-      <Grid item xs={3}>
-        <Desktop>
-          {authed ? (
-            <IconButton className={classes.editButton} size="small" onClick={onClickEditing} disabled={editing && !imageValid}>
-              {editing ? <CheckIcon /> : <EditIcon />}
-            </IconButton>
-          ) : <div />}
-          {editing ? (
-            <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
-              <ClearIcon />
-            </IconButton>
-          ) : <div />}
-        </Desktop>
-        {editing && (
-          <TextField
-            id="module-image"
-            value={imageUrl}
-            onChange={onChangeImage}
-            helperText={!imageValid ? 'Must be a valid imgur link' : ''}
-            fullWidth
-            error={!imageValid}
-            style={{ marginBottom: 16 }}
-          />
-        )}
-        {modulesStore.activeModule.image ? (
-          <div className={classes.imageContainer}>
+  const image = (
+    <Grid item xs={imgBottom ? 12 : 3}>
+      {modulesStore.activeModule.image ? (
+        <div className={classes.imageContainer}>
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <a href={modulesStore.activeModule.image}>
               <img
+                ref={ref => {
+                  if (ref && !imgBottom) {
+                    setImgBottom(ref.naturalWidth / ref.naturalHeight > 1);
+                  }
+                }}
                 className={classes.image}
                 src={modulesStore.activeModule.image}
                 alt="Module"
               />
             </a>
           </div>
-        ) : <Typography variant="body1">No image</Typography>}
-      </Grid>
-      <Grid item xs={6}>
+        </div>
+      ) : <Typography variant="body1">No image</Typography>}
+      <Desktop>
+        <div style={{
+          display: 'flex', justifyContent: 'center', width: '100%', marginTop: 8,
+        }}
+        >
+          {authed ? (
+            <IconButton
+              className={classes.editButton}
+              size="small"
+              onClick={onClickEditing}
+              disabled={editing && !imageValid}
+              style={{ marginBottom: 0 }}
+            >
+              {editing ? <CheckIcon /> : <EditIcon />}
+            </IconButton>
+          ) : <div />}
+          {editing ? (
+            <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete} style={{ marginBottom: 0 }}>
+              <ClearIcon />
+            </IconButton>
+          ) : <div />}
+        </div>
+      </Desktop>
+      {editing && (
+        <TextField
+          id="module-image"
+          value={imageUrl}
+          onChange={onChangeImage}
+          helperText={!imageValid ? 'Must be a valid imgur link' : ''}
+          fullWidth
+          error={!imageValid}
+          style={{ marginBottom: 16 }}
+        />
+      )}
+    </Grid>
+  );
+
+  const other = (
+    <>
+      <Grid item xs={imgBottom ? 9 : 6}>
         <Typography
           className={classes.title}
           variant="h5"
@@ -155,6 +179,22 @@ export default observer((): JSX.Element => {
       <Grid item xs={3} style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <ModuleActions className={classes.actions} />
       </Grid>
+    </>
+  );
+
+  return (
+    <Grid container spacing={2}>
+      {imgBottom ? (
+        <>
+          {other}
+          {image}
+        </>
+      ) : (
+        <>
+          {image}
+          {other}
+        </>
+      )}
     </Grid>
   );
-});
+}));
