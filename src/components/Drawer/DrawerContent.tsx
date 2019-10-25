@@ -22,7 +22,7 @@ import {
 } from '@material-ui/icons';
 import { withRouter, Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
-import { githubIcon, slate } from '~assets';
+import { githubIcon, menuBookIcon } from '~assets';
 import { authStore, observer } from '~store';
 import { logout } from '~api';
 
@@ -90,7 +90,7 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
           <ListItemIcon>
             <img
               className={classes.img}
-              src={slate}
+              src={menuBookIcon}
               alt="slate icon"
             />
           </ListItemIcon>
