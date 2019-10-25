@@ -15,6 +15,7 @@ import {
   Clear as ClearIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
+import { Desktop } from '~components/utils/DeviceUtils';
 import {
   modulesStore, apiStore, runInAction, authStore, observer,
 } from '~store';
@@ -88,16 +89,18 @@ export default observer((): JSX.Element => {
         <Typography variant="subtitle1">
           Tags
         </Typography>
-        {authed && (
-          <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
-            {editing ? <CheckIcon /> : <EditIcon />}
-          </IconButton>
-        )}
-        {editing && (
-          <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
-            <ClearIcon />
-          </IconButton>
-        )}
+        <Desktop>
+          {authed ? (
+            <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
+              {editing ? <CheckIcon /> : <EditIcon />}
+            </IconButton>
+          ) : <div />}
+          {editing ? (
+            <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
+              <ClearIcon />
+            </IconButton>
+          ) : <div />}
+        </Desktop>
       </div>
       {editing ? (
         <TextField

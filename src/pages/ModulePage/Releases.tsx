@@ -123,11 +123,13 @@ export default observer((): JSX.Element => {
         <Typography variant="subtitle1">
         Releases
         </Typography>
-        {authed && (
-          <Button variant="contained" color="primary" onClick={openCreatingDialog}>
-            Create Release
-          </Button>
-        )}
+        <Desktop>
+          {authed ? (
+            <Button variant="contained" color="primary" onClick={openCreatingDialog}>
+              Create Release
+            </Button>
+          ) : <div />}
+        </Desktop>
       </div>
       <List component="nav">
         <Divider />
@@ -184,16 +186,18 @@ export default observer((): JSX.Element => {
 
           const label = (
             <div className={classes.releaseTitle}>
-              {authStore.user && authStore.user.id === modulesStore.activeModule.owner.id && (
-                <>
-                  <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
-                    {editing ? <CheckIcon /> : <EditIcon />}
-                  </IconButton>
-                  <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
-                    {editing ? <ClearIcon /> : <DeleteIcon />}
-                  </IconButton>
-                </>
-              )}
+              <Desktop>
+                {authStore.user && authStore.user.id === modulesStore.activeModule.owner.id ? (
+                  <>
+                    <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
+                      {editing ? <CheckIcon /> : <EditIcon />}
+                    </IconButton>
+                    <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
+                      {editing ? <ClearIcon /> : <DeleteIcon />}
+                    </IconButton>
+                  </>
+                ) : <div />}
+              </Desktop>
               {releaseChip}
               <Typography className={classes.releaseTypography}>for ct</Typography>
               {modChip}

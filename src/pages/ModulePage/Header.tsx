@@ -18,6 +18,7 @@ import {
   modulesStore, authStore, runInAction, observer,
 } from '~store';
 import { updateModule, getModules } from '~api';
+import { Desktop } from '~components/utils/DeviceUtils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   imageContainer: {
     width: '100%',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignContent: 'center',
   },
   image: {
@@ -102,16 +103,18 @@ export default observer((): JSX.Element => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={3}>
-        {authed && (
-          <IconButton className={classes.editButton} size="small" onClick={onClickEditing} disabled={editing && !imageValid}>
-            {editing ? <CheckIcon /> : <EditIcon />}
-          </IconButton>
-        )}
-        {editing && (
-          <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
-            <ClearIcon />
-          </IconButton>
-        )}
+        <Desktop>
+          {authed ? (
+            <IconButton className={classes.editButton} size="small" onClick={onClickEditing} disabled={editing && !imageValid}>
+              {editing ? <CheckIcon /> : <EditIcon />}
+            </IconButton>
+          ) : <div />}
+          {editing ? (
+            <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
+              <ClearIcon />
+            </IconButton>
+          ) : <div />}
+        </Desktop>
         {editing && (
           <TextField
             id="module-image"

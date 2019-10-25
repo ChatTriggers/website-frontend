@@ -13,6 +13,7 @@ import {
 } from '@material-ui/icons';
 import MarkdownRenderer from '~components/MarkdownRenderer';
 import MarkdownEditor from '~components/MarkdownEditor';
+import { Desktop } from '~components/utils/DeviceUtils';
 import {
   observer, modulesStore, authStore, runInAction,
 } from '~store';
@@ -77,16 +78,18 @@ export default observer((): JSX.Element => {
 
   return (
     <Paper className={classes.paper}>
-      {authed && (
-        <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
-          {editing ? <CheckIcon /> : <EditIcon />}
-        </IconButton>
-      )}
-      {editing && (
-        <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
-          <ClearIcon />
-        </IconButton>
-      )}
+      <Desktop>
+        {authed ? (
+          <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
+            {editing ? <CheckIcon /> : <EditIcon />}
+          </IconButton>
+        ) : <div />}
+        {editing ? (
+          <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
+            <ClearIcon />
+          </IconButton>
+        ) : <div />}
+      </Desktop>
       {editing ? (
         <MarkdownEditor
           value={description}
