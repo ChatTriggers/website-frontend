@@ -128,11 +128,13 @@ export default observer((): JSX.Element => {
         )}
         {modulesStore.activeModule.image ? (
           <div className={classes.imageContainer}>
-            <img
-              className={classes.image}
-              src={modulesStore.activeModule.image}
-              alt="Module"
-            />
+            <a href={modulesStore.activeModule.image}>
+              <img
+                className={classes.image}
+                src={modulesStore.activeModule.image}
+                alt="Module"
+              />
+            </a>
           </div>
         ) : <Typography variant="body1">No image</Typography>}
       </Grid>
