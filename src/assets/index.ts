@@ -8,6 +8,7 @@ import javadocs from './javadocs.png';
 import logoLong from './logo-long.png';
 import githubIcon from './github.png';
 import menuBookIcon from './menu_book.png';
+import discordIcon from './discord.png';
 
 export {
   shader1,
@@ -20,4 +21,5 @@ export {
   logoLong,
   githubIcon,
   menuBookIcon,
+  discordIcon,
 };

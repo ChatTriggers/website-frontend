@@ -22,7 +22,7 @@ import {
 } from '@material-ui/icons';
 import { withRouter, Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
-import { githubIcon, menuBookIcon } from '~assets';
+import { githubIcon, menuBookIcon, discordIcon } from '~assets';
 import { authStore, observer } from '~store';
 import { logout } from '~api';
 
@@ -78,6 +78,14 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
     <>
       <Divider />
       <List>
+        <ListItem button component="a" href="#">
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
+          <ListItemText>
+            Home
+          </ListItemText>
+        </ListItem>
         <ListItem button component={Link} to="/">
           <ListItemIcon>
             <FolderIcon />
@@ -86,6 +94,9 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
             All Modules
           </ListItemText>
         </ListItem>
+      </List>
+      <Divider />
+      <List>
         <ListItem button component="a" href="https://www.chattriggers.com/slate/">
           <ListItemIcon>
             <img
@@ -106,24 +117,31 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
             Javadocs
           </ListItemText>
         </ListItem>
+      </List>
+      <Divider />
+      <List>
+        <ListItem button component="a" href="https://discordapp.com/invite/0fNjZyopOvBHZyG8">
+          <ListItemIcon>
+            <img
+              className={classes.img}
+              src={discordIcon}
+              alt="Discord Logo"
+            />
+          </ListItemIcon>
+          <ListItemText>
+            Discord
+          </ListItemText>
+        </ListItem>
         <ListItem button component="a" href="https://github.com/ChatTriggers/ct.js">
           <ListItemIcon>
             <img
               className={classes.img}
               src={githubIcon}
-              alt="Github Octocat icon"
+              alt="Github Octocat Logo"
             />
           </ListItemIcon>
           <ListItemText>
             GitHub
-          </ListItemText>
-        </ListItem>
-        <ListItem button component="a" href="#">
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText>
-            Home
           </ListItemText>
         </ListItem>
       </List>
