@@ -1,8 +1,6 @@
 import React from 'react';
-import { IconButton, Theme } from '@material-ui/core';
-import { KeyboardArrowLeft as KeyboardArrowLeftIcon } from '@material-ui/icons';
+import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import MobileDrawer from './MobileDrawer';
 import DesktopDrawer from './DesktopDrawer';
 import { NotDesktop, Desktop } from '~components/utils/DeviceUtils';
@@ -31,27 +29,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface IDrawerProps extends RouteComponentProps<{}> {
+interface IDrawerProps {
   children: React.ReactChild | React.ReactChild[];
 }
 
-export default withRouter(observer(({ children, history }: IDrawerProps): JSX.Element => {
+export default observer(({ children }: IDrawerProps): JSX.Element => {
   const classes = useStyles();
-
-  const backButton = (
-    <IconButton
-      edge="start"
-      onClick={history.goBack}
-    >
-      <KeyboardArrowLeftIcon />
-    </IconButton>
-  );
 
   return (
     <div className={classes.root}>
       <nav style={{ zIndex: 2 }}>
         <NotDesktop>
-          <MobileDrawer title={globalStore.drawerTitle} button={backButton} />
+          <MobileDrawer title={globalStore.drawerTitle} />
         </NotDesktop>
         <Desktop>
           <DesktopDrawer title={globalStore.drawerTitle} />
@@ -62,4 +51,4 @@ export default withRouter(observer(({ children, history }: IDrawerProps): JSX.El
       </main>
     </div>
   );
-}));
+});

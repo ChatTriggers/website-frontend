@@ -8,7 +8,12 @@ import {
   SwipeableDrawer,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon } from '@material-ui/icons';
+import {
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  KeyboardArrowLeft as KeyboardArrowLeftIcon,
+} from '@material-ui/icons';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import clsx from 'clsx';
 import { logoLong } from '~assets';
 import DrawerContent from './DrawerContent';
@@ -71,12 +76,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface IMobileDrawerProps {
+interface IMobileDrawerProps extends RouteComponentProps<{}> {
   title: string;
-  button?: React.ReactNode;
 }
 
-export default ({ title, button }: IMobileDrawerProps): JSX.Element => {
+export default withRouter(({ title, location, history }: IMobileDrawerProps): JSX.Element => {
   const classes = useStyles();
   const iOS = !!navigator.platform && /iPhone|iPad/.test(navigator.platform);
   const [open, setOpen] = React.useState(false);
@@ -84,13 +88,20 @@ export default ({ title, button }: IMobileDrawerProps): JSX.Element => {
   const handleDrawerOpen = (): void => setOpen(true);
   const handleDrawerClose = (): void => setOpen(false);
 
-  const b = button || (
+  const button = location.pathname === '/modules' ? (
     <IconButton
       onClick={handleDrawerOpen}
       edge="start"
       className={clsx(classes.menuButton, open && classes.hide)}
     >
       <MenuIcon />
+    </IconButton>
+  ) : (
+    <IconButton
+      edge="start"
+      onClick={history.goBack}
+    >
+      <KeyboardArrowLeftIcon />
     </IconButton>
   );
 
@@ -101,7 +112,7 @@ export default ({ title, button }: IMobileDrawerProps): JSX.Element => {
         className={clsx(classes.appBar, open && classes.appBarShift)}
       >
         <Toolbar>
-          {b}
+          {button}
           <Typography variant="h6" noWrap>
             {title}
           </Typography>
@@ -128,4 +139,4 @@ export default ({ title, button }: IMobileDrawerProps): JSX.Element => {
       </SwipeableDrawer>
     </>
   );
-};
+});
