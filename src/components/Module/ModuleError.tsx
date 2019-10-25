@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Paper,
   Typography,
+  Container,
   Theme,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
@@ -75,11 +76,15 @@ export default ({ errorType }: IModuleErrorProps): JSX.Element => {
   };
 
   return (
-    <Paper className={classes.root}>
-      {errorInfo[errorType].title}
-      <div className={classes.body}>
-        {errorInfo[errorType].description}
-      </div>
-    </Paper>
+    <div style={{ width: '100%' }}>
+      <Container>
+        <Paper className={classes.root}>
+          {errorInfo[errorType].title}
+          <div className={classes.body}>
+            {errorInfo[errorType].description}
+          </div>
+        </Paper>
+      </Container>
+    </div>
   );
 };

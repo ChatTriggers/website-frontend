@@ -1,5 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router, Route, Switch, Redirect,
+} from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
 import Drawer from '~components/Drawer';
 import theme from './styles/theme';
@@ -38,6 +40,7 @@ export default class App extends React.Component {
                   }}
                 />
               ))}
+              <Redirect to="/modules" />
             </Switch>
           </Drawer>
         </Router>
