@@ -105,14 +105,14 @@ export default withWidth()(observer(({ width }: WithWidthProps): JSX.Element => 
 
   const image = (
     <Grid item xs={imgBottom ? 12 : 3}>
-      {modulesStore.activeModule.image ? (
-        <div className={classes.imageContainer}>
-          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <div className={classes.imageContainer}>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          {modulesStore.activeModule.image ? (
             <a href={modulesStore.activeModule.image}>
               <img
                 ref={ref => {
                   if (ref && !imgBottom) {
-                    setImgBottom(ref.naturalWidth / ref.naturalHeight > 1);
+                    setImgBottom(ref.naturalWidth / ref.naturalHeight > 1.5);
                   }
                 }}
                 className={classes.image}
@@ -120,9 +120,9 @@ export default withWidth()(observer(({ width }: WithWidthProps): JSX.Element => 
                 alt="Module"
               />
             </a>
-          </div>
+          ) : <Typography variant="body1">No image</Typography>}
         </div>
-      ) : <Typography variant="body1">No image</Typography>}
+      </div>
       <Desktop>
         <div style={{
           display: 'flex', justifyContent: 'center', width: '100%', marginTop: 8,
