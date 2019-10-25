@@ -87,13 +87,12 @@ export default observer((): JSX.Element => {
           <ClearIcon />
         </IconButton>
       )}
-      {editing && (
+      {editing ? (
         <MarkdownEditor
           value={description}
           handleChange={setDescription}
         />
-      )}
-      <MarkdownRenderer source={modulesStore.activeModule.description} />
+      ) : <MarkdownRenderer source={modulesStore.activeModule.description} />}
     </Paper>
   );
 });
