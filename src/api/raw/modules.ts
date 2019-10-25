@@ -4,7 +4,7 @@ import { ApiErrors, validateStatusCode } from './ApiErrors';
 import { axios, BASE_URL } from '../utils';
 
 const MODULES_URL = `${BASE_URL}/modules`;
-const MODULE_ID_URL = (id: number): string => `${BASE_URL}/modules/${id}`;
+const MODULE_ID_URL = (id: number | string): string => `${BASE_URL}/modules/${id}`;
 const TAGS_URL = `${BASE_URL}/tags`;
 
 export const getModules = async (
@@ -50,9 +50,9 @@ export const createModule = async (
 };
 
 export const getSingleModule = async (
-  moduleId: number,
+  moduleName: string,
 ): Promise<IModule> => {
-  const response = await axios.get<IModule>(MODULE_ID_URL(moduleId));
+  const response = await axios.get<IModule>(MODULE_ID_URL(moduleName));
 
   return validateStatusCode(response, ApiErrors.GetModule);
 };

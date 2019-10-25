@@ -12,7 +12,7 @@ import {
   modulesStore,
   runInAction,
 } from '~store';
-import { getModules } from '~api/raw';
+import { getSingleModule } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
 import ModuleError from '~components/Module/ModuleError';
 import Tags from './Tags';
@@ -76,13 +76,6 @@ const styles: Styles = (theme: Theme) => ({
 @observer
 class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
   @observable
-  private editedFields = {
-    description: false,
-    tags: false,
-    releases: [] as string[],
-  }
-
-  @observable
   private error = false;
 
   @action
@@ -90,29 +83,23 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
     const moduleName = this.props.match.params.module;
 
     // Attempt to first find module in the modulesStore
-    let temp = modulesStore.modules.find(m => m.name.toString().toLowerCase() === moduleName.toLowerCase());
+    const temp = modulesStore.modules.find(m => m.name.toString().toLowerCase() === moduleName.toLowerCase());
 
     if (temp) modulesStore.activeModule = { ...temp };
 
-    if (modulesStore.activeModule.id === -1) {
+    if (modulesStore.activeModule.name !== moduleName) {
       // If the module isn't already loaded in the store, get it from the backend
-      const response = await getModules(1, 0, undefined, undefined, undefined, undefined, moduleName);
+      try {
+        const response = await getSingleModule(moduleName);
 
-      if (response.modules.length !== 1) {
+        runInAction(() => {
+          modulesStore.activeModule = { ...response };
+        });
+      } catch (e) {
         runInAction(() => {
           this.error = true;
         });
-        return;
       }
-
-      runInAction(() => {
-        [temp] = response.modules;
-
-        // not possible
-        if (!temp) return;
-
-        modulesStore.activeModule = { ...temp };
-      });
     }
   }
 
