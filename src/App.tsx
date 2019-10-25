@@ -5,7 +5,9 @@ import Drawer from '~components/Drawer';
 import theme from './styles/theme';
 import routes from './routes';
 import { globalStore, modulesStore, observer } from '~store';
-import { getModules, getCurrentAccount, loadTags } from '~api';
+import {
+  getModules, getCurrentAccount, loadTags, loadCtVersions,
+} from '~api';
 
 @observer
 export default class App extends React.Component {
@@ -14,6 +16,7 @@ export default class App extends React.Component {
       getModules();
       getCurrentAccount();
       loadTags();
+      loadCtVersions();
     }
   }
 

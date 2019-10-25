@@ -80,6 +80,11 @@ class ApiStore {
   public setSorting = (sorting: ModuleSorting): void => {
     this.sorting = sorting;
   }
+
+  @action
+  public setCtVersions = (ctVersions: string[]): void => {
+    this.ctVersions = ctVersions;
+  }
 }
 
 export default new ApiStore();

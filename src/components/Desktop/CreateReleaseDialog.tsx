@@ -8,11 +8,12 @@ import {
   CircularProgress,
   Theme,
   colors,
+  MenuItem,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
 import { createRelease, getModules } from '~api';
-import { modulesStore } from '~store';
+import { modulesStore, apiStore } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -57,7 +58,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const fileRef = React.createRef<HTMLInputElement>();
 
   const [releaseVersion, setReleaseVersion] = React.useState('');
-  const [modVersion, setModVersion] = React.useState('');
+  const [modVersion, setModVersion] = React.useState('1.0.0');
   const [changelog, setChangelog] = React.useState('');
   const [fileName, setFileName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -126,12 +127,22 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
         <TextField
           className={classes.textField}
           label="Target CT Mod Version"
-          placeholder="1.0.0"
           value={modVersion}
           onChange={onChangeModVersion}
+          select
           fullWidth
           InputLabelProps={{ shrink: true }}
-        />
+          SelectProps={{
+            margin: 'dense',
+            MenuProps: {
+              style: {
+                maxHeight: 400,
+              },
+            },
+          }}
+        >
+          {apiStore.ctVersions.map(version => <MenuItem key={version} value={version}>{version}</MenuItem>)}
+        </TextField>
         <label htmlFor="module-file-upload">
           <input
             ref={fileRef}

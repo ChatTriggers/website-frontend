@@ -45,6 +45,9 @@ export const ApiErrors = {
     403: 'User not authorized',
     404: 'No user with specified user-id found',
   },
+  Versions: {
+
+  },
 };
 
 type ErrorObj = {

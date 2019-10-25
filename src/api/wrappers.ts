@@ -76,6 +76,10 @@ export const loadTags = async (): Promise<void> => {
   apiStore.setAllowedTags(await raw.getTags());
 };
 
+export const loadCtVersions = async (): Promise<void> => {
+  apiStore.setCtVersions(await raw.getVersions());
+};
+
 export const deleteModule = async (moduleId: number): Promise<void> => {
   await raw.deleteModule(moduleId);
   await getModules();
