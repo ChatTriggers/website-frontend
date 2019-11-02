@@ -87,11 +87,13 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
 
   const onSubmit = async (): Promise<void> => {
     try {
+      setError(false);
       setLoading(true);
       await createUser(username, password, email);
       setLoading(false);
-      setError(false);
-      history.goBack();
+
+      if (history.length === 1) history.push('/modules');
+      else history.goBack();
     } catch (e) {
       setError(true);
     }

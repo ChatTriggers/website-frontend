@@ -87,6 +87,10 @@ export default withRouter(({ title, location, history }: IMobileDrawerProps): JS
 
   const handleDrawerOpen = (): void => setOpen(true);
   const handleDrawerClose = (): void => setOpen(false);
+  const onClickBack = (): void => {
+    if (history.length === 1) history.push('/modules');
+    else history.goBack();
+  };
 
   const button = location.pathname === '/modules' ? (
     <IconButton
@@ -99,7 +103,7 @@ export default withRouter(({ title, location, history }: IMobileDrawerProps): JS
   ) : (
     <IconButton
       edge="start"
-      onClick={history.goBack}
+      onClick={onClickBack}
     >
       <KeyboardArrowLeftIcon />
     </IconButton>
