@@ -29,5 +29,6 @@ transport.connect(username=os.environ["SERVER_USER"], password=os.environ["SERVE
 sftp = MySFTPClient.from_transport(transport)
 sftp.mkdir("/root/web", ignore_existing=True)
 sftp.mkdir("/root/web/static", ignore_existing=True)
-sftp.put_dir("build/", "/root/web/static")
+sftp.mkdir("/root/web/static/frontend", ignore_existing=True)
+sftp.put_dir("build/", "/root/web/static/frontend")
 sftp.close()
