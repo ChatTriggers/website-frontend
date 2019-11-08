@@ -106,7 +106,7 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
     setTrustLoading(false);
   };
 
-  const authed = authStore.isAdmin || (authStore.user && authStore.user.id === modulesStore.activeModule.owner.id);
+  const authed = authStore.isTrustedOrHigher || (authStore.user && authStore.user.id === modulesStore.activeModule.owner.id);
 
   return (
     <>
