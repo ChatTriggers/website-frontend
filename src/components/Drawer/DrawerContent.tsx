@@ -78,7 +78,7 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
     <>
       <Divider />
       <List>
-        <ListItem button component="a" href="https://www.chattriggers.com/home/">
+        <ListItem button component="a" href="https://www.chattriggers.com/">
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
@@ -86,7 +86,7 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
             Home
           </ListItemText>
         </ListItem>
-        <ListItem button component={Link} to="/">
+        <ListItem button component={Link} to="https://www.chattriggers.com/modules">
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
