@@ -56,8 +56,11 @@ interface ICreateReleaseDialog {
 export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const classes = useStyles();
   const fileRef = React.createRef<HTMLInputElement>();
+  // eslint-disable-next-line max-len
+  const semvarRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$/;
 
   const [releaseVersion, setReleaseVersion] = React.useState('');
+  const [releaseError, setReleaseError] = React.useState(true);
   const [modVersion, setModVersion] = React.useState('1.0.0');
   const [changelog, setChangelog] = React.useState('');
   const [fileName, setFileName] = React.useState('');
@@ -65,6 +68,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
 
   const onChangeReleaseVersion = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     setReleaseVersion(target.value as string);
+    setReleaseError(!semvarRegex.test(releaseVersion));
   };
 
   const onChangeModVersion = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
@@ -89,7 +93,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   };
 
   const onSubmit = async (): Promise<void> => {
-    if (!fileRef.current || !fileRef.current.files || !modulesStore.activeModule) return;
+    if (!fileRef.current || !fileRef.current.files || !modulesStore.activeModule || releaseError) return;
 
     setLoading(true);
     const newRelease = await createRelease(modulesStore.activeModule.id, releaseVersion, modVersion, fileRef.current.files[0], changelog);
@@ -123,6 +127,8 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
           placeholder="0.0.1"
           value={releaseVersion}
           onChange={onChangeReleaseVersion}
+          error={releaseError}
+          helperText={releaseError ? 'The release version must follow SemVer' : ''}
           fullWidth
           autoFocus
           InputLabelProps={{ shrink: true }}
@@ -172,6 +178,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
           className={classes.submitButton}
           variant="contained"
           onClick={onSubmit}
+          disabled={releaseError}
         >
           {loading ? <CircularProgress /> : 'Submit'}
         </Button>
