@@ -57,7 +57,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const classes = useStyles();
   const fileRef = React.createRef<HTMLInputElement>();
   // eslint-disable-next-line max-len
-  const semvarRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$/;
+  const semvarRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
   const [releaseVersion, setReleaseVersion] = React.useState('');
   const [releaseError, setReleaseError] = React.useState(true);
@@ -68,7 +68,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
 
   const onChangeReleaseVersion = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     setReleaseVersion(target.value as string);
-    setReleaseError(!semvarRegex.test(releaseVersion));
+    setReleaseError(!semvarRegex.test(target.value as string));
   };
 
   const onChangeModVersion = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
