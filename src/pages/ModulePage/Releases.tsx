@@ -108,6 +108,10 @@ export default observer((): JSX.Element => {
     window.open(`${BASE_URL}/modules/${modulesStore.activeModule.id}/releases/${releaseId}?file=scripts`, 'scripts.zip');
   });
 
+  const onCopyCommand = (): void => {
+    navigator.clipboard.writeText(`/ct import ${modulesStore.activeModule.name}`);
+  };
+
   return (
     <>
       <DeleteReleaseDialog
@@ -209,6 +213,14 @@ export default observer((): JSX.Element => {
               <ListItem style={{ padding: 0 }}>
                 <ListItemText primary={label} />
                 <Desktop>
+                  <Button
+                    className={classes.releasesDownloadButton}
+                    variant="contained"
+                    size="small"
+                    onClick={onCopyCommand}
+                  >
+                    Copy Import Command
+                  </Button>
                   <Button
                     className={classes.releasesDownloadButton}
                     variant="contained"
