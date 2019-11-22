@@ -170,7 +170,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
           </TextField>
         </Grid>
         <Grid item xs={12}>
-          <MarkdownEditor value={description} handleChange={onChangeDescription} shouldBeChangelog={false} />
+          <MarkdownEditor value={description} handleChange={onChangeDescription} />
         </Grid>
         <Grid item xs={12} className={classes.buttons}>
           <Button

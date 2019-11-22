@@ -94,7 +94,6 @@ export default observer((): JSX.Element => {
         <MarkdownEditor
           value={description}
           handleChange={setDescription}
-          shouldBeChangelog={false}
         />
       ) : <MarkdownRenderer source={modulesStore.activeModule.description} />}
     </Paper>

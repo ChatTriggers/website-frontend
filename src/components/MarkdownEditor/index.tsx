@@ -4,7 +4,7 @@ import Editor, { IToolbar } from 'for-editor-dark';
 interface IMarkdownEditorProps {
   value: string;
   handleChange(value: string): void;
-  shouldBeChangelog: boolean;
+  shouldBeChangelog?: boolean;
 }
 
 const toolbar: IToolbar = {

@@ -242,7 +242,6 @@ export default observer((): JSX.Element => {
                     <MarkdownEditor
                       value={changelog}
                       handleChange={setChangelog}
-                      shouldBeChangelog={false}
                     />
                   ) : <MarkdownRenderer source={release.changelog} />}
                 </div>
