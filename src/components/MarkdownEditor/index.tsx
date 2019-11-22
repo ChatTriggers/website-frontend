@@ -4,6 +4,7 @@ import Editor, { IToolbar } from 'for-editor-dark';
 interface IMarkdownEditorProps {
   value: string;
   handleChange(value: string): void;
+  shouldBeChangelog?: boolean;
 }
 
 const toolbar: IToolbar = {
@@ -28,13 +29,13 @@ const toolbar: IToolbar = {
   subfield: true,
 };
 
-export default ({ value, handleChange }: IMarkdownEditorProps): JSX.Element => (
+export default ({ value, handleChange, shouldBeChangelog }: IMarkdownEditorProps): JSX.Element => (
   <Editor
     value={value}
     onChange={handleChange}
     height="300px"
     language="en"
-    placeholder="Module Description"
+    placeholder={shouldBeChangelog ? 'Module Changelog' : 'Module Description'}
     toolbar={toolbar}
   />
 );

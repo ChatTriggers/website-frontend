@@ -171,7 +171,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
         </label>
       </div>
       <div className={classes.editor}>
-        <MarkdownEditor value={changelog} handleChange={onChangeChangelog} />
+        <MarkdownEditor value={changelog} handleChange={onChangeChangelog} shouldBeChangelog />
       </div>
       <div className={classes.buttons}>
         <Button
