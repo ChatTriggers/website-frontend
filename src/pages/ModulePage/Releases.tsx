@@ -191,7 +191,7 @@ export default observer((): JSX.Element => {
           const label = (
             <div className={classes.releaseTitle}>
               <Desktop>
-                {authStore.user && authStore.user.id === modulesStore.activeModule.owner.id ? (
+                {authed ? (
                   <>
                     <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
                       {editing ? <CheckIcon /> : <EditIcon />}
