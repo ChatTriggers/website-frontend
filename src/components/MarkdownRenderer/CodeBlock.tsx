@@ -42,7 +42,7 @@ class CodeBlock extends StyledComponent<typeof styles, ICodeBlockProps> {
 
   private addIndent = (source: string): JSX.Element => (
     <>
-      {source.split(/(\(|\)|,)/g).reduce((prev, curr) => (
+      {source && source.split(/(\(|\)|,)/g).reduce((prev, curr) => (
         <>
           {prev}
           <wbr />
