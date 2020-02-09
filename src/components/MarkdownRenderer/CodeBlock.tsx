@@ -16,8 +16,7 @@ const styles: Styles = (theme: Theme) => ({
     width: `calc(100% - ${theme.spacing(2) * 2})`,
     borderRadius: 3,
     whiteSpace: 'pre-wrap',
-    paddingLeft: theme.spacing(5),
-    textIndent: -theme.spacing(4),
+    padding: theme.spacing(2),
   },
 });
 
