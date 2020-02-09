@@ -37,7 +37,9 @@ class CodeBlock extends StyledComponent<typeof styles, ICodeBlockProps> {
   }
 
   private readonly highlightCode = (): void => {
-    if (this.el) hljs.highlightBlock(this.el);
+    if (this.el) {
+      hljs.highlightBlock(this.el);
+    }
   }
 
   private addIndent = (source: string): JSX.Element => (

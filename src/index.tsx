@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import './index.scss';
-import '~src/../node_modules/highlight.js/styles/dracula.css';
+import '~src/../node_modules/highlight.js/styles/atom-one-dark.css';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
