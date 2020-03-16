@@ -3,9 +3,11 @@ import {
   TextField,
   Typography,
   Button,
+  Checkbox,
   Dialog,
   Grid,
   CircularProgress,
+  FormControlLabel,
   Theme,
   colors,
   Chip,
@@ -14,7 +16,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
 import { getModules, createModule } from '~api';
-import { apiStore } from '~store';
+import { apiStore, authStore } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -33,6 +35,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   buttons: {
     display: 'flex',
     justifyContent: 'right',
+  },
+  flagBox: {
+    display: 'flex',
+    justifyContent: 'left',
   },
   scriptButton: {
     width: 200,
@@ -67,6 +73,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const [imageError, setImageError] = React.useState(false);
   const [tags, setTags] = React.useState([] as string[]);
   const [loading, setLoading] = React.useState(false);
+  const [flagged, setFlagChecked] = React.useState(false);
 
   const onChangeName = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     const n = target.value as string;
@@ -100,7 +107,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
 
   const onSubmit = async (): Promise<void> => {
     setLoading(true);
-    await createModule(name, description, tags, image || undefined);
+    await createModule(name, description, tags, image || undefined, flagged);
     setLoading(false);
 
     getModules();
@@ -172,7 +179,22 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
         <Grid item xs={12}>
           <MarkdownEditor value={description} handleChange={onChangeDescription} />
         </Grid>
-        <Grid item xs={12} className={classes.buttons}>
+        {authStore.isTrustedOrHigher ? (
+          <Grid item xs={6} className={classes.flagBox}>
+            <FormControlLabel
+              control={(
+                <Checkbox
+                  checked={flagged}
+                  onChange={() => setFlagChecked(!flagged)}
+                  color="primary"
+                />
+              )}
+              label="Flag Module"
+              labelPlacement="start"
+            />
+          </Grid>
+        ) : null}
+        <Grid item xs={authStore.isTrustedOrHigher ? 6 : 12} className={classes.buttons}>
           <Button
             className={classes.submitButton}
             variant="contained"

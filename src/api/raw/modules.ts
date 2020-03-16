@@ -38,12 +38,14 @@ export const createModule = async (
   description: string,
   tags: string[],
   image?: string,
+  flagged = false,
 ): Promise<IModule> => {
   const response = await axios.post<IModule>(MODULES_URL, qs.stringify({
     name,
     description,
     tags,
     image,
+    flagged,
   }));
 
   return validateStatusCode(response);
