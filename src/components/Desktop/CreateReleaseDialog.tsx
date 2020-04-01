@@ -8,10 +8,10 @@ import {
   CircularProgress,
   Theme,
   colors,
-  MenuItem,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
+import VersionSelect from '~components/Desktop/VersionSelect';
 import { createRelease, getModules } from '~api';
 import { modulesStore, apiStore, runInAction } from '~store';
 
@@ -59,9 +59,11 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   // eslint-disable-next-line max-len
   const semvarRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
+  const defaultVersion = (Object.entries(apiStore.ctVersions)[0] || ['1.0', '0']).join('.');
+
   const [releaseVersion, setReleaseVersion] = React.useState('');
   const [releaseError, setReleaseError] = React.useState(true);
-  const [modVersion, setModVersion] = React.useState('1.0.0');
+  const [modVersion, setModVersion] = React.useState(defaultVersion);
   const [changelog, setChangelog] = React.useState('');
   const [fileName, setFileName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -69,10 +71,6 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const onChangeReleaseVersion = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     setReleaseVersion(target.value as string);
     setReleaseError(!semvarRegex.test(target.value as string));
-  };
-
-  const onChangeModVersion = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
-    setModVersion(target.value as string);
   };
 
   const onChangeChangelog = (desc: string): void => {
@@ -129,29 +127,10 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
           onChange={onChangeReleaseVersion}
           error={releaseError}
           helperText={releaseError ? 'The release version must follow SemVer' : ''}
-          fullWidth
           autoFocus
           InputLabelProps={{ shrink: true }}
         />
-        <TextField
-          className={classes.textField}
-          label="Target CT Mod Version"
-          value={modVersion}
-          onChange={onChangeModVersion}
-          select
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          SelectProps={{
-            margin: 'dense',
-            MenuProps: {
-              style: {
-                maxHeight: 400,
-              },
-            },
-          }}
-        >
-          {apiStore.ctVersions.map(version => <MenuItem key={version} value={version}>{version}</MenuItem>)}
-        </TextField>
+        <VersionSelect setCtVersionHook={setModVersion} />
         <label htmlFor="module-file-upload">
           <input
             ref={fileRef}

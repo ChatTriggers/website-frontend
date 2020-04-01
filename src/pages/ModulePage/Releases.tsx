@@ -11,8 +11,6 @@ import {
   Button,
   colors,
   Theme,
-  TextField,
-  MenuItem,
 } from '@material-ui/core';
 import {
   ExpandLess as ExpandLessIcon,
@@ -28,9 +26,10 @@ import MarkdownEditor from '~components/MarkdownEditor';
 import MarkdownRenderer from '~components/MarkdownRenderer';
 import DeleteReleaseDialog from '~components/Desktop/DeleteReleaseDialog';
 import CreateReleaseDialog from '~components/Desktop/CreateReleaseDialog';
+import VersionSelect from '~components/Desktop/VersionSelect';
 import { BASE_URL, getModules } from '~api';
 import {
-  action, modulesStore, authStore, apiStore, runInAction, observer,
+  action, modulesStore, authStore, runInAction, observer,
 } from '~store';
 import SemvarSorter from '~components/utils/SemvarSorter';
 import { IRelease } from '~types';
@@ -83,10 +82,6 @@ export default observer((): JSX.Element => {
   const [deletingRelease, setDeletingRelease] = React.useState('');
   const [openedRelease, _setOpenedRelease] = React.useState('');
   const [creatingRelease, setCreatingRelease] = React.useState(false);
-
-  const onChangeReleaseVersion = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
-    setVersion(e.target.value as string);
-  };
 
   const closeDeleteDialog = (): void => {
     setDeletingRelease('');
@@ -142,21 +137,7 @@ export default observer((): JSX.Element => {
 
           const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
           const modChip = editing ? (
-            <TextField
-              id="release-mod-version-select"
-              value={version}
-              onChange={onChangeReleaseVersion}
-              select
-              SelectProps={{
-                MenuProps: {
-                  style: {
-                    maxWidth: 400,
-                  },
-                },
-              }}
-            >
-              {apiStore.ctVersions.map(v => <MenuItem key={v} value={v}>{v}</MenuItem>)}
-            </TextField>
+            <VersionSelect setCtVersionHook={setVersion} />
           ) : <Chip label={`v${release.modVersion}`} size="small" />;
 
           const onClickEditing = (): void => {

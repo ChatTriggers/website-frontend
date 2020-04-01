@@ -1,5 +1,7 @@
 import { observable, action, computed } from 'mobx';
-import { ModuleSearchFilter, ModuleSorting, IModuleMetadata } from '~types';
+import {
+  ModuleSearchFilter, ModuleSorting, IModuleMetadata, IVersions,
+} from '~types';
 
 export const MODULES_PER_PAGE_OPTIONS = [10, 25, 50];
 
@@ -29,7 +31,7 @@ class ApiStore {
   public allowedTags: string[] = [];
 
   @observable
-  public ctVersions: string[] = [];
+  public ctVersions: IVersions = {};
 
   @computed
   get totalPages(): number {
@@ -82,7 +84,7 @@ class ApiStore {
   }
 
   @action
-  public setCtVersions = (ctVersions: string[]): void => {
+  public setCtVersions = (ctVersions: IVersions): void => {
     this.ctVersions = ctVersions;
   }
 }

@@ -1,10 +1,11 @@
 import { axios, BASE_URL } from '../utils';
 import { validateStatusCode, ApiErrors } from './ApiErrors';
+import { IVersions } from '~src/types';
 
 const VERSIONS_URL = `${BASE_URL}/versions`;
 
-const getVersions = async (): Promise<string[]> => {
-  const response = await axios.get<string[]>(VERSIONS_URL);
+const getVersions = async (): Promise<IVersions> => {
+  const response = await axios.get<IVersions>(VERSIONS_URL);
 
   return validateStatusCode(response, ApiErrors.Versions);
 };
