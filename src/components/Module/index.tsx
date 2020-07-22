@@ -147,7 +147,7 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
               </Typography>
             </div>
             <Typography className={this.classes.title} variant="h6">
-                By
+              By
               {' '}
               {module.owner.name}
             </Typography>
@@ -158,7 +158,7 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
             variant="contained"
             onClick={this.onClickModule}
           >
-              View
+            View
           </Button>
         </div>
         <div className={this.classes.body}>

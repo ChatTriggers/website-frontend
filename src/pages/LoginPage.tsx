@@ -131,7 +131,7 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
           />
           {error && (
             <Typography className={classes.error} variant="caption">
-                Unrecognized username and password
+              Unrecognized username and password
             </Typography>
           )}
           <Button

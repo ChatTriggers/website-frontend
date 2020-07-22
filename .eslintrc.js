@@ -17,11 +17,23 @@ module.exports = {
     'max-len': [2, { code: 140 }],
     'arrow-parens': [2, 'as-needed'],
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+    'react/prop-types': [0],
+    'react/require-default-props': [0],
     'import/no-extraneous-dependencies': [2, { devDependencies: ['**/test.tsx', '**/test.ts'] }],
     'import/no-named-as-default': [0],
     'import/no-named-as-default-member': [0],
     '@typescript-eslint/indent': [2, 2],
     '@typescript-eslint/interface-name-prefix': [2, { prefixWithI: "always" }],
     '@typescript-eslint/explicit-function-return-type': [2, { allowExpressions: true }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        'js': 'never',
+        'jsx': 'never',
+        'ts': 'never',
+        'tsx': 'never',
+      }
+    ]
   },
 };

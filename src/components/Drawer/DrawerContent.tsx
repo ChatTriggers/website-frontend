@@ -168,7 +168,7 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
                 <LoginIcon />
               </ListItemIcon>
               <ListItemText>
-                  Login
+                Login
               </ListItemText>
             </ListItem>
             <ListItem button onClick={onClickCreateAccount}>
@@ -176,7 +176,7 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
                 <CreateIcon />
               </ListItemIcon>
               <ListItemText>
-                  Create Account
+                Create Account
               </ListItemText>
             </ListItem>
           </>

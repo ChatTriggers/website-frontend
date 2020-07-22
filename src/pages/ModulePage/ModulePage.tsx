@@ -5,6 +5,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import MetaTags from 'react-meta-tags';
 import {
   observer,
   observable,
@@ -112,12 +113,20 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
       );
     }
 
-    return (modulesStore.activeModule && (
+    const module = modulesStore.activeModule;
+
+    return (module && (
       <div className={this.classes.root}>
+        <MetaTags>
+          <title>{module.name}</title>
+          <meta property="og:title" content={module.name} />
+          <meta property="og:description" content={module.description} />
+          {module.image !== '' && <meta property="og:image" content={module.image} />}
+          <meta property="og:url" content={`https://www.chattriggers.com/modules/v/${module.name}`} />
+
+        </MetaTags>
         <Paper className={this.classes.paper}>
-          {modulesStore.activeModule && (
-            <ModulePageHeader />
-          )}
+          {module && <ModulePageHeader />}
         </Paper>
         <Description />
         <Tags />

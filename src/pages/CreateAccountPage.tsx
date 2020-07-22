@@ -147,7 +147,7 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
           />
           {error && (
             <Typography className={classes.error} variant="caption">
-                Error creating account. Please try again later.
+              Error creating account. Please try again later.
             </Typography>
           )}
           <Button

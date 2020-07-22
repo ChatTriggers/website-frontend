@@ -67,8 +67,8 @@ export default ({ open, onClose, releaseId }: IDeleteDialogProps): JSX.Element =
     >
       <div className={classes.root}>
         <Typography>
-            Are you sure you want to delete this release? This is a permanent action,
-            and cannot be reversed.
+          Are you sure you want to delete this release? This is a permanent action,
+          and cannot be reversed.
         </Typography>
         <FormGroup className={classes.buttons} row>
           <ButtonGroup size="medium">

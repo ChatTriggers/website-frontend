@@ -54,8 +54,8 @@ export default withRouter(({ open, close, history }: IDeleteDialogProps): JSX.El
     >
       <div className={classes.root}>
         <Typography>
-            Are you sure you want to delete this module? This is a permanent action,
-            and cannot be reversed.
+          Are you sure you want to delete this module? This is a permanent action,
+          and cannot be reversed.
         </Typography>
         <FormGroup className={classes.buttons} row>
           <ButtonGroup size="medium">
