@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import MetaTags from 'react-meta-tags';
 import { modulesStore, errorStore, observer } from '~store';
 import { Mobile, NotMobile } from '~components';
 import Module from '~components/Module';
@@ -46,6 +47,12 @@ export default observer(() => {
 
   return (
     <>
+      <MetaTags>
+        <title>All Modules</title>
+        <meta property="og:title" content="All Modules" />
+        <meta property="og:description" content="A list of all ctjs modules" />
+        <meta property="og:url" content="https://www.chattriggers.com/modules/" />
+      </MetaTags>
       <FloatingActionButton />
       <Mobile>
         <MobilePagination />

@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { StyleRulesCallback } from '@material-ui/styles/withStyles';
+import MetaTags from 'react-meta-tags';
 import {
   observer,
   observable,
@@ -104,6 +105,12 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
   public render(): JSX.Element {
     return (
       <div className={this.classes.rootOuter}>
+        <MetaTags>
+          <title>Password Reset</title>
+          <meta property="og:title" content="Password Reset" />
+          <meta property="og:description" content="Reset your ctjs website password" />
+          <meta property="og:url" content="https://www.chattriggers.com/passwordreset" />
+        </MetaTags>
         <div className={this.classes.rootInner}>
           <Paper className={this.classes.content}>
             <Typography variant="h5">

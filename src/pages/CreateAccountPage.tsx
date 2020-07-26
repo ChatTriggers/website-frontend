@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { withRouter } from 'react-router-dom';
+import MetaTags from 'react-meta-tags';
 import { History } from 'history';
 import { createUser } from '~api';
 import { action } from '~store';
@@ -109,6 +110,12 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
 
   return (
     <div className={classes.root}>
+      <MetaTags>
+        <title>Create Account</title>
+        <meta property="og:title" content="Create Account" />
+        <meta property="og:description" content="Create a new ctjs account" />
+        <meta property="og:url" content="https://www.chattriggers.com/create-account" />
+      </MetaTags>
       <div className={classes.paperContainer}>
         <Paper className={classes.paper}>
           <TextField

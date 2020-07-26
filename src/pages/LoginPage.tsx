@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { withRouter } from 'react-router-dom';
+import MetaTags from 'react-meta-tags';
 import { History } from 'history';
 import { login } from '~api';
 import { action } from '~store';
@@ -104,6 +105,12 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
 
   return (
     <div className={classes.root}>
+      <MetaTags>
+        <title>Login</title>
+        <meta property="og:title" content="Login" />
+        <meta property="og:description" content="Login to the ctjs website" />
+        <meta property="og:url" content="https://www.chattriggers.com/login" />
+      </MetaTags>
       <div className={classes.paperContainer}>
         <Paper className={classes.paper}>
           <TextField
