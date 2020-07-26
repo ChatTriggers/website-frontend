@@ -13,7 +13,12 @@ import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
 import VersionSelect from '~components/Desktop/VersionSelect';
 import { createRelease, getModules } from '~api';
-import { modulesStore, apiStore, runInAction } from '~store';
+import {
+  modulesStore,
+  apiStore,
+  errorStore,
+  runInAction,
+} from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -94,14 +99,19 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
     if (!fileRef.current || !fileRef.current.files || !modulesStore.activeModule || releaseError) return;
 
     setLoading(true);
-    const newRelease = await createRelease(modulesStore.activeModule.id, releaseVersion, modVersion, fileRef.current.files[0], changelog);
-    setLoading(false);
+    try {
+      const newRelease = await createRelease(modulesStore.activeModule.id, releaseVersion, modVersion, fileRef.current.files[0], changelog);
+      setLoading(false);
 
-    runInAction(() => {
-      modulesStore.activeModule.releases.push(newRelease);
-    });
-    getModules();
-    onClose();
+      runInAction(() => {
+        modulesStore.activeModule.releases.push(newRelease);
+      });
+      getModules();
+      onClose();
+    } catch (e) {
+      setLoading(false);
+      errorStore.setError('Error creating release', e.message);
+    }
   };
 
   return (

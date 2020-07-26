@@ -12,7 +12,7 @@ import { makeStyles } from '@material-ui/styles';
 import clone from 'clone';
 import { deleteRelease } from '~api/raw';
 import { getModules } from '~api';
-import { modulesStore, runInAction } from '~store';
+import { modulesStore, errorStore, runInAction } from '~store';
 import { IRelease } from '~src/types';
 
 interface IDeleteDialogProps {
@@ -41,21 +41,25 @@ export default ({ open, onClose, releaseId }: IDeleteDialogProps): JSX.Element =
 
   const onDelete = async (): Promise<void> => {
     setLoading(true);
-    await deleteRelease(modulesStore.activeModule.id, releaseId);
-    getModules();
-    setLoading(false);
+    try {
+      await deleteRelease(modulesStore.activeModule.id, releaseId);
+      getModules();
+      setLoading(false);
 
-    runInAction(() => {
-      modulesStore.activeModule = {
-        ...modulesStore.activeModule,
-        releases: clone(modulesStore.activeModule.releases).reduce((prev, curr) => {
-          if (curr.id !== releaseId) prev.push(curr);
-          return prev;
-        }, [] as IRelease[]),
-      };
-    });
+      runInAction(() => {
+        modulesStore.activeModule = {
+          ...modulesStore.activeModule,
+          releases: clone(modulesStore.activeModule.releases).reduce((prev, curr) => {
+            if (curr.id !== releaseId) prev.push(curr);
+            return prev;
+          }, [] as IRelease[]),
+        };
+      });
 
-    onClose();
+      onClose();
+    } catch (e) {
+      errorStore.setError('Error deleting release', e.message);
+    }
   };
 
   return (

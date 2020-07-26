@@ -5,6 +5,7 @@ import {
 import { ThemeProvider } from '@material-ui/styles';
 import { Online, Offline } from 'react-detect-offline';
 import Drawer from '~components/Drawer';
+import ErrorDialog from '~components/ErrorDialog';
 import OfflinePage from '~pages/OfflinePage';
 import theme from './styles/theme';
 import routes from './routes';
@@ -30,6 +31,7 @@ export default class App extends React.Component {
         <Router>
           <Drawer>
             <Online>
+              <ErrorDialog />
               <Switch>
                 {routes.map(({ route, component, name }) => (
                   <Route

@@ -11,7 +11,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { deleteModule } from '~api';
-import { modulesStore } from '~store';
+import { modulesStore, errorStore } from '~store';
 
 interface IDeleteDialogProps extends RouteComponentProps<{}> {
   open: boolean;
@@ -38,9 +38,14 @@ export default withRouter(({ open, close, history }: IDeleteDialogProps): JSX.El
 
   const onDelete = async (): Promise<void> => {
     setLoading(true);
-    await deleteModule(modulesStore.activeModule.id);
-    setLoading(false);
-    close();
+    try {
+      await deleteModule(modulesStore.activeModule.id);
+      setLoading(false);
+      close();
+    } catch (e) {
+      setLoading(false);
+      errorStore.setError('Error deleting module', e.message);
+    }
 
     history.replace('/modules');
   };

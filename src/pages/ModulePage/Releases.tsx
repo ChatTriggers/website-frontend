@@ -29,7 +29,12 @@ import CreateReleaseDialog from '~components/Desktop/CreateReleaseDialog';
 import VersionSelect from '~components/Desktop/VersionSelect';
 import { BASE_URL, getModules } from '~api';
 import {
-  action, modulesStore, authStore, runInAction, observer,
+  action,
+  modulesStore,
+  authStore,
+  errorStore,
+  runInAction,
+  observer,
 } from '~store';
 import SemvarSorter from '~components/utils/SemvarSorter';
 import { IRelease } from '~types';
@@ -152,8 +157,12 @@ export default observer((): JSX.Element => {
                 }, [] as IRelease[]);
               });
 
-              updateRelease(modulesStore.activeModule.id, release.id, version, changelog);
-              getModules();
+              try {
+                updateRelease(modulesStore.activeModule.id, release.id, version, changelog);
+                getModules();
+              } catch (e) {
+                errorStore.setError('Error updating release', e.message);
+              }
             } else {
               setEditingRelease(release.id);
               setVersion(release.modVersion);

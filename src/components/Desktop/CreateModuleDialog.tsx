@@ -16,7 +16,7 @@ import {
 import { makeStyles } from '@material-ui/styles';
 import MarkdownEditor from '~components/MarkdownEditor';
 import { getModules, createModule } from '~api';
-import { apiStore, authStore } from '~store';
+import { apiStore, authStore, errorStore } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -101,17 +101,22 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
     }
   };
 
-  const onChangeTags = ({ target }: React.ChangeEvent<{ name?: string; value: unknown}>): void => {
+  const onChangeTags = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     setTags(target.value as string[]);
   };
 
   const onSubmit = async (): Promise<void> => {
     setLoading(true);
-    await createModule(name, description, tags, image || undefined, flagged);
-    setLoading(false);
+    try {
+      await createModule(name, description, tags, image || undefined, flagged);
+      setLoading(false);
 
-    getModules();
-    onClose();
+      getModules();
+      onClose();
+    } catch (e) {
+      setLoading(false);
+      errorStore.setError('Error creating module', e.message);
+    }
   };
 
   return (

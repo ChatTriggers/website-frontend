@@ -30,8 +30,6 @@ export const createRelease = async (
     },
   });
 
-  // const response = await axios.post<IRelease>(RELEASES_URL(moduleId), formData);
-
   return validateStatusCode(response, ApiErrors.CreateRelease);
 };
 
