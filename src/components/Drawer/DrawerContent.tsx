@@ -58,6 +58,7 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
   const [anchorEl, setAnchorEl] = React.useState(undefined as HTMLButtonElement | undefined);
 
   React.useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
   });
 
