@@ -23,6 +23,8 @@ export default class App extends React.Component {
       loadTags();
       loadCtVersions();
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
   }
 
   public render(): JSX.Element {
