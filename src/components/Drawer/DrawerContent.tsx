@@ -35,6 +35,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxWidth: 24,
     maxHeight: 24,
   },
+  adContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexDirection: 'column',
+    flexGrow: 1,
+  },
+  ad: {
+    margin: 20,
+    width: 200,
+    height: 200,
+  },
 }));
 
 interface IDrawerContentProps extends RouteComponentProps<{}> {
@@ -44,6 +56,10 @@ interface IDrawerContentProps extends RouteComponentProps<{}> {
 export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProps) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(undefined as HTMLButtonElement | undefined);
+
+  React.useEffect(() => {
+    ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+  });
 
   const onClickCreateAccount = (): void => {
     if (closeDrawer) closeDrawer();
@@ -182,6 +198,14 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
           </>
         )}
       </List>
+      <Divider />
+      <div className={classes.adContainer}>
+        <ins
+          className={`adsbygoogle ${classes.ad}`}
+          data-ad-client="ca-pub-8493083757746019"
+          data-ad-slot="4036962138"
+        />
+      </div>
       <Menu
         id="account-menu"
         anchorEl={anchorEl}
