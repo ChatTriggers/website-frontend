@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
-  observer, modulesStore, authStore, errorStore, runInAction, apiStore,
+  observer, modulesStore, authStore, errorStore, runInAction, apiStore, MODULES_PER_PAGE_OPTIONS,
 } from '~store';
 import { getModules } from '~api';
 import TablePagination from './TablePagination';
@@ -23,14 +23,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     [theme.breakpoints.down('md')]: {
       maxWidth: '100vw',
-      margin: theme.spacing(3, 3, 5, 3),
+      margin: theme.spacing(3, 3, 3, 3),
       padding: theme.spacing(2),
     },
     [theme.breakpoints.up('lg')]: {
       width: '100%',
       maxWidth: `calc(1000px - ${theme.spacing(4) * 2}px)`,
-      margin: theme.spacing(4, 4, 5, 4),
-      padding: theme.spacing(4, 4, 3, 4),
+      margin: theme.spacing(4, 4, 3, 4),
+      padding: theme.spacing(2, 4, 2, 4),
     },
   },
   content: {
@@ -48,6 +48,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   pagination: {
     paddingRight: 0,
+  },
+  menu: {
+    flexGrow: 1,
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-around',
   },
 }));
 
@@ -125,10 +132,18 @@ export default observer((): JSX.Element => {
     }
   };
 
+  const handleChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+    const newModulesPerPage = parseInt(e.target.value as string, 10);
+    if (newModulesPerPage === apiStore.modulesPerPage) return;
+
+    apiStore.setModulesPerPage(newModulesPerPage);
+    getModules();
+  };
+
   return (
     <Paper className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12}>
           <TextField
             id="search-query"
             label="Search Modules"
@@ -138,7 +153,28 @@ export default observer((): JSX.Element => {
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
+          <TextField
+            id="modules-per-page-select"
+            select
+            label="Modules per page"
+            value={apiStore.modulesPerPage}
+            onChange={handleChangeModulesPerPage}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            SelectProps={{
+              margin: 'dense',
+              MenuProps: {
+                style: {
+                  maxHeight: 400,
+                },
+              },
+            }}
+          >
+            {MODULES_PER_PAGE_OPTIONS.map(num => <MenuItem key={num} value={num}>{num}</MenuItem>)}
+          </TextField>
+        </Grid>
+        <Grid item xs={12} md={4}>
           <TextField
             id="search-tags"
             label="Filter Modules by Tags"
@@ -163,10 +199,7 @@ export default observer((): JSX.Element => {
             {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <TablePagination className={classes.pagination} />
-        </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <TextField
             id="module-sorting-filter"
             label="Module Sorting"
@@ -182,21 +215,24 @@ export default observer((): JSX.Element => {
           </TextField>
         </Grid>
         <Grid item xs={12}>
-          <FormControl>
-            <RadioGroup
-              name="module-filter"
-              value={selectedRadio}
-              onChange={onFilterChange}
-              row
-            >
-              <FormControlLabel value="all" label="All Modules" control={<Radio />} />
-              <FormControlLabel value="trusted" label="Trusted Modules" control={<Radio />} />
-              {authStore.isAuthed && <FormControlLabel value="user" label="My Modules" control={<Radio />} />}
-              {authStore.isAuthed && !authStore.isDefault && (
-                <FormControlLabel value="flagged" label="Flagged Modules" control={<Radio />} />
-              )}
-            </RadioGroup>
-          </FormControl>
+          <div className={classes.buttons}>
+            <FormControl>
+              <RadioGroup
+                name="module-filter"
+                value={selectedRadio}
+                onChange={onFilterChange}
+                row
+              >
+                <FormControlLabel value="all" label="All Modules" control={<Radio />} />
+                <FormControlLabel value="trusted" label="Trusted Modules" control={<Radio />} />
+                {authStore.isAuthed && <FormControlLabel value="user" label="My Modules" control={<Radio />} />}
+                {authStore.isAuthed && !authStore.isDefault && (
+                  <FormControlLabel value="flagged" label="Flagged Modules" control={<Radio />} />
+                )}
+              </RadioGroup>
+            </FormControl>
+            <TablePagination />
+          </div>
         </Grid>
       </Grid>
     </Paper>

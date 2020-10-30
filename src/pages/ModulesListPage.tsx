@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Theme } from '@material-ui/core';
+import { Paper, Container, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import MetaTags from 'react-meta-tags';
 import { modulesStore, errorStore, observer } from '~store';
@@ -10,6 +10,7 @@ import ModuleSkeleton from '~components/Module/ModuleSkeleton';
 import MobilePagination from '~components/Mobile/Pagination';
 import MobileFilterButton from '~components/Mobile/FilterButton';
 import ModuleFilter from '~components/Desktop/ModuleFilter';
+import TablePagination from '~components/Desktop/TablePagination';
 import ModuleError from '~components/Module/ModuleError';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -27,6 +28,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
       flexDirection: 'column',
     },
+  },
+  pagination: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(4),
   },
 }));
 
@@ -63,6 +68,9 @@ export default observer(() => {
           <ModuleFilter />
         </NotMobile>
         {content}
+        <Paper className={classes.pagination}>
+          <TablePagination />
+        </Paper>
       </Container>
     </>
   );

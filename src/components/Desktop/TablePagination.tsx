@@ -11,9 +11,7 @@ import {
 import { makeStyles, createStyles, withStyles } from '@material-ui/styles';
 import clsx from 'clsx';
 import { getModules } from '~api';
-import {
-  modulesStore, MODULES_PER_PAGE_OPTIONS, observer, apiStore,
-} from '~store';
+import { modulesStore, observer, apiStore } from '~store';
 import { StyledComponent, Styles } from '~components';
 
 const useStylesActions = makeStyles((theme: Theme) => createStyles({
@@ -80,7 +78,7 @@ const TablePaginationActions = observer(({ className }: ITablePaginationActionsP
   );
 });
 
-const stylesPagination: Styles = (theme: Theme) => ({
+const stylesPagination: Styles = () => ({
   root: {
     display: 'flex',
     justifyContent: 'end',
@@ -89,13 +87,6 @@ const stylesPagination: Styles = (theme: Theme) => ({
   form: {
     display: 'flex',
     width: '100%',
-  },
-  textField: {
-    marginRight: theme.spacing(2),
-    flexGrow: 6,
-  },
-  menu: {
-    flexGrow: 1,
   },
   selectors: {
     flexGrow: 3,
@@ -114,14 +105,6 @@ class TablePagination extends StyledComponent<typeof stylesPagination, ITablePag
     return Math.ceil(modulesStore.modules.length / apiStore.modulesPerPage);
   }
 
-  private readonly handleChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
-    const newModulesPerPage = parseInt(e.target.value as string, 10);
-    if (newModulesPerPage === apiStore.modulesPerPage) return;
-
-    apiStore.setModulesPerPage(newModulesPerPage);
-    getModules();
-  }
-
   private readonly handleChangePage = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     const newPage = parseInt(e.target.value as string, 10);
     if (newPage === apiStore.page) return;
@@ -134,24 +117,6 @@ class TablePagination extends StyledComponent<typeof stylesPagination, ITablePag
     return (
       <div className={`${this.classes.root} ${this.props.className || ''}`}>
         <FormGroup row className={this.classes.form}>
-          <TextField
-            id="modules-per-page-select"
-            className={this.classes.textField}
-            select
-            label="Modules per page"
-            value={apiStore.modulesPerPage}
-            onChange={this.handleChangeModulesPerPage}
-            SelectProps={{
-              MenuProps: {
-                className: this.classes.menu,
-              },
-              native: true,
-            }}
-          >
-            {MODULES_PER_PAGE_OPTIONS.map(rows => (
-              <option key={rows} value={rows}>{rows}</option>
-            ))}
-          </TextField>
           <TextField
             id="page-select"
             select
