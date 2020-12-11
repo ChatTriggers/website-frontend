@@ -195,13 +195,14 @@ export default withRouter(observer(({ history, closeDrawer }: IDrawerContentProp
         )}
       </List>
       <Divider />
-      <div className={classes.adContainer}>
+      {/* old ad, commented in case we need it again */}
+      {/* <div className={classes.adContainer}>
         <ins
           className={`adsbygoogle ${classes.ad}`}
           data-ad-client="ca-pub-8493083757746019"
           data-ad-slot="4036962138"
         />
-      </div>
+      </div> */}
       <Menu
         id="account-menu"
         anchorEl={anchorEl}

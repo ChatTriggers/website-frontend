@@ -33,6 +33,30 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2),
     marginBottom: theme.spacing(4),
   },
+  adContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexDirection: 'column',
+    flexGrow: 1,
+    height: 75,
+    [theme.breakpoints.only('xs')]: {
+      margin: theme.spacing(2),
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      margin: theme.spacing(3),
+    },
+    [theme.breakpoints.up('lg')]: {
+      margin: theme.spacing(3, 4, 0, 4),
+      padding: theme.spacing(1),
+      width: '100%',
+      maxWidth: 1000,
+    },
+  },
+  ad: {
+    width: '100%',
+    height: '100%',
+  },
 }));
 
 export default observer(() => {
@@ -50,6 +74,18 @@ export default observer(() => {
     content = skeletons;
   }
 
+  const Ad = (): JSX.Element => (
+    <div className={classes.adContainer}>
+      <ins
+        className={`adsbygoogle ${classes.ad}`}
+        data-ad-client="ca-pub-8493083757746019"
+        data-ad-slot="4036962138"
+        data-ad-format="auto"
+        data-full-width-responsive
+      />
+    </div>
+  );
+
   return (
     <>
       <MetaTags>
@@ -60,11 +96,13 @@ export default observer(() => {
       </MetaTags>
       <FloatingActionButton />
       <Mobile>
+        <Ad />
         <MobilePagination />
         <MobileFilterButton />
       </Mobile>
       <Container className={classes.modules}>
         <NotMobile>
+          <Ad />
           <ModuleFilter />
         </NotMobile>
         {content}
