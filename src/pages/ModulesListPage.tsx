@@ -39,7 +39,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     flexDirection: 'column',
     flexGrow: 1,
-    height: 50,
+    height: 75,
+    maxHeight: 75,
     [theme.breakpoints.only('xs')]: {
       margin: theme.spacing(2),
     },
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   ad: {
     width: '100%',
     height: '100%',
+    maxHeight: 75,
   },
 }));
 
