@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     flexDirection: 'column',
     flexGrow: 1,
-    height: 75,
+    height: 50,
     [theme.breakpoints.only('xs')]: {
       margin: theme.spacing(2),
     },
