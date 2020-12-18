@@ -55,9 +55,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   ad: {
-    width: '100%',
-    height: '100%',
-    maxHeight: 75,
+    display: 'inline-block',
+    width: 728,
+    height: 90,
+    maxHeight: 90,
   },
 }));
 
@@ -81,9 +82,7 @@ export default observer(() => {
       <ins
         className={`adsbygoogle ${classes.ad}`}
         data-ad-client="ca-pub-8493083757746019"
-        data-ad-slot="4036962138"
-        data-ad-format="auto"
-        data-full-width-responsive
+        data-ad-slot="8318592115"
       />
     </div>
   );
