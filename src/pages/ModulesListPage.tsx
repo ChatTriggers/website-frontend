@@ -5,7 +5,8 @@ import MetaTags from 'react-meta-tags';
 import { modulesStore, errorStore, observer } from '~store';
 import { Mobile, NotMobile } from '~components';
 import Module from '~components/Module';
-import FloatingActionButton from '~components/Module/FloatingActionButton';
+import ScrollToTopFAB from '~components/Module/ScrollToTopFAB';
+import CreateModuleFAB from '~components/Module/CreateModuleFAB';
 import ModuleSkeleton from '~components/Module/ModuleSkeleton';
 import MobilePagination from '~components/Mobile/Pagination';
 import MobileFilterButton from '~components/Mobile/FilterButton';
@@ -95,7 +96,8 @@ export default observer(() => {
         <meta property="og:description" content="A list of all ctjs modules" />
         <meta property="og:url" content="https://www.chattriggers.com/modules/" />
       </MetaTags>
-      <FloatingActionButton />
+      <CreateModuleFAB />
+      <ScrollToTopFAB />
       <Mobile>
         <Ad />
         <MobilePagination />
