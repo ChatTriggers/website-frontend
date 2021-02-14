@@ -21,7 +21,7 @@ interface IProps {
 
 export default ({ setCtVersionHook }: IProps): JSX.Element => {
   const classes = useStyles();
-  const [ctVersion, _setCtVersion] = React.useState('');
+  const [ctVersion, _setCtVersion] = React.useState(apiStore.latestVersion);
 
   const setCtVersion = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     _setCtVersion(e.target.value);

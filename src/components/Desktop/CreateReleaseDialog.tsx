@@ -64,11 +64,9 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   // eslint-disable-next-line max-len
   const semvarRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
-  const defaultVersion = (Object.entries(apiStore.ctVersions)[0] || ['1.0', '0']).join('.');
-
   const [releaseVersion, setReleaseVersion] = React.useState('');
   const [releaseError, setReleaseError] = React.useState(true);
-  const [modVersion, setModVersion] = React.useState(defaultVersion);
+  const [modVersion, setModVersion] = React.useState<string | undefined>(undefined);
   const [changelog, setChangelog] = React.useState('');
   const [fileName, setFileName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -100,7 +98,13 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
 
     setLoading(true);
     try {
-      const newRelease = await createRelease(modulesStore.activeModule.id, releaseVersion, modVersion, fileRef.current.files[0], changelog);
+      const newRelease = await createRelease(
+        modulesStore.activeModule.id,
+        releaseVersion,
+        modVersion ?? apiStore.latestVersion,
+        fileRef.current.files[0],
+        changelog,
+      );
       setLoading(false);
 
       runInAction(() => {

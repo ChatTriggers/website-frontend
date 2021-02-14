@@ -43,6 +43,15 @@ class ApiStore {
     return this.meta ? this.page * this.modulesPerPage : 0;
   }
 
+  @computed
+  get latestVersion(): string {
+    if (this.ctVersions.length === 0) {
+      return '1.0.0';
+    }
+    const latest = this.ctVersions[0];
+    return `${latest.majorMinor}.${latest.patches[0]}`;
+  }
+
   @action
   public setTags = (tags: string[]): void => {
     this.tags = tags;
