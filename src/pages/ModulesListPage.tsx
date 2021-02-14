@@ -107,7 +107,7 @@ export default observer(() => {
           <ModuleFilter />
         </NotMobile>
         {content}
-        <Paper className={classes.pagination}>
+        <Paper className={classes.pagination} square>
           <TablePagination />
         </Paper>
       </Container>

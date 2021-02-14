@@ -84,7 +84,7 @@ export default observer((): JSX.Element => {
   };
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} square>
       <div style={{ display: 'flex', marginBottom: 8 }}>
         <Typography variant="subtitle1">
           Tags

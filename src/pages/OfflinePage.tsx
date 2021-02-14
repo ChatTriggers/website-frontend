@@ -46,7 +46,7 @@ export default (): JSX.Element => {
   return (
     <div className={classes.root}>
       <div className={classes.paperContainer}>
-        <Paper className={classes.paper}>
+        <Paper className={classes.paper} square>
           <Typography variant="h5">
             No internet connection
           </Typography>

@@ -36,7 +36,7 @@ export default withRouter((props: IFilterButtonProps) => {
   };
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} square>
       <ButtonBase
         className={classes.button}
         focusRipple

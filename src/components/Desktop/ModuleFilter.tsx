@@ -141,7 +141,7 @@ export default observer((): JSX.Element => {
   };
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} square>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField

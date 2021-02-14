@@ -223,7 +223,7 @@ export default observer(() => {
       </Desktop>
       <div className={classes.root}>
         <div className={classes.paperContainer}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} square>
             <TextField
               className={classes.search}
               label="Search Modules"
@@ -246,7 +246,7 @@ export default observer(() => {
               multiline
             />
           </Paper>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} square>
             <TextField
               className={classes.tagSearch}
               label="Filter by Tags"
@@ -277,7 +277,7 @@ export default observer(() => {
               {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
             </TextField>
           </Paper>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} square>
             <FormControl component="fieldset">
               <FormLabel component="legend" focused={false}>Module Search Filters</FormLabel>
               <RadioGroup
@@ -311,7 +311,7 @@ export default observer(() => {
               </RadioGroup>
             </FormControl>
           </Paper>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} square>
             <div className={classes.modulesPerPage}>
               <Typography>
                 Modules per page:
@@ -327,7 +327,7 @@ export default observer(() => {
               </Select>
             </div>
           </Paper>
-          <Paper className={classes.paper}>
+          <Paper className={classes.paper} square>
             <TextField
               id="module-sorting-filter"
               label="Module Sorting"

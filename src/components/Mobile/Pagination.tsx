@@ -54,7 +54,7 @@ export default observer(() => {
   };
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} square>
       <IconButton
         className={classes.button}
         onClick={onFirstPage}

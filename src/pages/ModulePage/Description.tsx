@@ -77,7 +77,7 @@ export default observer((): JSX.Element => {
   };
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} square>
       <Desktop>
         {authed ? (
           <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>

@@ -78,7 +78,7 @@ export default ({ errorType }: IModuleErrorProps): JSX.Element => {
   return (
     <div style={{ width: '100%' }}>
       <Container>
-        <Paper className={classes.root}>
+        <Paper className={classes.root} square>
           {errorInfo[errorType].title}
           <div className={classes.body}>
             {errorInfo[errorType].description}

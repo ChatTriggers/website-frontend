@@ -138,7 +138,7 @@ class Module extends StyledComponent<typeof styles, IModuleProps> {
     const { module } = this.props;
 
     return (
-      <Paper className={this.classes.root}>
+      <Paper className={this.classes.root} square>
         <div className={this.classes.header}>
           <div className={this.classes.titleContainer}>
             <div className={this.classes.titleChip}>

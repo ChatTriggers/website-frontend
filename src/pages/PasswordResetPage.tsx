@@ -112,7 +112,7 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
           <meta property="og:url" content="https://www.chattriggers.com/passwordreset" />
         </MetaTags>
         <div className={this.classes.rootInner}>
-          <Paper className={this.classes.content}>
+          <Paper className={this.classes.content} square>
             <Typography variant="h5">
               Reset Password
             </Typography>

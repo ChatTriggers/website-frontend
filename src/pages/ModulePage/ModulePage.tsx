@@ -124,12 +124,12 @@ class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
           {module.image !== '' && <meta property="og:image" content={module.image} />}
           <meta property="og:url" content={`https://www.chattriggers.com/modules/v/${module.name}`} />
         </MetaTags>
-        <Paper className={this.classes.paper}>
+        <Paper className={this.classes.paper} square>
           {module && <ModulePageHeader />}
         </Paper>
         <Description />
         <Tags />
-        <Paper className={this.classes.paper}>
+        <Paper className={this.classes.paper} square>
           <ModulePageReleases />
         </Paper>
       </div>

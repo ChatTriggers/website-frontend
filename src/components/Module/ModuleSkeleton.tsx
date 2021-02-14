@@ -90,7 +90,7 @@ export default withTheme(withWidth()(({ theme, width: deviceWidth }: IModuleSkel
   const classes = useStyles();
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} square>
       <div className={classes.header}>
         <div className={classes.titleContainer}>
           <div className={classes.titleChip}>
@@ -123,7 +123,7 @@ export default withTheme(withWidth()(({ theme, width: deviceWidth }: IModuleSkel
               }
 
               short = !short && Math.random() <= shortLineProb && n > minNormalLines;
-              const width = `calc(100${units} - ${desktop ? 0 : theme.spacing(2) * 2}px - 
+              const width = `calc(100${units} - ${desktop ? 0 : theme.spacing(2) * 2}px -
                             ${short ? shortLengthVariation : normalLengthVariation}${units})`;
 
               return <Skeleton key={n} style={{ width }} />;

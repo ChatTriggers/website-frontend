@@ -112,7 +112,7 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
         <meta property="og:url" content="https://www.chattriggers.com/login" />
       </MetaTags>
       <div className={classes.paperContainer}>
-        <Paper className={classes.paper}>
+        <Paper className={classes.paper} square>
           <TextField
             className={classes.username}
             required
