@@ -39,11 +39,11 @@ export default ({ setCtVersionHook }: IProps): JSX.Element => {
           id: 'ct-version',
         }}
       >
-        {Object.keys(apiStore.ctVersions).map(minorVersion => (
-          <optgroup label={`${minorVersion}.X`} key={minorVersion}>
-            {apiStore.ctVersions[minorVersion].map(patchVersion => (
-              <option value={`${minorVersion}.${patchVersion}`} key={minorVersion + patchVersion}>
-                {`${minorVersion}.${patchVersion}`}
+        {apiStore.ctVersions.map(({ majorMinor, patches }) => (
+          <optgroup label={`${majorMinor}.X`} key={majorMinor}>
+            {patches.map(patch => (
+              <option value={`${majorMinor}.${patch}`} key={majorMinor + patch}>
+                {`${majorMinor}.${patch}`}
               </option>
             ))}
           </optgroup>

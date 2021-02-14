@@ -41,8 +41,15 @@ export interface IRelease {
   createdAt: number;
 }
 
-export interface IVersions {
-  [version: string]: Array<number>;
+export interface IRawVersions {
+  [version: string]: Array<string>;
+}
+
+export type IVersions = Array<IVersion>
+
+export interface IVersion {
+  majorMinor: string;
+  patches: Array<string>;
 }
 
 export type ModuleSearchFilter = 'all' | 'trusted' | 'user' | 'flagged';

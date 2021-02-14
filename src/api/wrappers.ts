@@ -1,5 +1,5 @@
 import * as raw from './raw';
-import { IUser } from '~types';
+import { IUser, IVersions } from '~types';
 import { modulesStore, authStore, apiStore } from '~store';
 
 export const login = async (
@@ -79,7 +79,17 @@ export const loadTags = async (): Promise<void> => {
 };
 
 export const loadCtVersions = async (): Promise<void> => {
-  apiStore.setCtVersions(await raw.getVersions());
+  const rawVersions = await raw.getVersions();
+  const newVersions: IVersions = [];
+
+  Object.keys(rawVersions).forEach(version => {
+    newVersions.push({
+      majorMinor: version,
+      patches: rawVersions[version],
+    });
+  });
+
+  apiStore.setCtVersions(newVersions);
 };
 
 export const deleteModule = async (moduleId: number): Promise<void> => {

@@ -31,7 +31,7 @@ class ApiStore {
   public allowedTags: string[] = [];
 
   @observable
-  public ctVersions: IVersions = {};
+  public ctVersions: IVersions = [];
 
   @computed
   get totalPages(): number {
