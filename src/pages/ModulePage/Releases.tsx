@@ -151,7 +151,7 @@ export default observer((): JSX.Element => {
           const modChip = editing ? (
             <VersionSelect setCtVersionHook={setVersion} />
           ) : <Chip label={`v${release.modVersion}`} size="small" />;
-          const pendingChip = release.verified ? null : (
+          const pendingChip = release.verified !== false ? null : (
             <Tooltip title={pendingChipText} placement="top">
               <Chip className={classes.pendingChip} label="Verification Pending" size="small" style={{ color: 'yellow' }} />
             </Tooltip>
