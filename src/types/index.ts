@@ -39,6 +39,7 @@ export interface IRelease {
   downloads: number;
   scripts: File | undefined;
   createdAt: number;
+  verified: boolean;
 }
 
 export interface IRawVersions {

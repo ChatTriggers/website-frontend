@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Typography,
+  Tooltip,
   List,
   ListItem,
   ListItemText,
@@ -75,7 +76,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     opacity: 0.8,
     margin: theme.spacing(0, 2, 0, 0),
   },
+  pendingChip: {
+    marginLeft: 10,
+  },
 }));
+
+const pendingChipText = 'This release must be verified by one of our trusted community members. '
+  + 'This release is only visible to you, the module creator.';
 
 export default observer((): JSX.Element => {
   const classes = useStyles();
@@ -144,6 +151,11 @@ export default observer((): JSX.Element => {
           const modChip = editing ? (
             <VersionSelect setCtVersionHook={setVersion} />
           ) : <Chip label={`v${release.modVersion}`} size="small" />;
+          const pendingChip = release.verified ? null : (
+            <Tooltip title={pendingChipText} placement="top">
+              <Chip className={classes.pendingChip} label="Verification Pending" size="small" style={{ color: 'yellow' }} />
+            </Tooltip>
+          );
 
           const onClickEditing = (): void => {
             if (editing) {
@@ -195,6 +207,7 @@ export default observer((): JSX.Element => {
               {releaseChip}
               <Typography className={classes.releaseTypography}>for ct</Typography>
               {modChip}
+              {pendingChip}
             </div>
           );
 
