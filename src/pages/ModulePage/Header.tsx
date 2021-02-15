@@ -20,7 +20,6 @@ import {
   modulesStore, authStore, runInAction, observer,
 } from '~store';
 import { updateModule, getModules } from '~api';
-import { Desktop } from '~components/utils/DeviceUtils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -123,29 +122,27 @@ export default withWidth()(observer(({ width }: WithWidthProps): JSX.Element => 
           ) : <Typography variant="body1">No image</Typography>}
         </div>
       </div>
-      <Desktop>
-        <div style={{
-          display: 'flex', justifyContent: 'center', width: '100%', marginTop: 8,
-        }}
-        >
-          {authed ? (
-            <IconButton
-              className={classes.editButton}
-              size="small"
-              onClick={onClickEditing}
-              disabled={editing && !imageValid}
-              style={{ marginBottom: 0 }}
-            >
-              {editing ? <CheckIcon /> : <EditIcon />}
-            </IconButton>
-          ) : <div />}
-          {editing ? (
-            <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete} style={{ marginBottom: 0 }}>
-              <ClearIcon />
-            </IconButton>
-          ) : <div />}
-        </div>
-      </Desktop>
+      <div style={{
+        display: 'flex', justifyContent: 'center', width: '100%', marginTop: 8,
+      }}
+      >
+        {authed ? (
+          <IconButton
+            className={classes.editButton}
+            size="small"
+            onClick={onClickEditing}
+            disabled={editing && !imageValid}
+            style={{ marginBottom: 0 }}
+          >
+            {editing ? <CheckIcon /> : <EditIcon />}
+          </IconButton>
+        ) : <div />}
+        {editing ? (
+          <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete} style={{ marginBottom: 0 }}>
+            <ClearIcon />
+          </IconButton>
+        ) : <div />}
+      </div>
       {editing && (
         <TextField
           id="module-image"

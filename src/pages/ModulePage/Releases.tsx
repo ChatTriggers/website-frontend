@@ -22,7 +22,6 @@ import {
   Check as CheckIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import { Desktop } from '~components/utils/DeviceUtils';
 import MarkdownEditor from '~components/MarkdownEditor';
 import MarkdownRenderer from '~components/MarkdownRenderer';
 import DeleteReleaseDialog from '~components/Desktop/DeleteReleaseDialog';
@@ -134,13 +133,11 @@ export default observer((): JSX.Element => {
         <Typography variant="subtitle1">
           Releases
         </Typography>
-        <Desktop>
-          {authed ? (
-            <Button variant="contained" color="primary" onClick={openCreatingDialog}>
-              Create Release
-            </Button>
-          ) : <div />}
-        </Desktop>
+        {authed ? (
+          <Button variant="contained" color="primary" onClick={openCreatingDialog}>
+            Create Release
+          </Button>
+        ) : <div />}
       </div>
       <List component="nav">
         <Divider />
@@ -192,18 +189,16 @@ export default observer((): JSX.Element => {
 
           const label = (
             <div className={classes.releaseTitle}>
-              <Desktop>
-                {authed ? (
-                  <>
-                    <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
-                      {editing ? <CheckIcon /> : <EditIcon />}
-                    </IconButton>
-                    <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
-                      {editing ? <ClearIcon /> : <DeleteIcon />}
-                    </IconButton>
-                  </>
-                ) : <div />}
-              </Desktop>
+              {authed ? (
+                <>
+                  <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
+                    {editing ? <CheckIcon /> : <EditIcon />}
+                  </IconButton>
+                  <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
+                    {editing ? <ClearIcon /> : <DeleteIcon />}
+                  </IconButton>
+                </>
+              ) : <div />}
               {releaseChip}
               <Typography className={classes.releaseTypography}>for ct</Typography>
               {modChip}
@@ -215,27 +210,25 @@ export default observer((): JSX.Element => {
             <div key={release.id}>
               <ListItem style={{ padding: 0 }}>
                 <ListItemText primary={label} />
-                <Desktop>
-                  <Button
-                    className={classes.releasesDownloadButton}
-                    variant="contained"
-                    size="small"
-                    onClick={onCopyCommand}
-                  >
-                    Copy Import Command
-                  </Button>
-                  <Button
-                    className={classes.releasesDownloadButton}
-                    variant="contained"
-                    size="small"
-                    onClick={onDownloadScripts(release.id)}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-                    </svg>
-                    Download
-                  </Button>
-                </Desktop>
+                <Button
+                  className={classes.releasesDownloadButton}
+                  variant="contained"
+                  size="small"
+                  onClick={onCopyCommand}
+                >
+                  Copy Import Command
+                </Button>
+                <Button
+                  className={classes.releasesDownloadButton}
+                  variant="contained"
+                  size="small"
+                  onClick={onDownloadScripts(release.id)}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                  </svg>
+                  Download
+                </Button>
                 <IconButton onClick={() => setOpenedRelease(release.id)}>
                   {openedRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
