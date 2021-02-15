@@ -177,7 +177,7 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
 
     if (oldBlob !== undefined) {
       (await JSZip.loadAsync(oldBlob)).forEach((path, file) => {
-        if (file.dir) return;
+        if (file.dir || path.endsWith('.DS_STORE')) return;
 
         promises.push(new Promise(resolve => {
           file.async('string').then(text => {
@@ -194,7 +194,7 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
     }
 
     (await JSZip.loadAsync(newBlob)).forEach(async (path, file) => {
-      if (file.dir) return;
+      if (file.dir || path.endsWith('.DS_STORE')) return;
 
       promises.push(new Promise(resolve => {
         file.async('string').then(text => {
