@@ -9,6 +9,8 @@ import {
 } from '@material-ui/core';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import JSZip from 'jszip';
+import { isBinary } from 'istextorbinary';
+import { Buffer } from 'buffer';
 import {
   observer,
   observable,
@@ -24,7 +26,7 @@ import {
   getSingleModule,
 } from '~api/raw';
 import { StyledComponent, Styles } from '~components';
-import DiffViewer from './DiffViewer';
+import DiffViewer, { IDiff } from './DiffViewer';
 
 type VerificationProps = RouteComponentProps<{ module: string }>;
 
@@ -95,12 +97,6 @@ const styles: Styles = (theme: Theme) => ({
 // http://localhost:7000/api/modules/154/releases/c1e2c90e-ea72-407c-9c1a-b29c393c8e4b?file=scripts
 // http://localhost:3000/verify?token=47842236-b718-411c-9eb4-38cd93922765&moduleId=154&oldReleas
 // eId=af951edd-8d9a-486d-a4ae-3b8bb4e9a111&newReleaseId=c1e2c90e-ea72-407c-9c1a-b29c393c8e4b
-
-interface IDiff {
-  path: string;
-  oldText: string | undefined;
-  newText: string | undefined;
-}
 
 @observer
 class ReleaseVerificationPage extends StyledComponent<typeof styles, VerificationProps> {
@@ -177,7 +173,7 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
     const oldBlob = oldReleaseId === undefined ? undefined : await getReleaseScript(this.moduleId, oldReleaseId);
     const newBlob = await getReleaseScript(this.moduleId, newReleaseId);
 
-    const promises: Array<Promise<IDiff>> = [];
+    const promises: Array<Promise<IDiff | undefined>> = [];
 
     if (oldBlob !== undefined) {
       (await JSZip.loadAsync(oldBlob)).forEach((path, file) => {
@@ -185,7 +181,13 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
 
         promises.push(new Promise(resolve => {
           file.async('string').then(text => {
-            resolve({ path, oldText: text, newText: undefined });
+            const arr = new TextEncoder().encode(text);
+            resolve({
+              path,
+              isBinary: isBinary(path, Buffer.from(arr)) === true,
+              oldText: text,
+              newText: undefined,
+            });
           });
         }));
       });
@@ -196,18 +198,21 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
 
       promises.push(new Promise(resolve => {
         file.async('string').then(text => {
-          resolve({ path, oldText: undefined, newText: text });
+          const arr = new TextEncoder().encode(text);
+          resolve({
+            path,
+            isBinary: isBinary(path, Buffer.from(arr)) === true,
+            oldText: undefined,
+            newText: text,
+          });
         });
       }));
     });
 
     return Promise.all(promises).then(result => {
-      const diffs: Map<string, {
-        oldText: string | undefined;
-        newText: string | undefined;
-      }> = new Map();
+      const diffs: Map<string, IDiff> = new Map();
 
-      result.forEach(diff => {
+      (result.filter(it => it !== undefined) as Array<IDiff>).forEach(diff => {
         if (diffs.has(diff.path)) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const entry = diffs.get(diff.path)!;
@@ -218,7 +223,7 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
             entry.newText = diff.newText;
           }
         } else {
-          diffs.set(diff.path, { oldText: diff.oldText, newText: diff.newText });
+          diffs.set(diff.path, diff);
         }
       });
 
@@ -226,7 +231,7 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
         this.diffs = Array.from(diffs.entries())
           .sort((a, b) => a[0].localeCompare(b[0]))
           .filter(a => a[1].oldText !== a[1].newText)
-          .map(([path, content]): IDiff => ({ path, oldText: content.oldText, newText: content.newText }));
+          .map(a => a[1]);
 
         this.isLoading = false;
       });
@@ -301,8 +306,8 @@ class ReleaseVerificationPage extends StyledComponent<typeof styles, Verificatio
             </Button>
           </div>
         </Paper>
-        {this.diffs.map(({ path, oldText, newText }) => (
-          <DiffViewer key={path} path={path} oldText={oldText} newText={newText} />
+        {this.diffs.map(diff => (
+          <DiffViewer key={diff.path} diff={diff} />
         ))}
       </div>
     );

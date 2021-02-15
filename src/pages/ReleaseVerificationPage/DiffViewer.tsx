@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: theme.spacing(3),
     paddingTop: theme.spacing(0),
     paddingBottom: theme.spacing(0),
+    minHeight: 48,
   },
   headerLeft: {
     display: 'flex',
@@ -46,13 +47,24 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface IDiffViewerProps {
+export interface IDiff {
   path: string;
+  isBinary: boolean;
   oldText: string | undefined;
   newText: string | undefined;
 }
 
-export default ({ path, oldText, newText }: IDiffViewerProps): JSX.Element => {
+interface IDiffViewerProps {
+  diff: IDiff;
+}
+
+export default ({ diff }: IDiffViewerProps): JSX.Element => {
+  const {
+    path,
+    isBinary,
+    oldText,
+    newText,
+  } = diff;
   const splitViewChangable = oldText !== undefined && newText !== undefined;
 
   const classes = useStyles();
@@ -63,14 +75,30 @@ export default ({ path, oldText, newText }: IDiffViewerProps): JSX.Element => {
     <Paper className={classes.paper}>
       <div className={classes.header}>
         <div className={classes.headerLeft}>
-          <IconButton onClick={() => setShown(!shown)}>
-            {shown ? <ArrowDownIcon /> : <ArrowRightIcon />}
-          </IconButton>
+          {!isBinary && (
+            <IconButton onClick={() => setShown(!shown)}>
+              {shown ? <ArrowDownIcon /> : <ArrowRightIcon />}
+            </IconButton>
+          )}
           <Typography className={classes.fileName} variant="h6">
-            {path}
+            {path + (isBinary ? ' (Binary)' : '')}
           </Typography>
+          {isBinary && (
+            <>
+              <Typography variant="body1" style={{ marginLeft: 20 }}>
+                Old Size:
+                {'  '}
+                {oldText?.length || 0}
+              </Typography>
+              <Typography variant="body1" style={{ marginLeft: 20 }}>
+                New Size:
+                {'  '}
+                {newText?.length || 0}
+              </Typography>
+            </>
+          )}
         </div>
-        {splitViewChangable ? (
+        {splitViewChangable && !isBinary && (
           <div className={classes.headerRight}>
             <FormControlLabel
               control={(
@@ -82,16 +110,18 @@ export default ({ path, oldText, newText }: IDiffViewerProps): JSX.Element => {
               label="Split view"
             />
           </div>
-        ) : null}
+        )}
       </div>
       <Collapse in={shown}>
-        <ReactDiffViewer
-          key={path}
-          oldValue={oldText}
-          newValue={newText}
-          splitView={splitViewChangable && splitView}
-          useDarkTheme
-        />
+        {!isBinary && (
+          <ReactDiffViewer
+            key={path}
+            oldValue={oldText}
+            newValue={newText}
+            splitView={splitViewChangable && splitView}
+            useDarkTheme
+          />
+        )}
       </Collapse>
     </Paper>
   );
