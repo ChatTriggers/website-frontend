@@ -103,6 +103,10 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
     }
   });
 
+  const forgotPassword = (): void => {
+    history.push('/passwordreset');
+  };
+
   return (
     <div className={classes.root}>
       <MetaTags>
@@ -136,6 +140,13 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
             autoComplete="current-password"
             onKeyDownCapture={handlerKeyDown}
           />
+          <div style={{ width: '102.5%', marginTop: 5 }}>
+            <Button onClick={forgotPassword}>
+              <Typography variant="body2">
+                Forgot Password?
+              </Typography>
+            </Button>
+          </div>
           {error && (
             <Typography className={classes.error} variant="caption">
               Unrecognized username and password

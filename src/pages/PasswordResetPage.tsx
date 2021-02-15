@@ -53,6 +53,18 @@ const styles: StyleRulesCallback<Theme, object> = (theme: Theme) => ({
 @observer
 class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentProps> {
   @observable
+  private emailTyped = false;
+
+  @observable
+  private passwordTyped = false;
+
+  @observable
+  private passwordConfirmTyped = false;
+
+  @observable
+  private email = '';
+
+  @observable
   private password = '';
 
   @observable
@@ -62,22 +74,40 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
   private loading = false;
 
   @computed
-  get isEqual(): boolean {
+  get emailIsValid(): boolean {
+    return this.email.length > 0 && this.email.includes('@') && this.email.indexOf('@') < this.email.length;
+  }
+
+  @computed
+  get passwordIsValid(): boolean {
+    return this.password.length >= 8;
+  }
+
+  @computed
+  get passwordConfirmIsValid(): boolean {
     return this.password === this.passwordConfirmation;
   }
 
   @computed
-  get isValid(): boolean {
-    return this.password.length >= 8;
+  get allValid(): boolean {
+    return this.emailIsValid && this.passwordIsValid && this.passwordConfirmIsValid;
+  }
+
+  @action
+  private readonly onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    this.emailTyped = true;
+    this.email = e.target.value;
   }
 
   @action
   private readonly onChangePassword = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    this.passwordTyped = true;
     this.password = e.target.value;
   }
 
   @action
   private readonly onChangePasswordConfirmation = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    this.passwordConfirmTyped = true;
     this.passwordConfirmation = e.target.value;
   }
 
@@ -117,29 +147,42 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
               Reset Password
             </Typography>
             <TextField
-              label="Password"
-              type="password"
-              value={this.password}
-              onChange={this.onChangePassword}
-              error={!this.isValid}
-              helperText={(!this.isValid && 'Password must be longer than 8 characters') || ''}
+              style={{ marginTop: 20 }}
+              label="Email"
+              type="email"
+              value={this.email}
+              onChange={this.onChangeEmail}
+              error={!this.emailIsValid && this.emailTyped}
+              helperText={(!this.emailIsValid && 'Email must be non-empty and contain an \'@\' character') || ''}
               fullWidth
               onKeyDownCapture={this.handlerKeyDown}
             />
             <TextField
+              style={{ marginTop: 20 }}
+              label="Password"
+              type="password"
+              value={this.password}
+              onChange={this.onChangePassword}
+              error={!this.passwordIsValid && this.passwordTyped}
+              helperText={(!this.passwordIsValid && 'Password must be longer than 8 characters') || ''}
+              fullWidth
+              onKeyDownCapture={this.handlerKeyDown}
+            />
+            <TextField
+              style={{ marginTop: 20 }}
               label="Password Confirmation"
               type="password"
               value={this.passwordConfirmation}
               onChange={this.onChangePasswordConfirmation}
-              error={!this.isEqual}
-              helperText={(!this.isEqual && 'Must match password field above') || ''}
+              error={!this.passwordConfirmIsValid && this.passwordConfirmTyped}
+              helperText={(!this.passwordConfirmIsValid && 'Must match password field above') || ''}
               fullWidth
               onKeyDownCapture={this.handlerKeyDown}
             />
             <div style={{ display: 'flex', justifyContent: 'end' }}>
               <ButtonGroup className={this.classes.buttons}>
                 <Button onClick={this.onCancel}>Cancel</Button>
-                <Button onClick={this.onReset} className={this.classes.buttonError}>
+                <Button onClick={this.onReset} className={this.classes.buttonError} disabled={!this.allValid}>
                   {this.loading ? <CircularProgress size={30} /> : 'Reset Password'}
                 </Button>
               </ButtonGroup>
