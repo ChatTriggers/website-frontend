@@ -79,6 +79,6 @@ export const validateStatusCode = <T>(
     }
     case 'undefined':
     default:
-      throw new Error(`Received unexpected error status code from api endpoint: ${response.status}`);
+      throw new Error(`Received unexpected error status code from api endpoint: ${response.status}: ${response.statusText}`);
   }
 };
