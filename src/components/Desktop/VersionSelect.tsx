@@ -16,16 +16,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IProps {
-  setCtVersionHook(version: string): void;
+  ctVersion: string;
+  setCtVersion(version: string): void;
 }
 
-export default ({ setCtVersionHook }: IProps): JSX.Element => {
+export default ({ ctVersion, setCtVersion }: IProps): JSX.Element => {
   const classes = useStyles();
-  const [ctVersion, _setCtVersion] = React.useState(apiStore.latestVersion);
 
-  const setCtVersion = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    _setCtVersion(e.target.value);
-    setCtVersionHook(e.target.value);
+  const setCtVersion2 = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    setCtVersion(e.target.value);
   };
 
   return (
@@ -33,7 +32,7 @@ export default ({ setCtVersionHook }: IProps): JSX.Element => {
       <InputLabel htmlFor="ct-version">CT Version</InputLabel>
       <NativeSelect
         value={ctVersion}
-        onChange={setCtVersion}
+        onChange={setCtVersion2}
         inputProps={{
           name: 'CT Version',
           id: 'ct-version',

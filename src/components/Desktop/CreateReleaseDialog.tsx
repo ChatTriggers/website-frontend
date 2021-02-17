@@ -66,7 +66,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
 
   const [releaseVersion, setReleaseVersion] = React.useState('');
   const [releaseError, setReleaseError] = React.useState(true);
-  const [modVersion, setModVersion] = React.useState<string | undefined>(undefined);
+  const [modVersion, setModVersion] = React.useState<string>(apiStore.latestVersion);
   const [changelog, setChangelog] = React.useState('');
   const [fileName, setFileName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
@@ -144,7 +144,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
           autoFocus
           InputLabelProps={{ shrink: true }}
         />
-        <VersionSelect setCtVersionHook={setModVersion} />
+        <VersionSelect ctVersion={modVersion} setCtVersion={setModVersion} />
         <label htmlFor="module-file-upload">
           <input
             ref={fileRef}
