@@ -3,10 +3,8 @@ import {
   BrowserRouter as Router, Route, Switch, Redirect,
 } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
-import { Online, Offline } from 'react-detect-offline';
 import Drawer from '~components/Drawer';
 import ErrorDialog from '~components/ErrorDialog';
-import OfflinePage from '~pages/OfflinePage';
 import theme from './styles/theme';
 import routes from './routes';
 import { globalStore, modulesStore, observer } from '~store';
@@ -32,27 +30,22 @@ export default class App extends React.Component {
       <ThemeProvider theme={theme}>
         <Router>
           <Drawer>
-            <Online>
-              <ErrorDialog />
-              <Switch>
-                {routes.map(({ route, component, name }) => (
-                  <Route
-                    key={route}
-                    path={route}
-                    exact
-                    render={({ match }) => {
-                      globalStore.setDrawerTitle(name || match.params.module);
+            <ErrorDialog />
+            <Switch>
+              {routes.map(({ route, component, name }) => (
+                <Route
+                  key={route}
+                  path={route}
+                  exact
+                  render={({ match }) => {
+                    globalStore.setDrawerTitle(name || match.params.module);
 
-                      return component;
-                    }}
-                  />
-                ))}
-                <Redirect to="/modules" />
-              </Switch>
-            </Online>
-            <Offline>
-              <OfflinePage />
-            </Offline>
+                    return component;
+                  }}
+                />
+              ))}
+              <Redirect to="/modules" />
+            </Switch>
           </Drawer>
         </Router>
       </ThemeProvider>
