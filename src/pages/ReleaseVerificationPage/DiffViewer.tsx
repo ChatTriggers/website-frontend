@@ -13,7 +13,7 @@ import {
   ChevronRight as ArrowRightIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import ReactDiffViewer from 'react-diff-viewer';
+import ReactDiffViewer, { DiffMethod } from 'react-diff-viewer';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -118,6 +118,7 @@ export default ({ diff }: IDiffViewerProps): JSX.Element => {
             key={path}
             oldValue={oldText}
             newValue={newText}
+            compareMethod={DiffMethod.LINES}
             splitView={splitViewChangable && splitView}
             useDarkTheme
           />
