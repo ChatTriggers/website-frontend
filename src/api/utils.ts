@@ -7,5 +7,5 @@ export const BASE_URL = process.env.NODE_ENV === 'production'
 export const axios = Axios.create({
   validateStatus: status => status >= 200 && status < 500,
   withCredentials: true,
-  timeout: 5000,
+  timeout: 60000,
 });
