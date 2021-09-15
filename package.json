@@ -97,7 +97,7 @@
     "resolve": "1.10.0",
     "sass-loader": "7.1.0",
     "semver": "6.0.0",
-    "set-value": "3.0.1",
+    "set-value": "4.0.1",
     "slate": "^0.47.7",
     "slate-react": "^0.22.7",
     "style-loader": "0.23.1",
