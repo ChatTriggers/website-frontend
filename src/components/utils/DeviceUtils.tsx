@@ -19,6 +19,9 @@ const makeDevice = (breakpoint: Breakpoint, direction: BreakpointDirection) => {
       hidden = useMediaQuery<Theme>(theme => theme.breakpoints.down(breakpoint));
     }
     if (hidden) return null;
+    if (children instanceof Array) {
+      return <>{children}</>;
+    }
 
     return children;
   };
