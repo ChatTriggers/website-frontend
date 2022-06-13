@@ -1,12 +1,6 @@
-import React from 'react';
-import {
-  Paper,
-  Typography,
-  Container,
-  Theme,
-} from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Container, Paper, Theme, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -32,41 +26,28 @@ interface IModuleErrorProps {
   errorType: 'module-doesnt-exist' | 'no-modules-found';
 }
 
-type Test = IModuleErrorProps['errorType'];
-
 type IErrorInfo = {
   [k in IModuleErrorProps['errorType']]: {
     title: JSX.Element;
     description: JSX.Element;
   };
-}
+};
 
-export default ({ errorType }: IModuleErrorProps): JSX.Element => {
+export default ({ errorType }: IModuleErrorProps) => {
   const classes = useStyles();
 
   const errorInfo: IErrorInfo = {
     'module-doesnt-exist': {
-      title: (
-        <Typography variant="h5">
-          Module not found
-        </Typography>
-      ),
+      title: <Typography variant="h5">Module not found</Typography>,
       description: (
         <Typography variant="body1">
-          Oops! It seems you&apos;ve tried to access a module that doesn&apos;t exist. Click
-          {' '}
-          <Link to="/modules">here</Link>
-          {' '}
-          to go back to the list of modules
+          Oops! It seems you&apos;ve tried to access a module that doesn&apos;t exist.
+          Click <Link to="/modules">here</Link> to go back to the list of modules
         </Typography>
       ),
     },
     'no-modules-found': {
-      title: (
-        <Typography variant="h5">
-          No modules found
-        </Typography>
-      ),
+      title: <Typography variant="h5">No modules found</Typography>,
       description: (
         <Typography variant="body1">
           No modules that match the filter criteria were found
@@ -80,9 +61,7 @@ export default ({ errorType }: IModuleErrorProps): JSX.Element => {
       <Container>
         <Paper className={classes.root} square>
           {errorInfo[errorType].title}
-          <div className={classes.body}>
-            {errorInfo[errorType].description}
-          </div>
+          <div className={classes.body}>{errorInfo[errorType].description}</div>
         </Paper>
       </Container>
     </div>

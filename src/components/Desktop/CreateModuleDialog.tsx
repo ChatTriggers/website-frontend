@@ -1,22 +1,24 @@
-import React from 'react';
 import {
-  TextField,
-  Typography,
   Button,
   Checkbox,
-  Dialog,
-  Grid,
-  CircularProgress,
-  FormControlLabel,
-  Theme,
-  colors,
   Chip,
+  CircularProgress,
+  colors,
+  Dialog,
+  FormControlLabel,
+  Grid,
   MenuItem,
+  TextField,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import MarkdownEditor from '~components/MarkdownEditor';
-import { getModules, createModule } from '~api';
+import React from 'react';
+
+import { createModule, getModules } from '~api';
 import { apiStore, authStore, errorStore } from '~store';
+
+import MarkdownEditor from '../MarkdownEditor';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -63,7 +65,7 @@ interface ICreateReleaseDialog {
   onClose(): void;
 }
 
-export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
+export default ({ open, onClose }: ICreateReleaseDialog) => {
   const classes = useStyles();
 
   const [name, setName] = React.useState('');
@@ -75,7 +77,9 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const [loading, setLoading] = React.useState(false);
   const [flagged, setFlagChecked] = React.useState(false);
 
-  const onChangeName = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeName = ({
+    target,
+  }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     const n = target.value as string;
     setName(n);
 
@@ -90,18 +94,24 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
     setDescription(desc);
   };
 
-  const onChangeImage = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeImage = ({
+    target,
+  }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     const img = target.value as string;
     setImage(img);
 
     if (img.length === 0) {
       setImageError(false);
     } else {
-      setImageError(!/^https?:\/\/(\w+\.)?imgur.com\/[a-zA-Z0-9]{7}\.[a-zA-Z0-9]+$/g.test(img));
+      setImageError(
+        !/^https?:\/\/(\w+\.)?imgur.com\/[a-zA-Z0-9]{7}\.[a-zA-Z0-9]+$/g.test(img),
+      );
     }
   };
 
-  const onChangeTags = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeTags = ({
+    target,
+  }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     setTags(target.value as string[]);
   };
 
@@ -115,7 +125,8 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
       onClose();
     } catch (e) {
       setLoading(false);
-      errorStore.setError('Error creating module', e.message);
+      const err = e as Error;
+      errorStore.setError('Error creating module', err.message);
     }
   };
 
@@ -139,7 +150,11 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
             value={name}
             onChange={onChangeName}
             error={nameError}
-            helperText={nameError ? 'The name must be alpha-numeric and between 3 and 64 characters in length' : ''}
+            helperText={
+              nameError
+                ? 'The name must be alpha-numeric and between 3 and 64 characters in length'
+                : ''
+            }
             fullWidth
             required
             autoFocus
@@ -167,9 +182,8 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
             InputLabelProps={{ shrink: true }}
             SelectProps={{
               multiple: true,
-              renderValue: selected => (selected as string[]).map(tag => (
-                <Chip key={tag} label={tag} />
-              )),
+              renderValue: selected =>
+                (selected as string[]).map(tag => <Chip key={tag} label={tag} />),
               margin: 'dense',
               MenuProps: {
                 style: {
@@ -178,7 +192,11 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
               },
             }}
           >
-            {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+            {apiStore.allowedTags.map(tag => (
+              <MenuItem key={tag} value={tag}>
+                {tag}
+              </MenuItem>
+            ))}
           </TextField>
         </Grid>
         <Grid item xs={12}>
@@ -187,13 +205,13 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
         {authStore.isTrustedOrHigher ? (
           <Grid item xs={6} className={classes.flagBox}>
             <FormControlLabel
-              control={(
+              control={
                 <Checkbox
                   checked={flagged}
                   onChange={() => setFlagChecked(!flagged)}
                   color="primary"
                 />
-              )}
+              }
               label="Flag Module"
               labelPlacement="start"
             />
@@ -208,11 +226,7 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
           >
             {loading ? <CircularProgress /> : 'Submit'}
           </Button>
-          <Button
-            className={classes.cancelButton}
-            variant="contained"
-            onClick={onClose}
-          >
+          <Button className={classes.cancelButton} variant="contained" onClick={onClose}>
             Cancel
           </Button>
         </Grid>

@@ -1,40 +1,36 @@
-import React from 'react';
 import {
-  Paper,
-  Typography,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  FormLabel,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  CircularProgress,
-  Theme,
   Chip,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  MenuItem,
+  Paper,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { Redirect } from 'react-router-dom';
-import { History } from 'history';
 import clsx from 'clsx';
-import {
-  modulesStore,
-  authStore,
-  apiStore,
-  errorStore,
-  observer,
-  action,
-  runInAction,
-  MODULES_PER_PAGE_OPTIONS,
-} from '~store';
-import { ModuleSearchFilter, ModuleSorting } from '~types';
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+
 import { getModules } from '~api';
 import { Desktop } from '~components/utils/DeviceUtils';
-
-interface IMobileFilterPageProps {
-  history: History;
-}
+import {
+  action,
+  apiStore,
+  authStore,
+  errorStore,
+  MODULES_PER_PAGE_OPTIONS,
+  modulesStore,
+  observer,
+  runInAction,
+} from '~store';
+import { ModuleSearchFilter, ModuleSorting } from '~types';
 
 interface IStyleProps {
   searchValue: boolean;
@@ -106,7 +102,9 @@ export default observer(() => {
   const [searching, setSearching] = React.useState(false);
   const [searchFocused, setSearchFocused] = React.useState(false);
   const [tagSearchFocused, setTagSearchFocused] = React.useState(false);
-  const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout[] | undefined);
+  const [searchTimeout, setSearchTimeout] = React.useState(
+    undefined as NodeJS.Timeout[] | undefined,
+  );
 
   const classes = useStyles({
     searchValue: searchFocused || !!apiStore.search,
@@ -126,17 +124,20 @@ export default observer(() => {
 
     if (searchTimeout) searchTimeout.forEach(clearTimeout);
 
-    setSearchTimeout([setTimeout(async () => {
-      setSearching(true);
-      await getModules();
-      setSearching(false);
-    }, 1500), setTimeout(() => {
-      if (modulesStore.modules.length === 0) {
-        runInAction(() => {
-          errorStore.modulesNotLoaded = true;
-        });
-      }
-    }, 6500)]);
+    setSearchTimeout([
+      setTimeout(async () => {
+        setSearching(true);
+        await getModules();
+        setSearching(false);
+      }, 1500),
+      setTimeout(() => {
+        if (modulesStore.modules.length === 0) {
+          runInAction(() => {
+            errorStore.modulesNotLoaded = true;
+          });
+        }
+      }, 6500),
+    ]);
   });
 
   const onTagSearchChange = action(({ target }: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,17 +151,20 @@ export default observer(() => {
 
     if (searchTimeout) searchTimeout.forEach(clearTimeout);
 
-    setSearchTimeout([setTimeout(async () => {
-      setSearching(true);
-      await getModules();
-      setSearching(false);
-    }, 1500), setTimeout(() => {
-      if (modulesStore.modules.length === 0) {
-        runInAction(() => {
-          errorStore.modulesNotLoaded = true;
-        });
-      }
-    }, 6500)]);
+    setSearchTimeout([
+      setTimeout(async () => {
+        setSearching(true);
+        await getModules();
+        setSearching(false);
+      }, 1500),
+      setTimeout(() => {
+        if (modulesStore.modules.length === 0) {
+          runInAction(() => {
+            errorStore.modulesNotLoaded = true;
+          });
+        }
+      }, 6500),
+    ]);
   });
 
   const onSearchFocus = (): void => {
@@ -179,7 +183,7 @@ export default observer(() => {
     setTagSearchFocused(false);
   };
 
-  const onFilterChange = action((e: React.ChangeEvent<{}>) => {
+  const onFilterChange = action((e: React.ChangeEvent) => {
     const filter = (e.target as HTMLInputElement).value as ModuleSearchFilter;
 
     if (filter !== apiStore.filter) {
@@ -188,7 +192,9 @@ export default observer(() => {
     }
   });
 
-  const onChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeModulesPerPage = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ): void => {
     const modulesPerPage = e.target.value as number;
 
     if (modulesPerPage !== apiStore.modulesPerPage) {
@@ -202,7 +208,9 @@ export default observer(() => {
     }
   };
 
-  const onChangeModuleSorting = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeModuleSorting = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ): void => {
     const moduleSorting = e.target.value as ModuleSorting;
 
     if (moduleSorting !== apiStore.sorting) {
@@ -211,10 +219,13 @@ export default observer(() => {
     }
   };
 
-  React.useEffect(() => () => {
-    // onUnmount
-    if (searchTimeout) searchTimeout.forEach(clearTimeout);
-  }, []);
+  React.useEffect(
+    () => () => {
+      // onUnmount
+      if (searchTimeout) searchTimeout.forEach(clearTimeout);
+    },
+    [],
+  );
 
   return (
     <>
@@ -234,14 +245,13 @@ export default observer(() => {
               onFocus={onSearchFocus}
               onBlur={onSearchBlur}
               InputProps={{
-                endAdornment: (searching && (
-                  <div>
-                    <CircularProgress
-                      size={15}
-                      thickness={7}
-                    />
-                  </div>
-                )) || undefined,
+                endAdornment:
+                  (searching && (
+                    <div>
+                      <CircularProgress size={15} thickness={7} />
+                    </div>
+                  )) ||
+                  undefined,
               }}
               multiline
             />
@@ -257,39 +267,50 @@ export default observer(() => {
               onFocus={onTagSearchFocus}
               onBlur={onTagSearchBlur}
               InputProps={{
-                endAdornment: (searching && (
-                  <div>
-                    <CircularProgress
-                      size={15}
-                      thickness={7}
-                      style={{ marginRight: 30 }}
-                    />
-                  </div>
-                )) || undefined,
+                endAdornment:
+                  (searching && (
+                    <div>
+                      <CircularProgress
+                        size={15}
+                        thickness={7}
+                        style={{ marginRight: 30 }}
+                      />
+                    </div>
+                  )) ||
+                  undefined,
               }}
               SelectProps={{
                 multiple: true,
-                renderValue: (selected: unknown) => (selected as string[]).map(tag => (
-                  <Chip key={tag} label={tag} size="small" color="primary" style={{ marginRight: 4 }} />
-                )),
+                renderValue: (selected: unknown) =>
+                  (selected as string[]).map(tag => (
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      size="small"
+                      color="primary"
+                      style={{ marginRight: 4 }}
+                    />
+                  )),
               }}
             >
-              {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+              {apiStore.allowedTags.map(tag => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
             </TextField>
           </Paper>
           <Paper className={classes.paper} square>
             <FormControl component="fieldset">
-              <FormLabel component="legend" focused={false}>Module Search Filters</FormLabel>
+              <FormLabel component="legend" focused={false}>
+                Module Search Filters
+              </FormLabel>
               <RadioGroup
                 className={classes.radio}
                 value={apiStore.filter}
                 onChange={onFilterChange}
               >
-                <FormControlLabel
-                  control={<Radio />}
-                  label="All Modules"
-                  value="all"
-                />
+                <FormControlLabel control={<Radio />} label="All Modules" value="all" />
                 <FormControlLabel
                   control={<Radio />}
                   label="Trusted Modules"
@@ -313,16 +334,16 @@ export default observer(() => {
           </Paper>
           <Paper className={classes.paper} square>
             <div className={classes.modulesPerPage}>
-              <Typography>
-                Modules per page:
-              </Typography>
+              <Typography>Modules per page:</Typography>
               <Select
                 className={classes.select}
                 value={apiStore.modulesPerPage}
                 onChange={onChangeModulesPerPage}
               >
                 {MODULES_PER_PAGE_OPTIONS.map(n => (
-                  <MenuItem key={n} value={n}>{n}</MenuItem>
+                  <MenuItem key={n} value={n}>
+                    {n}
+                  </MenuItem>
                 ))}
               </Select>
             </div>

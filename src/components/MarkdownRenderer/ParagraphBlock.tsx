@@ -1,11 +1,9 @@
 import React from 'react';
 
 interface IParagraphBlockProps {
-  children: React.ReactChild;
+  children: React.ReactNode & React.ReactNode[];
 }
 
-export default ({ children }: IParagraphBlockProps): JSX.Element => (
-  <p style={{ marginTop: 0, paddingTop: 0 }}>
-    {children}
-  </p>
+export default ({ children }: IParagraphBlockProps) => (
+  <p style={{ marginTop: 0, paddingTop: 0 }}>{children}</p>
 );

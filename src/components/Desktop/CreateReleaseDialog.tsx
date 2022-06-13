@@ -1,24 +1,21 @@
-import React from 'react';
 import {
-  TextField,
-  Typography,
   Button,
-  Dialog,
-  Container,
   CircularProgress,
-  Theme,
   colors,
+  Container,
+  Dialog,
+  TextField,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import MarkdownEditor from '~components/MarkdownEditor';
-import VersionSelect from '~components/Desktop/VersionSelect';
+import React from 'react';
+
 import { createRelease, getModules } from '~api';
-import {
-  modulesStore,
-  apiStore,
-  errorStore,
-  runInAction,
-} from '~store';
+import { apiStore, errorStore, modulesStore, observer, runInAction } from '~store';
+
+import MarkdownEditor from '../MarkdownEditor';
+import VersionSelect from './VersionSelect';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -58,10 +55,10 @@ interface ICreateReleaseDialog {
   onClose(): void;
 }
 
-export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
+export default observer(({ open, onClose }: ICreateReleaseDialog) => {
   const classes = useStyles();
   const fileRef = React.createRef<HTMLInputElement>();
-  // eslint-disable-next-line max-len
+
   const semvarRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
 
   const [releaseVersion, setReleaseVersion] = React.useState('');
@@ -71,7 +68,9 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   const [fileName, setFileName] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
-  const onChangeReleaseVersion = ({ target }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeReleaseVersion = ({
+    target,
+  }: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
     setReleaseVersion(target.value as string);
     setReleaseError(!semvarRegex.test(target.value as string));
   };
@@ -94,7 +93,13 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
   };
 
   const onSubmit = async (): Promise<void> => {
-    if (!fileRef.current || !fileRef.current.files || !modulesStore.activeModule || releaseError) return;
+    if (
+      !fileRef.current ||
+      !fileRef.current.files ||
+      !modulesStore.activeModule ||
+      releaseError
+    )
+      return;
 
     setLoading(true);
     try {
@@ -114,7 +119,8 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
       onClose();
     } catch (e) {
       setLoading(false);
-      errorStore.setError('Error creating release', e.message);
+      const err = e as Error;
+      errorStore.setError('Error creating release', err.message);
     }
   };
 
@@ -146,25 +152,25 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
         />
         <VersionSelect ctVersion={modVersion} setCtVersion={setModVersion} />
         <label htmlFor="module-file-upload">
-          <input
-            ref={fileRef}
-            id="module-file-upload"
-            accept=".zip"
-            type="file"
-            hidden
-          />
+          <input ref={fileRef} id="module-file-upload" accept=".zip" type="file" hidden />
           <div>
-            <Button className={classes.scriptButton} variant="contained" onClick={onUploadScripts}>
+            <Button
+              className={classes.scriptButton}
+              variant="contained"
+              onClick={onUploadScripts}
+            >
               Upload Scripts
             </Button>
-            <Container style={{ textAlign: 'center' }}>
-              {fileName}
-            </Container>
+            <Container style={{ textAlign: 'center' }}>{fileName}</Container>
           </div>
         </label>
       </div>
       <div className={classes.editor}>
-        <MarkdownEditor value={changelog} handleChange={onChangeChangelog} shouldBeChangelog />
+        <MarkdownEditor
+          value={changelog}
+          handleChange={onChangeChangelog}
+          shouldBeChangelog
+        />
       </div>
       <div className={classes.buttons}>
         <Button
@@ -175,14 +181,10 @@ export default ({ open, onClose }: ICreateReleaseDialog): JSX.Element => {
         >
           {loading ? <CircularProgress /> : 'Submit'}
         </Button>
-        <Button
-          className={classes.cancelButton}
-          variant="contained"
-          onClick={onClose}
-        >
+        <Button className={classes.cancelButton} variant="contained" onClick={onClose}>
           Cancel
         </Button>
       </div>
     </Dialog>
   );
-};
+});

@@ -1,29 +1,34 @@
-import { observable, action } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 
 class ErrorStore {
-  @observable
+  constructor() {
+    makeObservable(this, {
+      modulesNotLoaded: observable,
+      error: observable,
+      errorTitle: observable,
+      errorMessage: observable,
+      setError: action,
+      clearError: action,
+    });
+  }
+
   modulesNotLoaded = false;
 
-  @observable
   error = false;
 
-  @observable
   errorTitle = '';
 
-  @observable
   errorMessage = '';
 
-  @action
   setError = (title: string, message: string): void => {
     this.error = true;
     this.errorTitle = title;
     this.errorMessage = message;
-  }
+  };
 
-  @action
   clearError = (): void => {
     this.error = false;
-  }
+  };
 }
 
 export default new ErrorStore();

@@ -45,19 +45,19 @@ export const ApiErrors = {
     403: 'User not authorized',
     404: 'No user with specified user-id found',
   },
-  Versions: {
-
-  },
+  Versions: {},
 };
 
-type ErrorObj = {
-  [error: number]: string;
-} | (() => string | undefined);
+type ErrorObj =
+  | {
+      [error: number]: string;
+    }
+  | (() => string | undefined);
 
 export const validateStatusCode = <T>(
   response: AxiosResponse<T>,
   errors?: ErrorObj,
-  returnFunc: (() => T) = (() => response.data),
+  returnFunc: () => T = () => response.data,
 ): T => {
   if (response.status >= 200 && response.status < 300) {
     return returnFunc();
@@ -65,7 +65,10 @@ export const validateStatusCode = <T>(
 
   switch (typeof errors) {
     case 'object':
-      throw new Error(errors[response.status] || `Received unrecognized status code from api endpoint: ${response.status}`);
+      throw new Error(
+        errors[response.status] ||
+          `Received unrecognized status code from api endpoint: ${response.status}`,
+      );
     case 'function': {
       const errorMsg = errors();
 
@@ -79,6 +82,8 @@ export const validateStatusCode = <T>(
     }
     case 'undefined':
     default:
-      throw new Error(`Received unexpected error status code from api endpoint: ${response.status}: ${response.statusText}`);
+      throw new Error(
+        `Received unexpected error status code from api endpoint: ${response.status}: ${response.statusText}`,
+      );
   }
 };

@@ -1,27 +1,20 @@
-import React from 'react';
-import {
-  Paper,
-  Theme,
-  withStyles,
-} from '@material-ui/core';
+import { Paper, Theme, withStyles } from '@material-ui/core';
+import { WithStyles } from '@material-ui/styles/withStyles';
+import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import MetaTags from 'react-meta-tags';
-import {
-  observer,
-  observable,
-  action,
-  modulesStore,
-  runInAction,
-} from '~store';
+
 import { getSingleModule } from '~api/raw';
-import { StyledComponent, Styles } from '~components';
+import { Styles } from '~components';
 import ModuleError from '~components/Module/ModuleError';
-import Tags from './Tags';
+import { action, modulesStore, observer, runInAction } from '~store';
+
+import Description from './Description';
 import ModulePageHeader from './Header';
 import ModulePageReleases from './Releases';
-import Description from './Description';
+import Tags from './Tags';
 
-type ModuleProps = RouteComponentProps<{ module: string }>
+type ModuleProps = RouteComponentProps<{ module: string }>;
 
 const styles: Styles = (theme: Theme) => ({
   root: {
@@ -74,67 +67,74 @@ const styles: Styles = (theme: Theme) => ({
   },
 });
 
-@observer
-class ModulePage extends StyledComponent<typeof styles, ModuleProps> {
-  @observable
-  private error = false;
+const ModulePage = observer((props: ModuleProps & WithStyles<typeof styles>) => {
+  const [error, setError] = React.useState(false);
 
-  @action
-  public async componentDidMount(): Promise<void> {
-    const moduleName = this.props.match.params.module;
+  useEffect(
+    action(() => {
+      (async () => {
+        const moduleName = props.match.params.module;
 
-    // Attempt to first find module in the modulesStore
-    const temp = modulesStore.modules.find(m => m.name.toString().toLowerCase() === moduleName.toLowerCase());
+        // Attempt to first find module in the modulesStore
+        const temp = modulesStore.modules.find(
+          m => m.name.toString().toLowerCase() === moduleName.toLowerCase(),
+        );
 
-    if (temp) modulesStore.activeModule = { ...temp };
+        if (temp) modulesStore.activeModule = { ...temp };
 
-    if (modulesStore.activeModule.name !== moduleName) {
-      // If the module isn't already loaded in the store, get it from the backend
-      try {
-        const response = await getSingleModule(moduleName);
+        if (modulesStore.activeModule.name !== moduleName) {
+          // If the module isn't already loaded in the store, get it from the backend
+          try {
+            const response = await getSingleModule(moduleName);
 
-        runInAction(() => {
-          modulesStore.activeModule = { ...response };
-        });
-      } catch (e) {
-        runInAction(() => {
-          this.error = true;
-        });
-      }
-    }
+            runInAction(() => {
+              modulesStore.activeModule = { ...response };
+            });
+          } catch (e) {
+            runInAction(() => {
+              setError(true);
+            });
+          }
+        }
+      })();
+    }),
+    [],
+  );
+
+  if (error) {
+    return (
+      <div className={props.classes.root}>
+        <ModuleError errorType="module-doesnt-exist" />
+      </div>
+    );
   }
 
-  public render(): JSX.Element {
-    if (this.error) {
-      return (
-        <div className={this.classes.root}>
-          <ModuleError errorType="module-doesnt-exist" />
-        </div>
-      );
-    }
+  const module = modulesStore.activeModule;
 
-    const module = modulesStore.activeModule;
-
-    return (module && (
-      <div className={this.classes.root}>
-        <MetaTags>
+  return (
+    (module && (
+      <div className={props.classes.root}>
+        <Helmet>
           <title>{module.name}</title>
           <meta property="og:title" content={module.name} />
           <meta property="og:description" content={module.description} />
           {module.image !== '' && <meta property="og:image" content={module.image} />}
-          <meta property="og:url" content={`https://www.chattriggers.com/modules/v/${module.name}`} />
-        </MetaTags>
-        <Paper className={this.classes.paper} square>
+          <meta
+            property="og:url"
+            content={`https://www.chattriggers.com/modules/v/${module.name}`}
+          />
+        </Helmet>
+        <Paper className={props.classes.paper} square>
           {module && <ModulePageHeader />}
         </Paper>
         <Description />
         <Tags />
-        <Paper className={this.classes.paper} square>
+        <Paper className={props.classes.paper} square>
           <ModulePageReleases />
         </Paper>
       </div>
-    )) || <div />;
-  }
-}
+    )) || <div />
+  );
+});
 
 export default withStyles(styles)(withRouter(ModulePage));

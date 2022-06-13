@@ -1,18 +1,18 @@
-import React from 'react';
-import { Paper, Container, Theme } from '@material-ui/core';
+import { Container, Paper, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import MetaTags from 'react-meta-tags';
-import { modulesStore, errorStore, observer } from '~store';
+import { Helmet } from 'react-helmet-async';
+
 import { Mobile, NotMobile } from '~components';
-import Module from '~components/Module';
-import ScrollToTopFAB from '~components/Module/ScrollToTopFAB';
-import CreateModuleFAB from '~components/Module/CreateModuleFAB';
-import ModuleSkeleton from '~components/Module/ModuleSkeleton';
-import MobilePagination from '~components/Mobile/Pagination';
-import MobileFilterButton from '~components/Mobile/FilterButton';
 import ModuleFilter from '~components/Desktop/ModuleFilter';
 import TablePagination from '~components/Desktop/TablePagination';
+import MobileFilterButton from '~components/Mobile/FilterButton';
+import MobilePagination from '~components/Mobile/Pagination';
+import Module from '~components/Module';
+import CreateModuleFAB from '~components/Module/CreateModuleFAB';
 import ModuleError from '~components/Module/ModuleError';
+import ModuleSkeleton from '~components/Module/ModuleSkeleton';
+import ScrollToTopFAB from '~components/Module/ScrollToTopFAB';
+import { errorStore, modulesStore, observer } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   modules: {
@@ -65,8 +65,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default observer(() => {
   const classes = useStyles();
-  const modules = modulesStore.modules.map(module => <Module key={module.id} module={module} />);
-  const skeletons = Array(4).fill(undefined).map((_, i) => i).map(n => <ModuleSkeleton key={n} />);
+  const modules = modulesStore.modules.map(module => (
+    <Module key={module.id} module={module} />
+  ));
+  const skeletons = Array(4)
+    .fill(undefined)
+    .map((_, i) => i)
+    .map(n => <ModuleSkeleton key={n} />);
 
   let content: JSX.Element | JSX.Element[];
 
@@ -78,24 +83,26 @@ export default observer(() => {
     content = skeletons;
   }
 
-  const Ad = (): JSX.Element => (
-    <div className={classes.adContainer}>
-      <ins
-        className={`adsbygoogle ${classes.ad}`}
-        data-ad-client="ca-pub-8493083757746019"
-        data-ad-slot="8318592115"
-      />
-    </div>
-  );
+  const Ad = () => {
+    return (
+      <div className={classes.adContainer}>
+        <ins
+          className={`adsbygoogle ${classes.ad}`}
+          data-ad-client="ca-pub-8493083757746019"
+          data-ad-slot="8318592115"
+        />
+      </div>
+    );
+  };
 
   return (
     <>
-      <MetaTags>
+      <Helmet>
         <title>All Modules</title>
         <meta property="og:title" content="All Modules" />
         <meta property="og:description" content="A list of all ctjs modules" />
         <meta property="og:url" content="https://www.chattriggers.com/modules/" />
-      </MetaTags>
+      </Helmet>
       <CreateModuleFAB />
       <ScrollToTopFAB />
       <Mobile>

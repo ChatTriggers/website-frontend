@@ -1,10 +1,4 @@
-import React from 'react';
-import {
-  Paper,
-  Theme,
-  withTheme,
-  withWidth,
-} from '@material-ui/core';
+import { Paper, Theme, withTheme, withWidth } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
 
@@ -86,51 +80,60 @@ interface IModuleSkeletonProps {
   width: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
-export default withTheme(withWidth()(({ theme, width: deviceWidth }: IModuleSkeletonProps): JSX.Element => {
-  const classes = useStyles();
+export default withTheme(
+  withWidth()(({ theme, width: deviceWidth }: IModuleSkeletonProps) => {
+    const classes = useStyles();
 
-  return (
-    <Paper className={classes.root} square>
-      <div className={classes.header}>
-        <div className={classes.titleContainer}>
-          <div className={classes.titleChip}>
-            <Skeleton className={classes.title} height={24} />
+    return (
+      <Paper className={classes.root} square>
+        <div className={classes.header}>
+          <div className={classes.titleContainer}>
+            <div className={classes.titleChip}>
+              <Skeleton className={classes.title} height={24} />
+            </div>
+            <Skeleton className={classes.author} />
           </div>
-          <Skeleton className={classes.author} />
+          <Skeleton className={classes.viewButton} />
         </div>
-        <Skeleton className={classes.viewButton} />
-      </div>
-      <div className={classes.body}>
-        <div className={classes.markdownViewer}>
-          {(() => {
-            let short = false;
+        <div className={classes.body}>
+          <div className={classes.markdownViewer}>
+            {(() => {
+              let short = false;
 
-            const desktop = deviceWidth === 'lg' || deviceWidth === 'xl';
+              const desktop = deviceWidth === 'lg' || deviceWidth === 'xl';
 
-            let normalLengthVariation: number;
-            let shortLengthVariation: number;
-            const minNormalLines = 2;
-            const shortLineProb = 0.7;
-            const units = desktop ? '%' : 'vw';
+              let normalLengthVariation: number;
+              let shortLengthVariation: number;
+              const minNormalLines = 2;
+              const shortLineProb = 0.7;
+              const units = desktop ? '%' : 'vw';
 
-            return Array(Math.floor(Math.random() * 4 + 3)).fill(undefined).map((_, i) => i).map(n => {
-              if (desktop) {
-                normalLengthVariation = Math.random() * 10 + 5;
-                shortLengthVariation = Math.random() * 20 + 40;
-              } else {
-                normalLengthVariation = Math.random() * 20 + 10;
-                shortLengthVariation = Math.random() * 20 + 60;
-              }
+              return Array(Math.floor(Math.random() * 4 + 3))
+                .fill(undefined)
+                .map((_, i) => i)
+                .map(n => {
+                  if (desktop) {
+                    normalLengthVariation = Math.random() * 10 + 5;
+                    shortLengthVariation = Math.random() * 20 + 40;
+                  } else {
+                    normalLengthVariation = Math.random() * 20 + 10;
+                    shortLengthVariation = Math.random() * 20 + 60;
+                  }
 
-              short = !short && Math.random() <= shortLineProb && n > minNormalLines;
-              const width = `calc(100${units} - ${desktop ? 0 : theme.spacing(2) * 2}px -
-                            ${short ? shortLengthVariation : normalLengthVariation}${units})`;
+                  short = !short && Math.random() <= shortLineProb && n > minNormalLines;
+                  const width = `calc(100${units} - ${
+                    desktop ? 0 : theme.spacing(2) * 2
+                  }px -
+                            ${
+                              short ? shortLengthVariation : normalLengthVariation
+                            }${units})`;
 
-              return <Skeleton key={n} style={{ width }} />;
-            });
-          })()}
+                  return <Skeleton key={n} style={{ width }} />;
+                });
+            })()}
+          </div>
         </div>
-      </div>
-    </Paper>
-  );
-}));
+      </Paper>
+    );
+  }),
+);

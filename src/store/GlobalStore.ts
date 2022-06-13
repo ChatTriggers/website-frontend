@@ -1,19 +1,23 @@
 /**
  * For random things that don't fit in authStore or modulesStore
  */
-import { observable, action } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 
 class GlobalStore {
-  @observable
+  constructor() {
+    makeObservable(this, {
+      firstLoad: observable,
+      drawerTitle: observable,
+      setDrawerTitle: action,
+    });
+  }
   public firstLoad = true;
 
-  @observable
   public drawerTitle = '';
 
-  @action
   public setDrawerTitle = (drawerTitle: string): void => {
     this.drawerTitle = drawerTitle;
-  }
+  };
 }
 
 export default new GlobalStore();

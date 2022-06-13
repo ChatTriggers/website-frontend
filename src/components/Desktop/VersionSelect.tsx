@@ -1,11 +1,7 @@
-import React from 'react';
-import {
-  FormControl,
-  InputLabel,
-  NativeSelect,
-  Theme,
-} from '@material-ui/core';
+import { FormControl, InputLabel, NativeSelect, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import React from 'react';
+
 import { apiStore } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -20,7 +16,7 @@ interface IProps {
   setCtVersion(version: string): void;
 }
 
-export default ({ ctVersion, setCtVersion }: IProps): JSX.Element => {
+export default ({ ctVersion, setCtVersion }: IProps) => {
   const classes = useStyles();
 
   const setCtVersion2 = (e: React.ChangeEvent<HTMLSelectElement>): void => {

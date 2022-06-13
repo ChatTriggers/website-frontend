@@ -1,18 +1,13 @@
-import React from 'react';
-import {
-  AppBar,
-  Toolbar,
-  Drawer,
-  Typography,
-  Theme,
-} from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/styles';
-import DrawerContent from './DrawerContent';
+import { AppBar, Drawer, Theme, Toolbar, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
+
 import { logoLong } from '~assets';
+
+import DrawerContent from './DrawerContent';
 
 const drawerWidth = 239;
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
   },
@@ -49,7 +44,7 @@ interface IDesktopDrawerProps {
   title: string;
 }
 
-export default ({ title }: IDesktopDrawerProps): JSX.Element => {
+export default ({ title }: IDesktopDrawerProps) => {
   const classes = useStyles();
 
   return (

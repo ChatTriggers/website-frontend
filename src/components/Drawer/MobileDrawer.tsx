@@ -1,21 +1,23 @@
-import React from 'react';
 import {
   AppBar,
-  Toolbar,
   IconButton,
-  Typography,
-  Theme,
   SwipeableDrawer,
+  Theme,
+  Toolbar,
+  Typography,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 import {
-  Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
+  Menu as MenuIcon,
 } from '@material-ui/icons';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { makeStyles } from '@material-ui/styles';
 import clsx from 'clsx';
+import React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+
 import { logoLong } from '~assets';
+
 import DrawerContent from './DrawerContent';
 
 const drawerWidth = 239;
@@ -76,11 +78,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface IMobileDrawerProps extends RouteComponentProps<{}> {
+interface IMobileDrawerProps extends RouteComponentProps {
   title: string;
 }
 
-export default withRouter(({ title, location, history }: IMobileDrawerProps): JSX.Element => {
+export default withRouter(({ title, location, history }: IMobileDrawerProps) => {
   const classes = useStyles();
   const iOS = !!navigator.platform && /iPhone|iPad/.test(navigator.platform);
   const [open, setOpen] = React.useState(false);
@@ -92,22 +94,20 @@ export default withRouter(({ title, location, history }: IMobileDrawerProps): JS
     else history.goBack();
   };
 
-  const button = location.pathname === '/modules' ? (
-    <IconButton
-      onClick={handleDrawerOpen}
-      edge="start"
-      className={clsx(classes.menuButton, open && classes.hide)}
-    >
-      <MenuIcon />
-    </IconButton>
-  ) : (
-    <IconButton
-      edge="start"
-      onClick={onClickBack}
-    >
-      <KeyboardArrowLeftIcon />
-    </IconButton>
-  );
+  const button =
+    location.pathname === '/modules' ? (
+      <IconButton
+        onClick={handleDrawerOpen}
+        edge="start"
+        className={clsx(classes.menuButton, open && classes.hide)}
+      >
+        <MenuIcon />
+      </IconButton>
+    ) : (
+      <IconButton edge="start" onClick={onClickBack}>
+        <KeyboardArrowLeftIcon />
+      </IconButton>
+    );
 
   return (
     <>

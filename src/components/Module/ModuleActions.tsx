@@ -1,16 +1,14 @@
-import React from 'react';
-import clsx from 'clsx';
-import {
-  Button, CircularProgress, colors, Theme,
-} from '@material-ui/core';
+import { Button, CircularProgress, colors, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import clone from 'clone';
-import { IModule } from '~types';
-import DeleteDialog from '~components/Module/DeleteDialog';
-import {
-  authStore, observer, modulesStore, runInAction,
-} from '~store';
+import clsx from 'clsx';
+import React from 'react';
+
 import { toggleTrust, updateModule } from '~api';
+import { authStore, modulesStore, observer, runInAction } from '~store';
+import { IModule } from '~types';
+
+import DeleteDialog from './DeleteDialog';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -38,7 +36,7 @@ interface IModuleActionsProps {
   className?: string;
 }
 
-export default observer(({ className }: IModuleActionsProps): JSX.Element => {
+export default observer(({ className }: IModuleActionsProps) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [trustLoading, setTrustLoading] = React.useState(false);
@@ -79,7 +77,8 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
   };
 
   const toggleUserTrust = async (): Promise<void> => {
-    const newRank = modulesStore.activeModule.owner.rank === 'trusted' ? 'default' : 'trusted';
+    const newRank =
+      modulesStore.activeModule.owner.rank === 'trusted' ? 'default' : 'trusted';
 
     setTrustLoading(true);
     await toggleTrust(modulesStore.activeModule.owner.id);
@@ -106,19 +105,17 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
     setTrustLoading(false);
   };
 
-  const authed = authStore.isTrustedOrHigher || (authStore.user && authStore.user.id === modulesStore.activeModule.owner.id);
+  const authed =
+    authStore.isTrustedOrHigher ||
+    (authStore.user && authStore.user.id === modulesStore.activeModule.owner.id);
 
   return (
-    <>
-      <div className={className}>
-        <DeleteDialog
-          open={open}
-          close={closeDialog}
-        />
-        {authed && (
-          <>
-            { /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-            {authStore.isAdmin && modulesStore.activeModule.owner.id !== authStore.user!.id && (
+    <div className={className}>
+      <DeleteDialog open={open} close={closeDialog} />
+      {authed && (
+        <>
+          {authStore.isAdmin &&
+            modulesStore.activeModule.owner.id !== authStore.user?.id && (
               <Button
                 className={clsx(classes.button, classes.buttonTrust)}
                 fullWidth
@@ -126,36 +123,43 @@ export default observer(({ className }: IModuleActionsProps): JSX.Element => {
                 variant="contained"
                 onClick={toggleUserTrust}
               >
-                {trustLoading
-                  ? <CircularProgress size={22} />
-                  : `${modulesStore.activeModule.owner.rank === 'trusted' ? 'Untrust' : 'Trust'} ${modulesStore.activeModule.owner.name}`}
+                {trustLoading ? (
+                  <CircularProgress size={22} />
+                ) : (
+                  `${
+                    modulesStore.activeModule.owner.rank === 'trusted'
+                      ? 'Untrust'
+                      : 'Trust'
+                  } ${modulesStore.activeModule.owner.name}`
+                )}
               </Button>
             )}
-            {authStore.isTrustedOrHigher && (
-              <Button
-                className={clsx(classes.button, classes.buttonFlag)}
-                fullWidth
-                size="small"
-                variant="contained"
-                onClick={toggleModuleFlagged}
-              >
-                {flaggedLoading
-                  ? <CircularProgress size={22} />
-                  : `${modulesStore.activeModule.flagged ? 'Unflag module' : 'Flag module'}`}
-              </Button>
-            )}
+          {authStore.isTrustedOrHigher && (
             <Button
-              className={clsx(classes.button, classes.buttonDelete)}
+              className={clsx(classes.button, classes.buttonFlag)}
               fullWidth
               size="small"
               variant="contained"
-              onClick={openDialog}
+              onClick={toggleModuleFlagged}
             >
-              Delete Module
+              {flaggedLoading ? (
+                <CircularProgress size={22} />
+              ) : (
+                `${modulesStore.activeModule.flagged ? 'Unflag module' : 'Flag module'}`
+              )}
             </Button>
-          </>
-        )}
-      </div>
-    </>
+          )}
+          <Button
+            className={clsx(classes.button, classes.buttonDelete)}
+            fullWidth
+            size="small"
+            variant="contained"
+            onClick={openDialog}
+          >
+            Delete Module
+          </Button>
+        </>
+      )}
+    </div>
   );
 });

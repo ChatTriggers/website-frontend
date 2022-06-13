@@ -1,15 +1,20 @@
-/* eslint-disable max-classes-per-file */
-import { observable, action } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
+
 import { IModule } from '~types';
 
 class ModulesStore {
-  @observable
+  constructor() {
+    makeObservable(this, {
+      modules: observable,
+      activeModule: observable,
+      setModules: action,
+    });
+  }
   public modules: IModule[] = [];
 
   // I really don't want to have to do undefined checks on this object everywhere,
   // so I just make it a dummy module. It gets updated before use, so in practice,
   // it will never be undefined.
-  @observable
   public activeModule: IModule = {
     id: -1,
     description: '',
@@ -25,10 +30,9 @@ class ModulesStore {
     tags: [],
   };
 
-  @action
   public setModules = (modules: IModule[]): void => {
     this.modules = modules;
-  }
+  };
 }
 
 export default new ModulesStore();

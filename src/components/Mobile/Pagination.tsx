@@ -1,17 +1,13 @@
-import React from 'react';
+import { IconButton, Paper, TextField, Theme } from '@material-ui/core';
 import {
-  Paper,
-  IconButton,
-  TextField,
-  Theme,
-} from '@material-ui/core';
-import {
-  SkipPrevious as FirstPageIcon,
-  SkipNext as LastPageIcon,
   KeyboardArrowLeft as PreviousPageIcon,
   KeyboardArrowRight as NextPageIcon,
+  SkipNext as LastPageIcon,
+  SkipPrevious as FirstPageIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
+import React from 'react';
+
 import { getModules } from '~api';
 import { apiStore, observer } from '~store';
 
@@ -82,7 +78,9 @@ export default observer(() => {
         InputLabelProps={{ shrink: true }}
       >
         {Array.from(Array(apiStore.totalPages).keys()).map(n => (
-          <option key={n} value={n}>{n + 1}</option>
+          <option key={n} value={n}>
+            {n + 1}
+          </option>
         ))}
       </TextField>
       <IconButton

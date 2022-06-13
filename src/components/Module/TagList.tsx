@@ -1,26 +1,21 @@
-import React from 'react';
 import {
-  Container,
-  Chip,
-  Popper,
-  Fade,
-  Typography,
-  ClickAwayListener,
   ButtonBase,
+  Chip,
+  ClickAwayListener,
+  Container,
+  Fade,
+  Popper,
   Theme,
+  Typography,
+  WithStyles,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import {
-  observer, observable, action, apiStore,
-} from '~store';
-import { StyledComponent, Styles } from '~components';
-import { getModules } from '~api';
+import React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-interface ITagListProps extends RouteComponentProps<{}> {
-  tags?: string[];
-  maxTags: number;
-}
+import { getModules } from '~api';
+import { Styles } from '~components';
+import { action, apiStore, observer } from '~store';
 
 const styles: Styles = (theme: Theme) => ({
   chip: {
@@ -31,87 +26,72 @@ const styles: Styles = (theme: Theme) => ({
   },
 });
 
-@observer
-class TagList extends StyledComponent<typeof styles, ITagListProps> {
-  @observable
-  private tagExpand = false;
+type TagListProps = RouteComponentProps & {
+  tags?: string[];
+  maxTags: number;
+} & WithStyles<typeof styles>;
 
-  @observable
-  private anchor: HTMLElement | undefined;
+const TagList = observer(function TagList(props: TagListProps) {
+  const [tagExpand, setTagExpand] = React.useState(false);
+  const [anchor, setAnchor] = React.useState<HTMLElement | undefined>();
 
-  @action
-  private readonly handleClick = (e: React.MouseEvent<HTMLElement>): void => {
-    this.tagExpand = !this.tagExpand;
+  const handleClick = action((e: React.MouseEvent<HTMLElement>) => {
+    setTagExpand(!tagExpand);
 
-    if (!this.anchor) {
-      this.anchor = e.currentTarget;
+    if (!anchor) {
+      setAnchor(e.currentTarget);
     }
-  }
+  });
 
-  @action
-  private readonly handleClickAway = (): void => {
-    this.tagExpand = false;
-  }
+  const handleClickAway = action(() => {
+    setTagExpand(false);
+  });
 
-  @action
-  private onClickTag = (tag: string) => () => {
+  const onClickTag = action((tag: string) => {
     apiStore.setSearch(`tag:${tag}`);
     getModules();
-    this.props.history.push('/modules');
-  }
+    props.history.push('/modules');
+  });
 
-  public render(): JSX.Element {
-    return (
-      <>
-        {this.props.tags && (
-          <Container style={{ margin: 0, padding: 0 }}>
-            {this.props.tags.slice(0, this.props.maxTags).map(tag => (
-              <ButtonBase key={tag} onClick={this.onClickTag(tag)}>
-                <Chip
-                  label={tag}
-                  className={this.classes.chip}
-                />
-              </ButtonBase>
-            ))}
-            {this.props.tags.length > this.props.maxTags && (
-              <>
-                <Chip
-                  label="..."
-                  className={this.classes.chip}
-                  clickable
-                  onClick={this.handleClick}
-                />
-                <Popper
-                  open={this.tagExpand}
-                  anchorEl={this.anchor}
-                  transition
-                >
-                  {({ TransitionProps }) => (
-                    <ClickAwayListener onClickAway={this.handleClickAway}>
-                      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                      <Fade {...TransitionProps} timeout={350}>
-                        <div className={this.classes.popper}>
-                          <Typography>
-                            {this.props.tags && this.props.tags.slice(this.props.maxTags).map(tag => (
-                              <Chip
-                                key={tag}
-                                label={tag}
-                                className={this.classes.chip}
-                              />
-                            ))}
-                          </Typography>
-                        </div>
-                      </Fade>
-                    </ClickAwayListener>
-                  )}
-                </Popper>
-              </>
+  if (!props.tags) return null;
+  return (
+    <Container style={{ margin: 0, padding: 0 }}>
+      {props.tags.slice(0, props.maxTags).map(tag => (
+        <ButtonBase key={tag} onClick={() => onClickTag(tag)}>
+          <Chip label={tag} className={props.classes.chip} />
+        </ButtonBase>
+      ))}
+      {props.tags.length > props.maxTags && (
+        <>
+          <Chip
+            label="..."
+            className={props.classes.chip}
+            clickable
+            onClick={handleClick}
+          />
+          <Popper open={tagExpand} anchorEl={anchor} transition>
+            {({ TransitionProps }) => (
+              <ClickAwayListener onClickAway={handleClickAway}>
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                <Fade {...TransitionProps} timeout={350}>
+                  <div className={props.classes.popper}>
+                    <Typography>
+                      {props.tags &&
+                        props.tags
+                          .slice(props.maxTags)
+                          .map(tag => (
+                            <Chip key={tag} label={tag} className={props.classes.chip} />
+                          ))}
+                    </Typography>
+                  </div>
+                </Fade>
+              </ClickAwayListener>
             )}
-          </Container>
-        )}
-      </>
-    );
-  }
-}
+          </Popper>
+        </>
+      )}
+    </Container>
+  );
+});
 
 export default withStyles(styles)(withRouter(TagList));

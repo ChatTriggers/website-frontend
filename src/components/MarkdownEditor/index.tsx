@@ -1,4 +1,3 @@
-import React from 'react';
 import Editor, { IToolbar } from 'for-editor-dark';
 
 interface IMarkdownEditorProps {
@@ -29,7 +28,7 @@ const toolbar: IToolbar = {
   subfield: true,
 };
 
-export default ({ value, handleChange, shouldBeChangelog }: IMarkdownEditorProps): JSX.Element => (
+export default ({ value, handleChange, shouldBeChangelog }: IMarkdownEditorProps) => (
   <Editor
     value={value}
     onChange={handleChange}

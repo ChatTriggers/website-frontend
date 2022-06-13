@@ -1,29 +1,22 @@
-import qs from 'querystring';
-import React from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import {
-  Paper,
-  Typography,
-  TextField,
-  ButtonGroup,
   Button,
-  Theme,
+  ButtonGroup,
   CircularProgress,
+  Paper,
+  TextField,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import { StyleRulesCallback } from '@material-ui/styles/withStyles';
-import MetaTags from 'react-meta-tags';
-import {
-  observer,
-  observable,
-  action,
-  runInAction,
-  computed,
-} from '~store';
-import { requestPasswordComplete } from '~api';
-import { StyledComponent } from '~components';
+import { StyleRulesCallback, WithStyles } from '@material-ui/styles/withStyles';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-const styles: StyleRulesCallback<Theme, object> = (theme: Theme) => ({
+import { requestPasswordComplete } from '~api';
+import { action, computed, observer, runInAction } from '~store';
+
+const styles: StyleRulesCallback<Theme, Record<string, unknown>> = (theme: Theme) => ({
   rootOuter: {
     display: 'flex',
     minHeight: '100vh',
@@ -50,140 +43,131 @@ const styles: StyleRulesCallback<Theme, object> = (theme: Theme) => ({
   },
 });
 
-@observer
-class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentProps> {
-  @observable
-  private emailTyped = false;
+type IPasswordResetPageProps = RouteComponentProps & WithStyles<typeof styles>;
 
-  @observable
-  private passwordTyped = false;
+const PasswordResetPage = observer(
+  ({ location, classes, history }: IPasswordResetPageProps) => {
+    const [emailTyped, setEmailTyped] = React.useState(false);
+    const [passwordTyped, setPasswordTyped] = React.useState(false);
+    const [passwordConfirmTyped, setPasswordConfirmTyped] = React.useState(false);
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
 
-  @observable
-  private passwordConfirmTyped = false;
+    const emailIsValid = computed(
+      () => email.length > 0 && email.includes('@') && email.indexOf('@') < email.length,
+    );
 
-  @observable
-  private email = '';
+    const passwordIsValid = computed(() => password.length >= 8);
 
-  @observable
-  private password = '';
+    const passwordConfirmIsValid = computed(() => password === passwordConfirmation);
 
-  @observable
-  private passwordConfirmation = '';
+    const allValid = computed(
+      () => emailIsValid && passwordIsValid && passwordConfirmIsValid,
+    );
 
-  @observable
-  private loading = false;
+    const onChangeEmail = action((e: React.ChangeEvent<HTMLInputElement>) => {
+      setEmailTyped(true);
+      setEmail(e.target.value);
+    });
 
-  @computed
-  get emailIsValid(): boolean {
-    return this.email.length > 0 && this.email.includes('@') && this.email.indexOf('@') < this.email.length;
-  }
+    const onChangePassword = action((e: React.ChangeEvent<HTMLInputElement>) => {
+      setPasswordTyped(true);
+      setPassword(e.target.value);
+    });
 
-  @computed
-  get passwordIsValid(): boolean {
-    return this.password.length >= 8;
-  }
+    const onChangePasswordConfirmation = action(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPasswordConfirmTyped(true);
+        setPasswordConfirmation(e.target.value);
+      },
+    );
 
-  @computed
-  get passwordConfirmIsValid(): boolean {
-    return this.password === this.passwordConfirmation;
-  }
-
-  @computed
-  get allValid(): boolean {
-    return this.emailIsValid && this.passwordIsValid && this.passwordConfirmIsValid;
-  }
-
-  @action
-  private readonly onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.emailTyped = true;
-    this.email = e.target.value;
-  }
-
-  @action
-  private readonly onChangePassword = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.passwordTyped = true;
-    this.password = e.target.value;
-  }
-
-  @action
-  private readonly onChangePasswordConfirmation = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    this.passwordConfirmTyped = true;
-    this.passwordConfirmation = e.target.value;
-  }
-
-  private readonly onCancel = (): void => {
-    this.props.history.push('/');
-  }
-
-  private readonly onReset = async (): Promise<void> => {
-    runInAction(() => { this.loading = true; });
-    const query = qs.parse(this.props.location.search) as {
-      token: string;
+    const onCancel = (): void => {
+      history.push('/');
     };
-    await requestPasswordComplete(this.password, query.token);
-    runInAction(() => { this.loading = false; });
-  }
 
-  private readonly handlerKeyDown = action(({ key }: React.KeyboardEvent<HTMLInputElement>) => {
-    if (key === 'Enter') {
-      if (this.password.length > 7 && this.passwordConfirmation.length > 7) {
-        this.onReset();
+    const onReset = async (): Promise<void> => {
+      runInAction(() => {
+        setLoading(true);
+      });
+      const query = new URLSearchParams(location.search);
+      const token = query.get('token');
+      if (!token) return;
+      await requestPasswordComplete(password, token);
+      runInAction(() => {
+        setLoading(false);
+      });
+    };
+
+    const handlerKeyDown = action(({ key }: React.KeyboardEvent<HTMLInputElement>) => {
+      if (key === 'Enter' && password.length > 7 && passwordConfirmation.length > 7) {
+        onReset();
       }
-    }
-  });
+    });
 
-  public render(): JSX.Element {
     return (
-      <div className={this.classes.rootOuter}>
-        <MetaTags>
+      <div className={classes.rootOuter}>
+        <Helmet>
           <title>Password Reset</title>
           <meta property="og:title" content="Password Reset" />
           <meta property="og:description" content="Reset your ctjs website password" />
           <meta property="og:url" content="https://www.chattriggers.com/passwordreset" />
-        </MetaTags>
-        <div className={this.classes.rootInner}>
-          <Paper className={this.classes.content} square>
-            <Typography variant="h5">
-              Reset Password
-            </Typography>
+        </Helmet>
+        <div className={classes.rootInner}>
+          <Paper className={classes.content} square>
+            <Typography variant="h5">Reset Password</Typography>
             <TextField
               style={{ marginTop: 20 }}
               label="Email"
               type="email"
-              value={this.email}
-              onChange={this.onChangeEmail}
-              error={!this.emailIsValid && this.emailTyped}
-              helperText={(!this.emailIsValid && 'Email must be non-empty and contain an \'@\' character') || ''}
+              value={email}
+              onChange={onChangeEmail}
+              error={!emailIsValid && emailTyped}
+              helperText={
+                (!emailIsValid &&
+                  "Email must be non-empty and contain an '@' character") ||
+                ''
+              }
               fullWidth
-              onKeyDownCapture={this.handlerKeyDown}
+              onKeyDownCapture={handlerKeyDown}
             />
             <TextField
               style={{ marginTop: 20 }}
               label="Password"
               type="password"
-              value={this.password}
-              onChange={this.onChangePassword}
-              error={!this.passwordIsValid && this.passwordTyped}
-              helperText={(!this.passwordIsValid && 'Password must be longer than 8 characters') || ''}
+              value={password}
+              onChange={onChangePassword}
+              error={!passwordIsValid && passwordTyped}
+              helperText={
+                (!passwordIsValid && 'Password must be longer than 8 characters') || ''
+              }
               fullWidth
-              onKeyDownCapture={this.handlerKeyDown}
+              onKeyDownCapture={handlerKeyDown}
             />
             <TextField
               style={{ marginTop: 20 }}
               label="Password Confirmation"
               type="password"
-              value={this.passwordConfirmation}
-              onChange={this.onChangePasswordConfirmation}
-              error={!this.passwordConfirmIsValid && this.passwordConfirmTyped}
-              helperText={(!this.passwordConfirmIsValid && 'Must match password field above') || ''}
+              value={passwordConfirmation}
+              onChange={onChangePasswordConfirmation}
+              error={!passwordConfirmIsValid && passwordConfirmTyped}
+              helperText={
+                (!passwordConfirmIsValid && 'Must match password field above') || ''
+              }
               fullWidth
-              onKeyDownCapture={this.handlerKeyDown}
+              onKeyDownCapture={handlerKeyDown}
             />
             <div style={{ display: 'flex', justifyContent: 'end' }}>
-              <ButtonGroup className={this.classes.buttons}>
-                <Button onClick={this.onCancel}>Cancel</Button>
-                <Button onClick={this.onReset} className={this.classes.buttonError} disabled={!this.allValid}>
-                  {this.loading ? <CircularProgress size={30} /> : 'Reset Password'}
+              <ButtonGroup className={classes.buttons}>
+                <Button onClick={onCancel}>Cancel</Button>
+                <Button
+                  onClick={onReset}
+                  className={classes.buttonError}
+                  disabled={!allValid}
+                >
+                  {loading ? <CircularProgress size={30} /> : 'Reset Password'}
                 </Button>
               </ButtonGroup>
             </div>
@@ -191,7 +175,7 @@ class PasswordResetPage extends StyledComponent<typeof styles, RouteComponentPro
         </div>
       </div>
     );
-  }
-}
+  },
+);
 
 export default withStyles(styles, { withTheme: true })(withRouter(PasswordResetPage));

@@ -1,10 +1,12 @@
-import React from 'react';
 import { Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import MobileDrawer from './MobileDrawer';
-import DesktopDrawer from './DesktopDrawer';
-import { NotDesktop, Desktop } from '~components/utils/DeviceUtils';
+import React from 'react';
+
 import { globalStore, observer } from '~store';
+
+import { Desktop, NotDesktop } from '../utils/DeviceUtils';
+import DesktopDrawer from './DesktopDrawer';
+import MobileDrawer from './MobileDrawer';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -33,7 +35,7 @@ interface IDrawerProps {
   children: React.ReactChild | React.ReactChild[];
 }
 
-export default observer(({ children }: IDrawerProps): JSX.Element => {
+export default observer(({ children }: IDrawerProps) => {
   const classes = useStyles();
 
   return (
@@ -46,9 +48,7 @@ export default observer(({ children }: IDrawerProps): JSX.Element => {
           <DesktopDrawer title={globalStore.drawerTitle} />
         </Desktop>
       </nav>
-      <main className={classes.content}>
-        {children}
-      </main>
+      <main className={classes.content}>{children}</main>
     </div>
   );
 });

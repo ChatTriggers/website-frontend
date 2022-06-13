@@ -1,23 +1,32 @@
-import React from 'react';
 import {
-  Paper,
+  Chip,
   FormControl,
   FormControlLabel,
-  TextField,
+  Grid,
+  MenuItem,
+  Paper,
   Radio,
   RadioGroup,
-  MenuItem,
-  Grid,
+  TextField,
   Theme,
-  Chip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import {
-  observer, modulesStore, authStore, errorStore, runInAction, apiStore, MODULES_PER_PAGE_OPTIONS,
-} from '~store';
+import { action, toJS } from 'mobx';
+import React from 'react';
+
 import { getModules } from '~api';
-import TablePagination from './TablePagination';
+import {
+  apiStore,
+  authStore,
+  errorStore,
+  MODULES_PER_PAGE_OPTIONS,
+  modulesStore,
+  observer,
+  runInAction,
+} from '~store';
 import { ModuleSorting } from '~types';
+
+import TablePagination from './TablePagination';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -60,12 +69,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 type RadioOption = 'all' | 'user' | 'trusted' | 'flagged';
 
-export default observer((): JSX.Element => {
+export default observer(() => {
   const classes = useStyles();
-  const [searchTimeout, setSearchTimeout] = React.useState(undefined as NodeJS.Timeout[] | undefined);
-  const [selectedRadio, setSelectedRadio] = React.useState('all' as RadioOption);
+  const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout[]>();
+  const [selectedRadio, setSelectedRadio] = React.useState<RadioOption>('all');
 
-  const onSearchChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onSearchChange = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ): void => {
     if (searchTimeout) searchTimeout.forEach(clearTimeout);
 
     if (errorStore.modulesNotLoaded) {
@@ -77,18 +88,21 @@ export default observer((): JSX.Element => {
     const { target } = e;
     apiStore.setSearch(target.value as string);
 
-    setSearchTimeout([setTimeout(() => {
-      getModules();
-    }, 1500), setTimeout(() => {
-      if (modulesStore.modules.length === 0) {
-        runInAction(() => {
-          errorStore.modulesNotLoaded = true;
-        });
-      }
-    }, 6500)]);
+    setSearchTimeout([
+      setTimeout(getModules, 1500),
+      setTimeout(() => {
+        if (modulesStore.modules.length === 0) {
+          runInAction(() => {
+            errorStore.modulesNotLoaded = true;
+          });
+        }
+      }, 6500),
+    ]);
   };
 
-  const onSearchTagsChange = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onSearchTagsChange = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ): void => {
     if (searchTimeout) searchTimeout.forEach(clearTimeout);
 
     if (errorStore.modulesNotLoaded) {
@@ -100,18 +114,19 @@ export default observer((): JSX.Element => {
     const { target } = e;
     apiStore.setTags(target.value as string[]);
 
-    setSearchTimeout([setTimeout(() => {
-      getModules();
-    }, 1500), setTimeout(() => {
-      if (modulesStore.modules.length === 0) {
-        runInAction(() => {
-          errorStore.modulesNotLoaded = true;
-        });
-      }
-    }, 6500)]);
+    setSearchTimeout([
+      setTimeout(getModules, 1500),
+      setTimeout(() => {
+        if (modulesStore.modules.length === 0) {
+          runInAction(() => {
+            errorStore.modulesNotLoaded = true;
+          });
+        }
+      }, 6500),
+    ]);
   };
 
-  const onFilterChange = (_: React.ChangeEvent<{}>, value: string): void => {
+  const onFilterChange = action((_: React.ChangeEvent, value: string) => {
     const val = value as RadioOption;
 
     if (val !== selectedRadio) {
@@ -121,9 +136,11 @@ export default observer((): JSX.Element => {
       apiStore.setFilter(val);
       getModules();
     }
-  };
+  });
 
-  const onChangeModuleSorting = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeModuleSorting = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ): void => {
     const moduleSorting = e.target.value as ModuleSorting;
 
     if (moduleSorting !== apiStore.sorting) {
@@ -132,7 +149,9 @@ export default observer((): JSX.Element => {
     }
   };
 
-  const handleChangeModulesPerPage = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const handleChangeModulesPerPage = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ): void => {
     const newModulesPerPage = parseInt(e.target.value as string, 10);
     if (newModulesPerPage === apiStore.modulesPerPage) return;
 
@@ -171,23 +190,26 @@ export default observer((): JSX.Element => {
               },
             }}
           >
-            {MODULES_PER_PAGE_OPTIONS.map(num => <MenuItem key={num} value={num}>{num}</MenuItem>)}
+            {MODULES_PER_PAGE_OPTIONS.map(num => (
+              <MenuItem key={num} value={num}>
+                {num}
+              </MenuItem>
+            ))}
           </TextField>
         </Grid>
         <Grid item xs={12} md={4}>
           <TextField
             id="search-tags"
             label="Filter Modules by Tags"
-            value={apiStore.tags}
+            value={toJS(apiStore.tags)}
             onChange={onSearchTagsChange}
             fullWidth
             select
             InputLabelProps={{ shrink: true }}
             SelectProps={{
               multiple: true,
-              renderValue: selected => (selected as string[]).map(tag => (
-                <Chip key={tag} label={tag} />
-              )),
+              renderValue: selected =>
+                (selected as string[]).map(tag => <Chip key={tag} label={tag} />),
               margin: 'dense',
               MenuProps: {
                 style: {
@@ -196,7 +218,11 @@ export default observer((): JSX.Element => {
               },
             }}
           >
-            {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+            {apiStore.allowedTags.map(tag => (
+              <MenuItem key={tag} value={tag}>
+                {tag}
+              </MenuItem>
+            ))}
           </TextField>
         </Grid>
         <Grid item xs={12} md={4}>
@@ -224,10 +250,20 @@ export default observer((): JSX.Element => {
                 row
               >
                 <FormControlLabel value="all" label="All Modules" control={<Radio />} />
-                <FormControlLabel value="trusted" label="Trusted Modules" control={<Radio />} />
-                {authStore.isAuthed && <FormControlLabel value="user" label="My Modules" control={<Radio />} />}
+                <FormControlLabel
+                  value="trusted"
+                  label="Trusted Modules"
+                  control={<Radio />}
+                />
+                {authStore.isAuthed && (
+                  <FormControlLabel value="user" label="My Modules" control={<Radio />} />
+                )}
                 {authStore.isAuthed && !authStore.isDefault && (
-                  <FormControlLabel value="flagged" label="Flagged Modules" control={<Radio />} />
+                  <FormControlLabel
+                    value="flagged"
+                    label="Flagged Modules"
+                    control={<Radio />}
+                  />
                 )}
               </RadioGroup>
             </FormControl>

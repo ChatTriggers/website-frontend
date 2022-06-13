@@ -1,14 +1,8 @@
-import React from 'react';
-import {
-  Paper,
-  Typography,
-  ButtonBase,
-  Theme,
-} from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
+import { ButtonBase, Paper, Theme, Typography } from '@material-ui/core';
 import { KeyboardArrowRight } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
 import { History } from 'history';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -37,11 +31,7 @@ export default withRouter((props: IFilterButtonProps) => {
 
   return (
     <Paper className={classes.root} square>
-      <ButtonBase
-        className={classes.button}
-        focusRipple
-        onClick={onClick}
-      >
+      <ButtonBase className={classes.button} focusRipple onClick={onClick}>
         <Typography>Filters</Typography>
         <KeyboardArrowRight />
       </ButtonBase>
