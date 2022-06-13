@@ -1,22 +1,16 @@
-import React from 'react';
+import { colors, IconButton, Paper, Theme } from '@material-ui/core';
 import {
-  Paper,
-  IconButton,
-  Theme,
-  colors,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-import {
-  Edit as EditIcon,
   Check as CheckIcon,
   Clear as ClearIcon,
+  Edit as EditIcon,
 } from '@material-ui/icons';
-import MarkdownRenderer from '~components/MarkdownRenderer';
+import { makeStyles } from '@material-ui/styles';
+import React from 'react';
+
+import { getModules, updateModule } from '~api';
 import MarkdownEditor from '~components/MarkdownEditor';
-import {
-  observer, modulesStore, authStore, runInAction,
-} from '~store';
-import { updateModule, getModules } from '~api';
+import MarkdownRenderer from '~components/MarkdownRenderer';
+import { authStore, modulesStore, observer, runInAction } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -46,9 +40,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default observer((): JSX.Element => {
+export default observer(() => {
   const classes = useStyles();
-  const authed = authStore.user && (authStore.user.id === modulesStore.activeModule.owner.id || authStore.isTrustedOrHigher);
+  const authed =
+    authStore.user &&
+    (authStore.user.id === modulesStore.activeModule.owner.id ||
+      authStore.isTrustedOrHigher);
 
   const [editing, setEditing] = React.useState(false);
   const [description, setDescription] = React.useState('');
@@ -81,18 +78,21 @@ export default observer((): JSX.Element => {
         <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
           {editing ? <CheckIcon /> : <EditIcon />}
         </IconButton>
-      ) : <div />}
+      ) : (
+        <div />
+      )}
       {editing ? (
         <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
           <ClearIcon />
         </IconButton>
-      ) : <div />}
+      ) : (
+        <div />
+      )}
       {editing ? (
-        <MarkdownEditor
-          value={description}
-          handleChange={setDescription}
-        />
-      ) : <MarkdownRenderer source={modulesStore.activeModule.description} />}
+        <MarkdownEditor value={description} handleChange={setDescription} />
+      ) : (
+        <MarkdownRenderer source={modulesStore.activeModule.description} />
+      )}
     </Paper>
   );
 });

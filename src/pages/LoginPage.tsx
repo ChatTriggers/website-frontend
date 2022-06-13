@@ -1,16 +1,17 @@
-import React from 'react';
 import {
-  Paper,
-  TextField,
   Button,
   CircularProgress,
+  Paper,
+  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { withRouter } from 'react-router-dom';
-import MetaTags from 'react-meta-tags';
 import { History } from 'history';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { withRouter } from 'react-router-dom';
+
 import { login } from '~api';
 import { action } from '~store';
 
@@ -65,7 +66,7 @@ interface ILoginPageProps {
   history: History;
 }
 
-export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
+export default withRouter(({ history }: ILoginPageProps) => {
   const classes = useStyles();
 
   const [username, setUsername] = React.useState('');
@@ -73,11 +74,15 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
 
-  const onChangeUsername = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
+  const onChangeUsername = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ): void => {
     setUsername(e.target.value);
   };
 
-  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
+  const onChangePassword = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ): void => {
     setPassword(e.target.value);
   };
 
@@ -109,12 +114,12 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
 
   return (
     <div className={classes.root}>
-      <MetaTags>
+      <Helmet>
         <title>Login</title>
         <meta property="og:title" content="Login" />
         <meta property="og:description" content="Login to the ctjs website" />
         <meta property="og:url" content="https://www.chattriggers.com/login" />
-      </MetaTags>
+      </Helmet>
       <div className={classes.paperContainer}>
         <Paper className={classes.paper} square>
           <TextField
@@ -142,9 +147,7 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
           />
           <div style={{ width: '102.5%', marginTop: 5 }}>
             <Button onClick={forgotPassword}>
-              <Typography variant="body2">
-                Forgot Password?
-              </Typography>
+              <Typography variant="body2">Forgot Password?</Typography>
             </Button>
           </div>
           {error && (
@@ -159,7 +162,11 @@ export default withRouter(({ history }: ILoginPageProps): JSX.Element => {
             color="primary"
             disabled={username === '' || password === ''}
           >
-            {loading && !error ? <CircularProgress color="secondary" size={30} /> : 'Login'}
+            {loading && !error ? (
+              <CircularProgress color="secondary" size={30} />
+            ) : (
+              'Login'
+            )}
           </Button>
         </Paper>
       </div>

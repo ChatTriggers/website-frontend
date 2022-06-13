@@ -1,25 +1,26 @@
-import React from 'react';
 import {
-  Paper,
-  Typography,
   Button,
   IconButton,
+  Paper,
   Theme,
+  Typography,
+  WithStyles,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/styles';
-import { StyleRulesCallback } from '@material-ui/styles/withStyles';
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowUp as KeyboardArrowUpIcon,
 } from '@material-ui/icons';
+import { withStyles } from '@material-ui/styles';
 import clsx from 'clsx';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { IModule } from '~types';
-import MarkdownRenderer from '~components/MarkdownRenderer';
-import { observer, observable, action } from '~store';
-import StyledComponent from '~components/utils/StyledComponent';
+import React, { useEffect } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-const styles: StyleRulesCallback<Theme, object> = (theme: Theme) => ({
+import { Styles } from '~components';
+import MarkdownRenderer from '~components/MarkdownRenderer';
+import { action, observer } from '~store';
+import { IModule } from '~types';
+
+const styles: Styles = (theme: Theme) => ({
   root: {
     [theme.breakpoints.only('xs')]: {
       margin: theme.spacing(2),
@@ -97,101 +98,94 @@ const styles: StyleRulesCallback<Theme, object> = (theme: Theme) => ({
   },
 });
 
-interface IModuleProps extends RouteComponentProps<{}> {
-  module: IModule;
-}
+type ModuleProps = RouteComponentProps & { module: IModule } & WithStyles<typeof styles>;
 
-@observer
-class Module extends StyledComponent<typeof styles, IModuleProps> {
-  @observable
-  private height: number | undefined = 300;
+const Module = observer((props: ModuleProps) => {
+  const [height, setHeight] = React.useState<number | undefined>(300);
+  const [collapsible, setCollapsible] = React.useState(false);
+  const markdownRef = React.useRef<HTMLDivElement>(null);
 
-  @observable
-  private collapsable = false;
+  useEffect(
+    action(() => {
+      setCollapsible(
+        (markdownRef.current && markdownRef.current.clientHeight === height) || false,
+      );
+    }),
+    [],
+  );
 
-  @observable
-  private isCollapsed = true;
-
-  private markdownRef = React.createRef<HTMLDivElement>();
-
-  @action
-  public componentDidMount(): void {
-    this.collapsable = (this.markdownRef.current && this.markdownRef.current.clientHeight === this.height) || false;
-  }
-
-  @action
-  private onClickModule = (): void => {
-    const { history, module } = this.props;
+  const onClickModule = action((): void => {
+    const { history, module } = props;
     history.push(`/modules/v/${module.name}`);
-  }
+  });
 
-  @action
-  private toggleExpand = (): void => {
-    if (this.height) {
-      this.height = undefined;
+  const toggleExpand = action(() => {
+    if (height) {
+      setHeight(undefined);
     } else {
-      this.height = 300;
+      setHeight(300);
     }
-  }
+  });
 
-  public render(): JSX.Element {
-    const { module } = this.props;
+  const { module, classes } = props;
 
-    return (
-      <Paper className={this.classes.root} square>
-        <div className={this.classes.header}>
-          <div className={this.classes.titleContainer}>
-            <div className={this.classes.titleChip}>
-              <Typography className={this.classes.title} variant="h5">
-                {module.name}
-              </Typography>
-            </div>
-            <Typography className={this.classes.title} variant="h6">
-              By
-              {' '}
-              {module.owner.name}
+  return (
+    <Paper className={classes.root} square>
+      <div className={classes.header}>
+        <div className={classes.titleContainer}>
+          <div className={classes.titleChip}>
+            <Typography className={classes.title} variant="h5">
+              {module.name}
             </Typography>
           </div>
-          <Button
-            className={this.classes.viewButton}
-            color="primary"
-            variant="contained"
-            onClick={this.onClickModule}
-          >
-            View
-          </Button>
+          <Typography className={classes.title} variant="h6">
+            By {module.owner.name}
+          </Typography>
         </div>
-        <div className={this.classes.body}>
-          {module.image && (
-            <div className={this.classes.imageOuter}>
-              <img
-                className={this.classes.image}
-                src={module.image}
-                alt="Module"
-              />
-            </div>
-          )}
-          <div ref={this.markdownRef} style={{ maxHeight: this.height, overflow: 'hidden', marginBottom: this.collapsable ? 12 : 0 }}>
-            <MarkdownRenderer source={module.description} />
+        {/* <Link to={`/modules/v/${props.module.name}`}> */}
+        <Button
+          className={classes.viewButton}
+          color="primary"
+          variant="contained"
+          onClick={onClickModule}
+        >
+          View
+        </Button>
+        {/* </Link> */}
+      </div>
+      <div className={classes.body}>
+        {module.image && (
+          <div className={classes.imageOuter}>
+            <img className={classes.image} src={module.image} alt="Module" />
           </div>
+        )}
+        <div
+          ref={markdownRef}
+          style={{
+            maxHeight: height,
+            overflow: 'hidden',
+            marginBottom: collapsible ? 12 : 0,
+          }}
+        >
+          <MarkdownRenderer source={module.description} />
         </div>
-        <div style={{ position: 'relative' }}>
-          {this.collapsable && (
-            <Button
-              className={clsx(this.classes.viewButton, this.classes.expandButton)}
-              color="primary"
-              variant="contained"
-              onClick={this.toggleExpand}
-            >
-              <IconButton size="small">
-                {this.height ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
-              </IconButton>
-            </Button>
-          )}
-        </div>
-      </Paper>
-    );
-  }
-}
+      </div>
+      <div style={{ position: 'relative' }}>
+        {collapsible && (
+          <IconButton
+            onClick={toggleExpand}
+            color="primary"
+            className={`${clsx(
+              classes.viewButton,
+              classes.expandButton,
+            )} MuiButton-containedPrimary MuiButton-contained MuiButton-root`}
+          >
+            {height ? <KeyboardArrowDownIcon /> : <KeyboardArrowUpIcon />}
+          </IconButton>
+        )}
+      </div>
+    </Paper>
+  );
+});
 
-export default withStyles(styles, { withTheme: true })(withRouter(Module));
+export default withStyles(styles)(withRouter(Module));

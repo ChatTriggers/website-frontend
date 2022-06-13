@@ -1,10 +1,10 @@
-import qs from 'querystring';
 import { IModule, IModuleResponse, ModuleSorting } from '~types';
-import { ApiErrors, validateStatusCode } from './ApiErrors';
+
 import { axios, BASE_URL } from '../utils';
+import { ApiErrors, validateStatusCode } from './ApiErrors';
 
 const MODULES_URL = `${BASE_URL}/modules`;
-const MODULE_ID_URL = (id: number | string): string => `${BASE_URL}/modules/${id}`;
+const moduleIdUrl = (id: number | string): string => `${BASE_URL}/modules/${id}`;
 const TAGS_URL = `${BASE_URL}/tags`;
 
 export const getModules = async (
@@ -40,21 +40,23 @@ export const createModule = async (
   image?: string,
   flagged = false,
 ): Promise<IModule> => {
-  const response = await axios.post<IModule>(MODULES_URL, qs.stringify({
-    name,
-    description,
-    tags,
-    image,
-    flagged,
-  }));
+  const response = await axios.post<IModule>(
+    MODULES_URL,
+
+    new URLSearchParams({
+      name,
+      description,
+      tags,
+      image,
+      flagged,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any).toString(),
+  );
 
   return validateStatusCode(response);
 };
-
-export const getSingleModule = async (
-  moduleName: string,
-): Promise<IModule> => {
-  const response = await axios.get<IModule>(MODULE_ID_URL(moduleName));
+export const getSingleModule = async (moduleName: string): Promise<IModule> => {
+  const response = await axios.get<IModule>(moduleIdUrl(moduleName));
 
   return validateStatusCode(response, ApiErrors.GetModule);
 };
@@ -72,16 +74,17 @@ export const updateModule = async (
   if (image) query.image = image;
   if (flagged !== undefined) query.flagged = flagged;
   if (tags) query.tags = tags;
-
-  const response = await axios.patch<IModule>(MODULE_ID_URL(moduleId), qs.stringify(query));
+  const response = await axios.patch<IModule>(
+    moduleIdUrl(moduleId),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    new URLSearchParams(query as any).toString(),
+  );
 
   return validateStatusCode(response, ApiErrors.UpdateModule);
 };
 
-export const deleteModule = async (
-  moduleId: number,
-): Promise<undefined> => {
-  const response = await axios.delete<undefined>(MODULE_ID_URL(moduleId));
+export const deleteModule = async (moduleId: number): Promise<undefined> => {
+  const response = await axios.delete<undefined>(moduleIdUrl(moduleId));
 
   return validateStatusCode(response, ApiErrors.DeleteModule);
 };

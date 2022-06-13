@@ -1,19 +1,20 @@
-import React from 'react';
 import {
-  Typography,
-  FormGroup,
-  Dialog,
-  Theme,
   Button,
   ButtonGroup,
   CircularProgress,
+  Dialog,
+  FormGroup,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import clone from 'clone';
-import { deleteRelease } from '~api/raw';
+import React from 'react';
+
 import { getModules } from '~api';
-import { modulesStore, errorStore, runInAction } from '~store';
-import { IRelease } from '~src/types';
+import { deleteRelease } from '~api/raw';
+import { errorStore, modulesStore, runInAction } from '~store';
+import { IRelease } from '~types';
 
 interface IDeleteDialogProps {
   open: boolean;
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default ({ open, onClose, releaseId }: IDeleteDialogProps): JSX.Element => {
+export default ({ open, onClose, releaseId }: IDeleteDialogProps) => {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
 
@@ -58,29 +59,22 @@ export default ({ open, onClose, releaseId }: IDeleteDialogProps): JSX.Element =
 
       onClose();
     } catch (e) {
-      errorStore.setError('Error deleting release', e.message);
+      const err = e as Error;
+      errorStore.setError('Error deleting release', err.message);
     }
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-    >
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <div className={classes.root}>
         <Typography>
-          Are you sure you want to delete this release? This is a permanent action,
-          and cannot be reversed.
+          Are you sure you want to delete this release? This is a permanent action, and
+          cannot be reversed.
         </Typography>
         <FormGroup className={classes.buttons} row>
           <ButtonGroup size="medium">
             <Button onClick={onClose}>Cancel</Button>
-            <Button
-              className={classes.deleteButton}
-              onClick={onDelete}
-            >
+            <Button className={classes.deleteButton} onClick={onDelete}>
               {loading ? <CircularProgress size={30} /> : 'Submit'}
             </Button>
           </ButtonGroup>

@@ -1,18 +1,18 @@
-import React from 'react';
 import {
+  Checkbox,
+  Collapse,
+  FormControlLabel,
+  IconButton,
   Paper,
   Theme,
   Typography,
-  Collapse,
-  IconButton,
-  FormControlLabel,
-  Checkbox,
 } from '@material-ui/core';
 import {
-  ExpandMore as ArrowDownIcon,
   ChevronRight as ArrowRightIcon,
+  ExpandMore as ArrowDownIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
+import React from 'react';
 import ReactDiffViewer, { DiffMethod } from 'react-diff-viewer';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -58,13 +58,8 @@ interface IDiffViewerProps {
   diff: IDiff;
 }
 
-export default ({ diff }: IDiffViewerProps): JSX.Element => {
-  const {
-    path,
-    isBinary,
-    oldText,
-    newText,
-  } = diff;
+export default ({ diff }: IDiffViewerProps) => {
+  const { path, isBinary, oldText, newText } = diff;
   const splitViewChangable = oldText !== undefined && newText !== undefined;
 
   const classes = useStyles();
@@ -101,12 +96,9 @@ export default ({ diff }: IDiffViewerProps): JSX.Element => {
         {splitViewChangable && !isBinary && (
           <div className={classes.headerRight}>
             <FormControlLabel
-              control={(
-                <Checkbox
-                  checked={splitView}
-                  onChange={() => setSplitView(!splitView)}
-                />
-              )}
+              control={
+                <Checkbox checked={splitView} onChange={() => setSplitView(!splitView)} />
+              }
               label="Split view"
             />
           </div>

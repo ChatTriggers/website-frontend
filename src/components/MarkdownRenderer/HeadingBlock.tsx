@@ -2,7 +2,7 @@ import React from 'react';
 
 interface IHeadingBlockProps {
   level: number;
-  children: React.ReactChild;
+  children: React.ReactNode & React.ReactNode[];
 }
 
 const styles = {
@@ -10,7 +10,7 @@ const styles = {
   paddingTop: 0,
 };
 
-export default ({ level, children }: IHeadingBlockProps): JSX.Element | null => {
+export default ({ level, children }: IHeadingBlockProps) => {
   let el: JSX.Element | undefined | null;
 
   switch (level) {

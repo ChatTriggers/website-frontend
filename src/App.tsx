@@ -1,34 +1,36 @@
-import React from 'react';
-import {
-  BrowserRouter as Router, Route, Switch, Redirect,
-} from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
+import { useEffect } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+
+import { getCurrentAccount, getModules, loadCtVersions, loadTags } from '~api';
 import Drawer from '~components/Drawer';
 import ErrorDialog from '~components/ErrorDialog';
-import theme from './styles/theme';
+import { action, globalStore, modulesStore } from '~store';
+
 import routes from './routes';
-import { globalStore, modulesStore, observer } from '~store';
-import {
-  getModules, getCurrentAccount, loadTags, loadCtVersions,
-} from '~api';
+import theme from './styles/theme';
 
-@observer
-export default class App extends React.Component {
-  public componentDidMount = async (): Promise<void> => {
-    if (modulesStore.modules.length === 0) {
-      getModules();
-      getCurrentAccount();
-      loadTags();
-      loadCtVersions();
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-  }
+export default () => {
+  useEffect(
+    action(() => {
+      if (modulesStore.modules.length === 0) {
+        getModules();
+        getCurrentAccount();
+        loadTags();
+        loadCtVersions();
 
-  public render(): JSX.Element {
-    return (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      }
+    }),
+    [],
+  );
+
+  return (
+    <Router>
       <ThemeProvider theme={theme}>
-        <Router>
+        <HelmetProvider>
           <Drawer>
             <ErrorDialog />
             <Switch>
@@ -38,7 +40,11 @@ export default class App extends React.Component {
                   path={route}
                   exact
                   render={({ match }) => {
-                    globalStore.setDrawerTitle(name || match.params.module);
+                    // setTimeout makes the state mutation have lower precedence to avoid react warning
+                    // https://github.com/facebook/react/issues/18178#issuecomment-595846312
+                    setTimeout(() => {
+                      globalStore.setDrawerTitle(name || match.params.module || '');
+                    }, 0);
 
                     return component;
                   }}
@@ -47,8 +53,8 @@ export default class App extends React.Component {
               <Redirect to="/modules" />
             </Switch>
           </Drawer>
-        </Router>
+        </HelmetProvider>
       </ThemeProvider>
-    );
-  }
-}
+    </Router>
+  );
+};

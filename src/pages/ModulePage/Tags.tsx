@@ -1,25 +1,24 @@
-import React from 'react';
 import {
-  Paper,
-  IconButton,
-  Typography,
-  Theme,
-  TextField,
-  MenuItem,
-  colors,
   Chip,
+  colors,
+  IconButton,
+  MenuItem,
+  Paper,
+  TextField,
+  Theme,
+  Typography,
 } from '@material-ui/core';
 import {
-  Edit as EditIcon,
   Check as CheckIcon,
   Clear as ClearIcon,
+  Edit as EditIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import {
-  modulesStore, apiStore, runInAction, authStore, observer,
-} from '~store';
+import React from 'react';
+
+import { getModules, updateModule } from '~api';
 import TagList from '~components/Module/TagList';
-import { updateModule, getModules } from '~api';
+import { apiStore, authStore, modulesStore, observer, runInAction } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -49,9 +48,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default observer((): JSX.Element => {
+export default observer(() => {
   const classes = useStyles();
-  const authed = authStore.user && (authStore.user.id === modulesStore.activeModule.owner.id || authStore.isTrustedOrHigher);
+  const authed =
+    authStore.user &&
+    (authStore.user.id === modulesStore.activeModule.owner.id ||
+      authStore.isTrustedOrHigher);
 
   const [editing, setEditing] = React.useState(false);
   const [tags, setTags] = React.useState([] as string[]);
@@ -74,7 +76,9 @@ export default observer((): JSX.Element => {
     }
   };
 
-  const onChangeTags = (e: React.ChangeEvent<{ name?: string; value: unknown }>): void => {
+  const onChangeTags = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ): void => {
     setTags(e.target.value as string[]);
   };
 
@@ -85,19 +89,29 @@ export default observer((): JSX.Element => {
   return (
     <Paper className={classes.paper} square>
       <div style={{ display: 'flex', marginBottom: 8 }}>
-        <Typography variant="subtitle1">
-          Tags
-        </Typography>
+        <Typography variant="subtitle1">Tags</Typography>
         {authed ? (
-          <IconButton className={classes.editButton} size="small" onClick={onClickEditing}>
+          <IconButton
+            className={classes.editButton}
+            size="small"
+            onClick={onClickEditing}
+          >
             {editing ? <CheckIcon /> : <EditIcon />}
           </IconButton>
-        ) : <div />}
+        ) : (
+          <div />
+        )}
         {editing ? (
-          <IconButton className={classes.deleteButton} size="small" onClick={onClickDelete}>
+          <IconButton
+            className={classes.deleteButton}
+            size="small"
+            onClick={onClickDelete}
+          >
             <ClearIcon />
           </IconButton>
-        ) : <div />}
+        ) : (
+          <div />
+        )}
       </div>
       {editing ? (
         <TextField
@@ -108,9 +122,10 @@ export default observer((): JSX.Element => {
           InputLabelProps={{ shrink: true }}
           SelectProps={{
             multiple: true,
-            renderValue: selected => (selected as string[]).map(tag => (
-              <Chip style={{ marginRight: 8 }} key={tag} label={tag} />
-            )),
+            renderValue: selected =>
+              (selected as string[]).map(tag => (
+                <Chip style={{ marginRight: 8 }} key={tag} label={tag} />
+              )),
             margin: 'dense',
             MenuProps: {
               style: {
@@ -119,9 +134,15 @@ export default observer((): JSX.Element => {
             },
           }}
         >
-          {apiStore.allowedTags.map(tag => <MenuItem key={tag} value={tag}>{tag}</MenuItem>)}
+          {apiStore.allowedTags.map(tag => (
+            <MenuItem key={tag} value={tag}>
+              {tag}
+            </MenuItem>
+          ))}
         </TextField>
-      ) : <TagList tags={modulesStore.activeModule.tags} maxTags={99} />}
+      ) : (
+        <TagList tags={modulesStore.activeModule.tags} maxTags={99} />
+      )}
     </Paper>
   );
 });

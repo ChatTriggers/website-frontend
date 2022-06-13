@@ -1,16 +1,17 @@
-import React from 'react';
 import {
-  Paper,
-  TextField,
   Button,
   CircularProgress,
+  Paper,
+  TextField,
   Theme,
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { withRouter } from 'react-router-dom';
-import MetaTags from 'react-meta-tags';
 import { History } from 'history';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { withRouter } from 'react-router-dom';
+
 import { createUser } from '~api';
 import { action } from '~store';
 
@@ -65,7 +66,7 @@ interface ICreateAccountPageProps {
   history: History;
 }
 
-export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element => {
+export default withRouter(({ history }: ICreateAccountPageProps) => {
   const classes = useStyles();
 
   const [username, setUsername] = React.useState('');
@@ -74,15 +75,21 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
 
-  const onChangeUsername = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
+  const onChangeUsername = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ): void => {
     setUsername(e.target.value);
   };
 
-  const onChangePassword = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
+  const onChangePassword = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ): void => {
     setPassword(e.target.value);
   };
 
-  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
+  const onChangeEmail = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ): void => {
     setEmail(e.target.value);
   };
 
@@ -110,12 +117,12 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
 
   return (
     <div className={classes.root}>
-      <MetaTags>
+      <Helmet>
         <title>Create Account</title>
         <meta property="og:title" content="Create Account" />
         <meta property="og:description" content="Create a new ctjs account" />
         <meta property="og:url" content="https://www.chattriggers.com/create-account" />
-      </MetaTags>
+      </Helmet>
       <div className={classes.paperContainer}>
         <Paper className={classes.paper} square>
           <TextField
@@ -164,7 +171,11 @@ export default withRouter(({ history }: ICreateAccountPageProps): JSX.Element =>
             color="primary"
             disabled={username === '' || password === '' || email === ''}
           >
-            {loading && !error ? <CircularProgress color="secondary" size={30} /> : 'Create Account'}
+            {loading && !error ? (
+              <CircularProgress color="secondary" size={30} />
+            ) : (
+              'Create Account'
+            )}
           </Button>
         </Paper>
       </div>

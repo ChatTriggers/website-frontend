@@ -1,11 +1,11 @@
-import * as raw from './raw';
-import { IUser, IVersions } from '~types';
-import { modulesStore, authStore, apiStore } from '~store';
+import { action } from 'mobx';
 
-export const login = async (
-  username: string,
-  password: string,
-): Promise<IUser> => {
+import { apiStore, authStore, modulesStore } from '~store';
+import { IUser, IVersions } from '~types';
+
+import * as raw from './raw';
+
+export const login = async (username: string, password: string): Promise<IUser> => {
   try {
     const user = await raw.getCurrentAccount();
     authStore.setUser(user);
@@ -39,7 +39,7 @@ export const logout = async (): Promise<void> => {
   authStore.setUser(undefined);
 };
 
-export const getModules = async (): Promise<void> => {
+export const getModules = action(async (): Promise<void> => {
   modulesStore.setModules([]);
 
   try {
@@ -57,11 +57,9 @@ export const getModules = async (): Promise<void> => {
     modulesStore.setModules(response.modules);
     apiStore.setMeta(response.meta);
   } catch (e) {
-    // Only way this fails is if the user isn't connected to the internet,
-    // in which case the react-detect-offline package will switch to an
-    // offline page
+    // Only fails if offline
   }
-};
+});
 
 export const getCurrentAccount = async (): Promise<void> => {
   try {
@@ -72,9 +70,6 @@ export const getCurrentAccount = async (): Promise<void> => {
 };
 
 export const loadTags = async (): Promise<void> => {
-  // Only way this fails is if the user isn't connected to the internet,
-  // in which case the react-detect-offline package will switch to an
-  // offline page
   apiStore.setAllowedTags(await raw.getTags());
 };
 
@@ -108,6 +103,4 @@ export const updateModule = async (
   await getModules();
 };
 
-export const {
-  createModule, createRelease, requestPasswordComplete, toggleTrust,
-} = raw;
+export const { createModule, createRelease, requestPasswordComplete, toggleTrust } = raw;

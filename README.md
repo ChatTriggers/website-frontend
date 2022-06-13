@@ -6,6 +6,6 @@ Welcome to the repository for the frontend of the website for [CT.js](https://gi
 
 To learn more about CT.js visit the [Slate](https://www.chattriggers.com/slate/), or [Javadocs](https://www.chattriggers.com/javadocs/)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can learn more in the [Vite documentation](https://vitejs.dev/guide).
 
 To learn React, check out the [React documentation](https://reactjs.org/).

@@ -1,12 +1,31 @@
-import React from 'react';
-import { Hidden } from '@material-ui/core';
+import { Theme, useMediaQuery } from '@material-ui/core';
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
 interface IProps {
-  children: React.ReactChild | React.ReactChild[];
+  children: JSX.Element | JSX.Element[];
 }
 
-export const Mobile = ({ children }: IProps): JSX.Element => <Hidden smUp>{children}</Hidden>;
-export const Tablet = ({ children }: IProps): JSX.Element => <Hidden xsDown lgUp>{children}</Hidden>;
-export const Desktop = ({ children }: IProps): JSX.Element => <Hidden mdDown>{children}</Hidden>;
-export const NotDesktop = ({ children }: IProps): JSX.Element => <Hidden lgUp>{children}</Hidden>;
-export const NotMobile = ({ children }: IProps): JSX.Element => <Hidden xsDown>{children}</Hidden>;
+enum BreakpointDirection {
+  Up,
+  Down,
+}
+
+const makeDevice = (breakpoint: Breakpoint, direction: BreakpointDirection) => {
+  return ({ children }: IProps) => {
+    let hidden;
+    if (direction === BreakpointDirection.Up) {
+      hidden = useMediaQuery<Theme>(theme => theme.breakpoints.up(breakpoint));
+    } else {
+      hidden = useMediaQuery<Theme>(theme => theme.breakpoints.down(breakpoint));
+    }
+    if (hidden) return null;
+
+    return children;
+  };
+};
+
+export const Mobile = makeDevice('sm', BreakpointDirection.Up);
+export const Tablet = makeDevice('lg', BreakpointDirection.Up);
+export const Desktop = makeDevice('md', BreakpointDirection.Down);
+export const NotDesktop = makeDevice('lg', BreakpointDirection.Up);
+export const NotMobile = makeDevice('xs', BreakpointDirection.Down);

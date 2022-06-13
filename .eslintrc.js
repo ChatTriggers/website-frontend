@@ -1,39 +1,45 @@
 module.exports = {
-  extends: ['airbnb', 'plugin:@typescript-eslint/recommended'],
+  root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'prettier'],
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
   settings: {
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    react: {
+      version: 'detect',
     },
     'import/resolver': {
-      typescript: {},
+      node: {
+        paths: ['src'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
     },
   },
   env: {
-    browser: true
+    browser: true,
   },
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended', // Make sure this is always the last element in the array.
+  ],
+  plugins: ['simple-import-sort', 'prettier'],
   rules: {
-    'max-len': [2, { code: 140 }],
-    'arrow-parens': [2, 'as-needed'],
-    'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
-    'react/prop-types': [0],
-    'react/require-default-props': [0],
-    'import/no-extraneous-dependencies': [2, { devDependencies: ['**/test.tsx', '**/test.ts'] }],
-    'import/no-named-as-default': [0],
-    'import/no-named-as-default-member': [0],
-    '@typescript-eslint/indent': [2, 2],
-    '@typescript-eslint/interface-name-prefix': [2, { prefixWithI: "always" }],
-    '@typescript-eslint/explicit-function-return-type': [2, { allowExpressions: true }],
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {
-        'js': 'never',
-        'jsx': 'never',
-        'ts': 'never',
-        'tsx': 'never',
-      }
-    ]
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+    'react/display-name': 'off',
+    'no-undef': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
 };

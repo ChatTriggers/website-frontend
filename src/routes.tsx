@@ -1,12 +1,13 @@
 import React from 'react';
-import PasswordResetPage from './pages/PasswordResetPage';
-import LoginPage from './pages/LoginPage';
+
 import CreateAccountPage from './pages/CreateAccountPage';
-import ModulesListPage from './pages/ModulesListPage';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
 import MobileFilterPage from './pages/MobileFilterPage';
 import ModulePage from './pages/ModulePage/ModulePage';
+import ModulesListPage from './pages/ModulesListPage';
+import PasswordResetPage from './pages/PasswordResetPage';
 import ReleaseVerificationPage from './pages/ReleaseVerificationPage';
-import HomePage from './pages/HomePage';
 
 interface IRoute {
   route: string;
@@ -20,7 +21,11 @@ const routes: IRoute[] = [
   { route: '/create-account', component: <CreateAccountPage />, name: 'Create Account' },
   { route: '/modules/v/:module([\\w]+)', component: <ModulePage /> },
   { route: '/modules/filter', component: <MobileFilterPage />, name: 'Module Filters' },
-  { route: '/modules/verify/:module([\\w]+)', component: <ReleaseVerificationPage />, name: 'Release Verification' },
+  {
+    route: '/modules/verify/:module([\\w]+)',
+    component: <ReleaseVerificationPage />,
+    name: 'Release Verification',
+  },
   { route: '/modules', component: <ModulesListPage />, name: 'Modules' },
   { route: '/', component: <HomePage /> },
 ];

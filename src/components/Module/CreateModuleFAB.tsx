@@ -1,9 +1,10 @@
-import React from 'react';
-import { Fab, Tooltip, Theme } from '@material-ui/core';
+import { Fab, Theme, Tooltip } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import { authStore, observer } from '~store';
+import React from 'react';
+
 import CreateModuleDialog from '~components/Desktop/CreateModuleDialog';
+import { authStore, observer } from '~store';
 
 const useStyles = makeStyles((theme: Theme) => ({
   fab: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateModuleFAB = (): JSX.Element => {
+const CreateModuleFAB = observer(() => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -36,7 +37,7 @@ const CreateModuleFAB = (): JSX.Element => {
       </Tooltip>
     </>
   );
-};
+});
 
 export default observer(() => {
   if (authStore.isAuthed) {

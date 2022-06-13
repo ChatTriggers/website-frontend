@@ -1,18 +1,22 @@
-import React from 'react';
 import {
-  Typography,
+  Chip,
+  Collapse,
+  Divider,
   List,
   ListItem,
   ListItemText,
-  Chip,
-  Divider,
-  Collapse,
   Theme,
+  Typography,
 } from '@material-ui/core';
+import {
+  ExpandLess as ExpandLessIcon,
+  ExpandMore as ExpandMoreIcon,
+} from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@material-ui/icons';
-import { IRelease } from '~types';
+import React from 'react';
+
 import MarkdownRenderer from '~components/MarkdownRenderer';
+import { IRelease } from '~types';
 
 const useStyles = makeStyles((theme: Theme) => ({
   releaseTitle: {
@@ -34,7 +38,7 @@ interface IReleasesTableProps {
   releases: IRelease[];
 }
 
-export default ({ releases }: IReleasesTableProps): JSX.Element => {
+export default ({ releases }: IReleasesTableProps) => {
   const classes = useStyles();
   const [openRelease, setOpenRelease] = React.useState('');
 
@@ -49,44 +53,43 @@ export default ({ releases }: IReleasesTableProps): JSX.Element => {
   return (
     <List component="nav">
       <Divider />
-      {releases.slice().sort((a, b) => b.createdAt - a.createdAt).map(release => {
-        const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
-        const modChip = <Chip label={`v${release.modVersion}`} size="small" />;
+      {releases
+        .slice()
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .map(release => {
+          const releaseChip = <Chip label={`v${release.releaseVersion}`} size="small" />;
+          const modChip = <Chip label={`v${release.modVersion}`} size="small" />;
 
-        const label = (
-          <div className={classes.releaseTitle}>
-            {releaseChip}
-            <Typography className={classes.releaseTypography}>for ct</Typography>
-            {modChip}
-          </div>
-        );
+          const label = (
+            <div className={classes.releaseTitle}>
+              {releaseChip}
+              <Typography className={classes.releaseTypography}>for ct</Typography>
+              {modChip}
+            </div>
+          );
 
-        return (
-          <div key={release.id}>
-            <ListItem button onClick={onReleaseClick(release.id)}>
-              <ListItemText primary={label} />
-              {openRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </ListItem>
-            <Collapse
-              in={openRelease === release.id}
-              timeout="auto"
-              unmountOnExit
-            >
-              <Divider className={classes.descDivider} />
-              <div className={classes.body}>
-                <Typography>
-                  Downloads:
-                  {` ${release.downloads}`}
-                </Typography>
-                <br />
-                <Typography>Changelog:</Typography>
-                <MarkdownRenderer source={release.changelog} />
-              </div>
-            </Collapse>
-            <Divider />
-          </div>
-        );
-      })}
+          return (
+            <div key={release.id}>
+              <ListItem button onClick={onReleaseClick(release.id)}>
+                <ListItemText primary={label} />
+                {openRelease === release.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </ListItem>
+              <Collapse in={openRelease === release.id} timeout="auto" unmountOnExit>
+                <Divider className={classes.descDivider} />
+                <div className={classes.body}>
+                  <Typography>
+                    Downloads:
+                    {` ${release.downloads}`}
+                  </Typography>
+                  <br />
+                  <Typography>Changelog:</Typography>
+                  <MarkdownRenderer source={release.changelog} />
+                </div>
+              </Collapse>
+              <Divider />
+            </div>
+          );
+        })}
     </List>
   );
 };
