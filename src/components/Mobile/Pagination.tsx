@@ -39,7 +39,7 @@ export default observer(() => {
 
   const onFirstPage = (): void => onChangePage(0);
 
-  const onLastPage = (): void => onChangePage(apiStore.totalPages);
+  const onLastPage = (): void => onChangePage(apiStore.totalPages - 1);
 
   const onPreviousPage = (): void => onChangePage(apiStore.page - 1);
 
