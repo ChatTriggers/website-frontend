@@ -7,7 +7,7 @@ import React, { useEffect } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { Styles } from '~components';
-import { action, authStore, observer, runInAction } from '~store';
+import { action, authStore } from '~store';
 
 import {
   deleteRelease,
@@ -81,41 +81,35 @@ const styles: Styles = (theme: Theme) => ({
   },
 });
 
-const ReleaseVerificationPage = observer(
-  (props: VerificationProps & WithStyles<typeof styles>) => {
-    const [isLoading, setLoading] = React.useState(true);
-    const [token, setToken] = React.useState('');
-    const [moduleId, setModuleId] = React.useState('');
-    const [releaseId, setReleaseId] = React.useState('');
-    const [changelog, setChangelog] = React.useState('');
-    const [diffs, setDiffs] = React.useState<Array<IDiff> | undefined>();
+const ReleaseVerificationPage = (
+  props: VerificationProps & WithStyles<typeof styles>,
+) => {
+  const [isLoading, setLoading] = React.useState(true);
+  const [token, setToken] = React.useState('');
+  const [moduleId, setModuleId] = React.useState('');
+  const [releaseId, setReleaseId] = React.useState('');
+  const [changelog, setChangelog] = React.useState('');
+  const [diffs, setDiffs] = React.useState<Array<IDiff> | undefined>();
 
-    const loadBlobs = async (
-      oldReleaseId: string | undefined,
-      newReleaseId: string,
-    ): Promise<void> => {
+  const loadBlobs = action(
+    async (oldReleaseId: string | undefined, newReleaseId: string): Promise<void> => {
       if (!authStore.isTrustedOrHigher) {
-        runInAction(() => {
-          setLoading(false);
-        });
+        setLoading(false);
         return Promise.resolve();
       }
 
       const module = await getSingleModule(props.match.params.module);
-      runInAction(() => {
-        setModuleId(module.id.toString());
-      });
+      const moduleIdStr = module.id.toString();
+      setModuleId(moduleIdStr);
 
-      const release = await getRelease(moduleId, newReleaseId);
-      runInAction(() => {
-        setChangelog(release.changelog);
-      });
+      const release = await getRelease(moduleIdStr, newReleaseId);
+      setChangelog(release.changelog);
 
       const oldBlob =
         oldReleaseId === undefined
           ? undefined
-          : await getReleaseScript(moduleId, oldReleaseId);
-      const newBlob = await getReleaseScript(moduleId, newReleaseId);
+          : await getReleaseScript(moduleIdStr, oldReleaseId);
+      const newBlob = await getReleaseScript(moduleIdStr, newReleaseId);
 
       const promises: Array<Promise<IDiff | undefined>> = [];
 
@@ -139,7 +133,7 @@ const ReleaseVerificationPage = observer(
         });
       }
 
-      (await JSZip.loadAsync(newBlob)).forEach(async (path, file) => {
+      (await JSZip.loadAsync(newBlob)).forEach((path, file) => {
         if (file.dir || path.endsWith('.DS_STORE')) return;
 
         promises.push(
@@ -174,125 +168,123 @@ const ReleaseVerificationPage = observer(
           }
         });
 
-        runInAction(() => {
-          setDiffs(
-            Array.from(tempDiffs.entries())
-              .sort((a, b) => a[0].localeCompare(b[0]))
-              .filter(a => a[1].oldText !== a[1].newText)
-              .map(a => a[1]),
-          );
+        setDiffs(
+          Array.from(tempDiffs.entries())
+            .sort((a, b) => a[0].localeCompare(b[0]))
+            .filter(a => a[1].oldText !== a[1].newText)
+            .map(a => a[1]),
+        );
 
-          setLoading(false);
-        });
+        setLoading(false);
       });
-    };
+    },
+  );
 
-    useEffect(
-      action(() => {
-        const params = new URLSearchParams(props.location.search);
+  useEffect(
+    action(() => {
+      const params = new URLSearchParams(props.location.search);
 
-        if (!params.has('token') || !params.has('newReleaseId')) {
-          setLoading(false);
-          return;
-        }
+      if (!params.has('token') || !params.has('newReleaseId')) {
+        setLoading(false);
+        return;
+      }
 
-        setToken(params.get('token')!);
+      setToken(params.get('token')!);
 
-        const newReleaseId = params.get('newReleaseId')!;
+      const newReleaseId = params.get('newReleaseId')!;
 
-        setReleaseId(newReleaseId);
+      setReleaseId(newReleaseId);
 
-        let oldReleaseId: string | undefined;
-        if (params.has('oldReleaseId')) {
-          oldReleaseId = params.get('oldReleaseId')!;
-        }
+      let oldReleaseId: string | undefined;
+      if (params.has('oldReleaseId')) {
+        oldReleaseId = params.get('oldReleaseId')!;
+      }
 
-        setTimeout(() => loadBlobs(oldReleaseId, newReleaseId), 1000);
-      }),
-      [],
-    );
+      setTimeout(() => loadBlobs(oldReleaseId, newReleaseId), 1000);
+    }),
+    [],
+  );
 
-    const viewModule = (): void => {
-      const { history } = props;
-      const { module } = props.match.params;
-      history.push(`/modules/v/${module}`);
-    };
+  const viewModule = (): void => {
+    const { history } = props;
+    const { module } = props.match.params;
+    history.push(`/modules/v/${module}`);
+  };
 
-    const verify = (): void => {
-      verifyRelease(moduleId, releaseId, token).then(() => {
-        props.history.push(`/modules/${props.match.params.module}`);
-      });
-    };
+  const verify = (): void => {
+    verifyRelease(moduleId, releaseId, token).then(() => {
+      props.history.push(`/modules/${props.match.params.module}`);
+    });
+  };
 
-    const deleteSelectedRelease = (): void => {
-      deleteRelease(parseInt(moduleId, 10), releaseId).then(() => {
-        props.history.push(`/modules/${props.match.params.module}`);
-      });
-    };
+  const deleteSelectedRelease = (): void => {
+    deleteRelease(parseInt(moduleId, 10), releaseId).then(() => {
+      props.history.push(`/modules/${props.match.params.module}`);
+    });
+  };
 
-    if (isLoading) {
-      return (
-        <div className={props.classes.root}>
-          <Paper className={props.classes.paper} square>
-            <Typography>Loading...</Typography>
-          </Paper>
-        </div>
-      );
-    }
-
-    if (!authStore.isTrustedOrHigher) {
-      return (
-        <div className={props.classes.root}>
-          <Paper className={props.classes.paper} square>
-            <Typography>
-              No permission! Please log in to a trusted/admin account to view this page
-            </Typography>
-          </Paper>
-        </div>
-      );
-    }
-
-    if (diffs === undefined) {
-      throw new Error('unexpected');
-    }
-
+  if (isLoading) {
     return (
       <div className={props.classes.root}>
-        <Paper className={props.classes.paper}>
-          <Typography variant="h4">Changelog:</Typography>
-          <Typography className={props.classes.changelog} variant="h6">
-            {changelog}
-          </Typography>
-          <div className={props.classes.headerButtons}>
-            <Button
-              className={props.classes.moduleButton}
-              variant="contained"
-              onClick={viewModule}
-            >
-              <Typography>View Module</Typography>
-            </Button>
-            <Button
-              className={props.classes.verifyButton}
-              variant="contained"
-              onClick={verify}
-            >
-              <Typography>Verify Release</Typography>
-            </Button>
-            <Button
-              className={props.classes.deleteButton}
-              variant="contained"
-              onClick={deleteSelectedRelease}
-            >
-              <Typography>Delete Release</Typography>
-            </Button>
-          </div>
+        <Paper className={props.classes.paper} square>
+          <Typography>Loading...</Typography>
         </Paper>
-        {diffs.map(diff => (
-          <DiffViewer key={diff.path} diff={diff} />
-        ))}
       </div>
     );
-  },
-);
+  }
+
+  if (!authStore.isTrustedOrHigher) {
+    return (
+      <div className={props.classes.root}>
+        <Paper className={props.classes.paper} square>
+          <Typography>
+            No permission! Please log in to a trusted/admin account to view this page
+          </Typography>
+        </Paper>
+      </div>
+    );
+  }
+
+  if (diffs === undefined) {
+    throw new Error('unexpected');
+  }
+
+  return (
+    <div className={props.classes.root}>
+      <Paper className={props.classes.paper}>
+        <Typography variant="h4">Changelog:</Typography>
+        <Typography className={props.classes.changelog} variant="h6">
+          {changelog}
+        </Typography>
+        <div className={props.classes.headerButtons}>
+          <Button
+            className={props.classes.moduleButton}
+            variant="contained"
+            onClick={viewModule}
+          >
+            <Typography>View Module</Typography>
+          </Button>
+          <Button
+            className={props.classes.verifyButton}
+            variant="contained"
+            onClick={verify}
+          >
+            <Typography>Verify Release</Typography>
+          </Button>
+          <Button
+            className={props.classes.deleteButton}
+            variant="contained"
+            onClick={deleteSelectedRelease}
+          >
+            <Typography>Delete Release</Typography>
+          </Button>
+        </div>
+      </Paper>
+      {diffs.map(diff => (
+        <DiffViewer key={diff.path} diff={diff} />
+      ))}
+    </div>
+  );
+};
 
 export default withStyles(styles)(withRouter(ReleaseVerificationPage));
