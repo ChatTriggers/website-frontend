@@ -63,6 +63,7 @@ export default ({ diff }: IDiffViewerProps) => {
     if (wrapperRef.current) {
       const diffEditor = monaco.editor.createDiffEditor(wrapperRef.current, {
         theme: 'vs-dark',
+        readOnly: true,
       });
 
       const oldModel = monaco.editor.createModel(oldText ?? '', 'javascript');
