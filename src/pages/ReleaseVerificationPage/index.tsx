@@ -115,7 +115,8 @@ const ReleaseVerificationPage = (
 
       if (oldBlob !== undefined) {
         (await JSZip.loadAsync(oldBlob)).forEach((path, file) => {
-          if (file.dir || path.endsWith('.DS_STORE')) return;
+          if (file.dir || path.endsWith('.DS_STORE') || path.indexOf('.git/') !== -1)
+            return;
 
           promises.push(
             new Promise(resolve => {
@@ -134,7 +135,8 @@ const ReleaseVerificationPage = (
       }
 
       (await JSZip.loadAsync(newBlob)).forEach((path, file) => {
-        if (file.dir || path.endsWith('.DS_STORE')) return;
+        if (file.dir || path.endsWith('.DS_STORE') || path.indexOf('.git/') !== -1)
+          return;
 
         promises.push(
           new Promise(resolve => {
