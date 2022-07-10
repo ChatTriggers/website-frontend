@@ -121,7 +121,9 @@ const ReleaseVerificationPage = (
           promises.push(
             new Promise(resolve => {
               file.async('string').then(text => {
-                const arr = new TextEncoder().encode(text);
+                const arr = new TextEncoder().encode(
+                  text.replace('\r\n', '\n').replace('\r', '\n'),
+                );
                 resolve({
                   path,
                   isBinary: isBinary(path, Buffer.from(arr)) === true,
@@ -141,7 +143,9 @@ const ReleaseVerificationPage = (
         promises.push(
           new Promise(resolve => {
             file.async('string').then(text => {
-              const arr = new TextEncoder().encode(text);
+              const arr = new TextEncoder().encode(
+                text.replace('\r\n', '\n').replace('\r', '\n'),
+              );
               resolve({
                 path,
                 isBinary: isBinary(path, Buffer.from(arr)) === true,

@@ -1,19 +1,11 @@
-import {
-  Checkbox,
-  Collapse,
-  FormControlLabel,
-  IconButton,
-  Paper,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { Collapse, IconButton, Paper, Theme, Typography } from '@material-ui/core';
 import {
   ChevronRight as ArrowRightIcon,
   ExpandMore as ArrowDownIcon,
 } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles';
-import React from 'react';
-import ReactDiffViewer, { DiffMethod } from 'react-diff-viewer';
+import * as monaco from 'monaco-editor';
+import React, { useEffect, useRef } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -60,11 +52,40 @@ interface IDiffViewerProps {
 
 export default ({ diff }: IDiffViewerProps) => {
   const { path, isBinary, oldText, newText } = diff;
-  const splitViewChangable = oldText !== undefined && newText !== undefined;
 
   const classes = useStyles();
   const [shown, setShown] = React.useState(true);
-  const [splitView, setSplitView] = React.useState(true);
+
+  const wrapperEditorRef = useRef<monaco.editor.IEditor | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (wrapperRef.current) {
+      const diffEditor = monaco.editor.createDiffEditor(wrapperRef.current, {
+        theme: 'vs-dark',
+      });
+
+      const oldModel = monaco.editor.createModel(oldText ?? '', 'javascript');
+      const newModel = monaco.editor.createModel(newText ?? '', 'javascript');
+
+      diffEditor.setModel({
+        original: oldModel,
+        modified: newModel,
+      });
+
+      diffEditor.onDidUpdateDiff(() => {
+        const changes = diffEditor.getLineChanges();
+        if (changes !== null) setShown(changes.length !== 0);
+      });
+
+      wrapperEditorRef.current = diffEditor;
+    }
+
+    return () => {
+      wrapperEditorRef.current?.dispose();
+      wrapperEditorRef.current = null;
+    };
+  }, []);
 
   return (
     <Paper className={classes.paper}>
@@ -93,28 +114,9 @@ export default ({ diff }: IDiffViewerProps) => {
             </>
           )}
         </div>
-        {splitViewChangable && !isBinary && (
-          <div className={classes.headerRight}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={splitView} onChange={() => setSplitView(!splitView)} />
-              }
-              label="Split view"
-            />
-          </div>
-        )}
       </div>
       <Collapse in={shown}>
-        {!isBinary && (
-          <ReactDiffViewer
-            key={path}
-            oldValue={oldText}
-            newValue={newText}
-            compareMethod={DiffMethod.LINES}
-            splitView={splitViewChangable && splitView}
-            useDarkTheme
-          />
-        )}
+        {!isBinary && <div ref={wrapperRef} style={{ width: '100%', height: 460 }} />}
       </Collapse>
     </Paper>
   );
