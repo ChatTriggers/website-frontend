@@ -40,17 +40,17 @@ export const createModule = async (
   image?: string,
   flagged = false,
 ): Promise<IModule> => {
+  const paramsObj: Partial<IModule> = {
+    name,
+    description,
+    tags,
+    flagged,
+  };
+  if (image) paramsObj.image = image;
+
   const response = await axios.post<IModule>(
     MODULES_URL,
-
-    new URLSearchParams({
-      name,
-      description,
-      tags,
-      image,
-      flagged,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any).toString(),
+    new URLSearchParams(paramsObj as any).toString(),
   );
 
   return validateStatusCode(response);
@@ -68,7 +68,7 @@ export const updateModule = async (
   flagged?: boolean,
   tags?: string[],
 ): Promise<IModule> => {
-  const query: Partial<IModule> & { flagged?: boolean } = {};
+  const query: Partial<IModule> = {};
 
   if (description) query.description = description;
   if (image) query.image = image;
