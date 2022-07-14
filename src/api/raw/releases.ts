@@ -2,7 +2,7 @@ import FormData from 'form-data';
 
 import { IRelease } from '~types';
 
-import { axios, BASE_URL } from '../utils';
+import { axios, BASE_URL, URLParams } from '../utils';
 import { ApiErrors, validateStatusCode } from './ApiErrors';
 
 const releasesUrl = (moduleId: string) => `${BASE_URL}/modules/${moduleId}/releases`;
@@ -73,14 +73,11 @@ export const updateRelease = async (
   modVersion?: string,
   changelog?: string,
 ): Promise<undefined> => {
-  const paramsObj: Record<string, string> = {};
-  if (modVersion) paramsObj.modVersion = modVersion;
-  if (changelog) paramsObj.changelog = changelog;
+  const searchParams = new URLParams({ modVersion, changelog });
 
-  const params = new URLSearchParams(paramsObj).toString();
   const response = await axios.patch<undefined>(
     releasesUrlSpecific(moduleId.toString(), releaseId),
-    params,
+    searchParams.toString(),
   );
 
   return validateStatusCode(response, ApiErrors.UpdateRelease);
