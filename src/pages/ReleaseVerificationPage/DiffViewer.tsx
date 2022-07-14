@@ -66,8 +66,10 @@ export default ({ diff }: IDiffViewerProps) => {
         readOnly: true,
       });
 
-      const oldModel = monaco.editor.createModel(oldText ?? '', 'javascript');
-      const newModel = monaco.editor.createModel(newText ?? '', 'javascript');
+      const lang = path.endsWith('.json') ? 'json' : 'javascript';
+
+      const oldModel = monaco.editor.createModel(oldText ?? '', lang);
+      const newModel = monaco.editor.createModel(newText ?? '', lang);
 
       diffEditor.setModel({
         original: oldModel,
