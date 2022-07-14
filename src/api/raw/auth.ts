@@ -1,6 +1,6 @@
 import { IPersonalUser, IUser } from '~types';
 
-import { axios, BASE_URL } from '../utils';
+import { axios, BASE_URL, URLParams } from '../utils';
 import { ApiErrors, validateStatusCode } from './ApiErrors';
 
 const ACCOUNT_LOGIN_URL = `${BASE_URL}/account/login`;
@@ -13,7 +13,7 @@ const ACCOUNT_RESET_COMPLETE = `${BASE_URL}/account/resets/complete`;
 export const login = async (username: string, password: string): Promise<IUser> => {
   const response = await axios.post<IUser>(
     ACCOUNT_LOGIN_URL,
-    new URLSearchParams({ username, password }).toString(),
+    new URLParams({ username, password }).toString(),
   );
 
   return validateStatusCode(response, ApiErrors.Login);
@@ -32,7 +32,7 @@ export const createAccount = async (
 ): Promise<IUser> => {
   const response = await axios.post<IUser>(
     ACCOUNT_NEW_URL,
-    new URLSearchParams({ username, password, email }).toString(),
+    new URLParams({ username, password, email }).toString(),
   );
 
   return validateStatusCode(response, (): string | undefined => {
@@ -71,7 +71,7 @@ export const requestPasswordComplete = async (
 ): Promise<unknown> => {
   const response = await axios.post(
     ACCOUNT_RESET_COMPLETE,
-    new URLSearchParams({ password, token }).toString(),
+    new URLParams({ password, token }).toString(),
   );
 
   return validateStatusCode(response, ApiErrors.PasswordResetComplete);

@@ -1,6 +1,6 @@
 import { IModule, IModuleResponse, ModuleSorting } from '~types';
 
-import { axios, BASE_URL } from '../utils';
+import { axios, BASE_URL, URLParams } from '../utils';
 import { ApiErrors, validateStatusCode } from './ApiErrors';
 
 const MODULES_URL = `${BASE_URL}/modules`;
@@ -40,18 +40,15 @@ export const createModule = async (
   image?: string,
   flagged = false,
 ): Promise<IModule> => {
-  const paramsObj: Partial<IModule> = {
+  const searchParams = new URLParams({
     name,
     description,
-    tags,
     flagged,
-  };
-  if (image) paramsObj.image = image;
+    image,
+    tags,
+  });
 
-  const response = await axios.post<IModule>(
-    MODULES_URL,
-    new URLSearchParams(paramsObj as any).toString(),
-  );
+  const response = await axios.post<IModule>(MODULES_URL, searchParams.toString());
 
   return validateStatusCode(response);
 };
@@ -68,16 +65,11 @@ export const updateModule = async (
   flagged?: boolean,
   tags?: string[],
 ): Promise<IModule> => {
-  const query: Partial<IModule> = {};
+  const searchParams = new URLParams({ description, image, flagged, tags });
 
-  if (description) query.description = description;
-  if (image) query.image = image;
-  if (flagged !== undefined) query.flagged = flagged;
-  if (tags) query.tags = tags;
   const response = await axios.patch<IModule>(
     moduleIdUrl(moduleId),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    new URLSearchParams(query as any).toString(),
+    searchParams.toString(),
   );
 
   return validateStatusCode(response, ApiErrors.UpdateModule);
