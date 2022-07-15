@@ -118,7 +118,7 @@ export default ({ open, onClose }: ICreateReleaseDialog) => {
   const onSubmit = async (): Promise<void> => {
     setLoading(true);
     try {
-      await createModule(name, description, tags, image || undefined, flagged);
+      await createModule(name, description, tags, image, flagged);
       setLoading(false);
 
       getModules();

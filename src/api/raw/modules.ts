@@ -37,7 +37,7 @@ export const createModule = async (
   name: string,
   description: string,
   tags: string[],
-  image?: string,
+  image: string,
   flagged = false,
 ): Promise<IModule> => {
   const searchParams = new URLParams({
