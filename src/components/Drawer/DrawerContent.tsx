@@ -95,13 +95,13 @@ export default withRouter(
       <>
         <Divider />
         <List>
-          <ListItem button component="a" href="https://www.chattriggers.com/">
+          <ListItem button component="a" to="/">
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
             <ListItemText>Home</ListItemText>
           </ListItem>
-          <ListItem button component={Link} to="https://www.chattriggers.com/modules">
+          <ListItem button component={Link} to="/modules">
             <ListItemIcon>
               <FolderIcon />
             </ListItemIcon>
@@ -110,13 +110,13 @@ export default withRouter(
         </List>
         <Divider />
         <List>
-          <ListItem button component="a" href="https://www.chattriggers.com/slate/">
+          <ListItem button component="a" to="/slate">
             <ListItemIcon>
               <img className={classes.img} src={menuBookIcon} alt="slate icon" />
             </ListItemIcon>
             <ListItemText>Slate</ListItemText>
           </ListItem>
-          <ListItem button component="a" href="https://www.chattriggers.com/javadocs/">
+          <ListItem button component="a" to="/javadocs">
             <ListItemIcon>
               <DescriptionIcon />
             </ListItemIcon>
