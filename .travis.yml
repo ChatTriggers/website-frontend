@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 10
+  - 12
 before_install:
   - curl -sS https://bootstrap.pypa.io/pip/3.5/get-pip.py | sudo python3
   - sudo pip3 install paramiko
