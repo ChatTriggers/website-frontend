@@ -95,7 +95,7 @@ export default withRouter(
       <>
         <Divider />
         <List>
-          <ListItem button component="a" to="/">
+          <ListItem button component={Link} to="/">
             <ListItemIcon>
               <HomeIcon />
             </ListItemIcon>
@@ -110,13 +110,13 @@ export default withRouter(
         </List>
         <Divider />
         <List>
-          <ListItem button component="a" to="/slate">
+          <ListItem button component={Link} to="/slate">
             <ListItemIcon>
               <img className={classes.img} src={menuBookIcon} alt="slate icon" />
             </ListItemIcon>
             <ListItemText>Slate</ListItemText>
           </ListItem>
-          <ListItem button component="a" to="/javadocs">
+          <ListItem button component={Link} to="/javadocs">
             <ListItemIcon>
               <DescriptionIcon />
             </ListItemIcon>
